@@ -105,7 +105,7 @@ public class Item {
 			return;
 		}
 
-		successors.add(new Item(Action.finish(), stack, queue, true));
+		successors.add(new Item(Action.FINISH, stack, queue, true));
 	}
 
 	private void idle(List<Item> successors) {
@@ -113,7 +113,7 @@ public class Item {
 			return;
 		}
 
-		successors.add(new Item(Action.idle(), stack, queue, true));
+		successors.add(new Item(Action.IDLE, stack, queue, true));
 	}
 
 	public List<String> extractFeatures() {
@@ -426,7 +426,7 @@ public class Item {
 			queue = new NEStack<Word>(sentence.words.get(i), queue);
 		}
 		
-		return new Item(Action.init(), new EStack<Node>(), queue, false);
+		return new Item(Action.INIT, new EStack<Node>(), queue, false);
 	}
 	
 	public String toString() {

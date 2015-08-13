@@ -14,6 +14,7 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.Future;
 import java.util.concurrent.RecursiveTask;
+import java.util.logging.Logger;
 
 import epar.data.Sentence;
 import epar.grammar.Grammar;
@@ -27,7 +28,7 @@ import epar.util.StringUtil;
 
 public class Decode {
 
-	//private final static Logger LOGGER = Logger.getLogger(Decode.class.getName());
+	private final static Logger LOGGER = Logger.getLogger(Decode.class.getName());
 
 	public static Agenda decode(Agenda agenda, Grammar grammar, Model model, Oracle oracle) {
 		// LOGGER.info("Input agenda: " + agenda.getCandidates());
@@ -35,10 +36,12 @@ public class Decode {
 		Agenda nextAgenda = agenda.nextAgenda(grammar, model, oracle);
 
 		if (nextAgenda.noneCorrect()) {
+			LOGGER.info("Early update in generation " + agenda.generation);
 			return agenda;
 		}
 
 		if (nextAgenda.allFinished()) {
+			LOGGER.info("Normal update in generation " + agenda.generation);
 			return nextAgenda;
 		}
 

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import epar.data.Sentence;
 import epar.grammar.Grammar;
@@ -16,12 +17,16 @@ import epar.parser.Candidate;
 import epar.util.Pair;
 
 public class Train {
+	
+	private final static Logger LOGGER = Logger.getLogger(Train.class.getName());
 
 	public static void trainForOneIteration(
 			Iterable<Pair<Sentence, Node>> examples, Grammar grammar,
 			Model model) {
 		// TODO shuffle examples? Should be done offline for replicable results.
+		int i = 0;
 		for (Pair<Sentence, Node> example : examples) {
+			LOGGER.info("Training on sentence " + ++i);
 			trainOnOneExample(example.fst, example.snd, grammar, model);
 		}
 	}

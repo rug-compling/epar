@@ -13,9 +13,13 @@ import epar.oracle.Oracle;
 public class Agenda {
 
 	private static final int BEAM_WIDTH = 16; // TODO make configurable
+
+	public final int generation;
+
 	private final List<Candidate> candidates;
 
-	private Agenda(List<Candidate> candidates) {
+	private Agenda(int generation, List<Candidate> candidates) {
+		this.generation = generation;
 		this.candidates = candidates;
 	}
 
@@ -24,7 +28,7 @@ public class Agenda {
 
 		// Find all successors
 		for (Candidate candidate : candidates) {
-			candidate.findSuccessors(successors, grammar, model, oracle);
+			candidate.findSuccessors(generation, successors, grammar, model, oracle);
 		}
 
 		// Sort by score, descending
@@ -50,15 +54,14 @@ public class Agenda {
 			}
 		}
 		if (!gotFinishedCandidate && successors.size() > BEAM_WIDTH) {
-			for (Candidate successor : successors.subList(BEAM_WIDTH,
-					successors.size())) {
+			for (Candidate successor : successors.subList(BEAM_WIDTH, successors.size())) {
 				if (successor.item.finished) {
 					nextCandidates.add(successor);
 				}
 			}
 		}
 
-		return new Agenda(nextCandidates);
+		return new Agenda(generation + 1, nextCandidates);
 	}
 
 	public boolean noneCorrect() {
@@ -80,24 +83,23 @@ public class Agenda {
 
 		return true;
 	}
-	
+
 	public Candidate getHighestScoring() {
 		return candidates.get(0);
 	}
-	
+
 	public Candidate getHighestScoringCorrect() {
 		for (Candidate candidate : candidates) {
 			if (candidate.correct) {
 				return candidate;
 			}
 		}
-		
+
 		throw new IndexOutOfBoundsException("No correct candidate");
 	}
 
 	public static Agenda initial(Sentence sentence) {
-		return new Agenda(
-				Collections.singletonList(Candidate.initial(sentence)));
+		return new Agenda(0, Collections.singletonList(Candidate.initial(sentence)));
 	}
 
 	public List<Candidate> getCandidates() {

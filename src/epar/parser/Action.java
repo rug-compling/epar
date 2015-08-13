@@ -2,15 +2,11 @@ package epar.parser;
 
 public class Action {
 
-	private static final Action INIT = new Action(ActionType.INIT, null);
+	public static final Action INIT = new Action(ActionType.INIT, null);
 
-	private static final Action FINISH = new Action(ActionType.FINISH, null);
+	public static final Action FINISH = new Action(ActionType.FINISH, null);
 
-	private static final Action IDLE = new Action(ActionType.IDLE, null);
-
-	public static Action init() {
-		return INIT;
-	}
+	public static final Action IDLE = new Action(ActionType.IDLE, null);
 
 	public static Action shift(String category) {
 		return new Action(ActionType.SHIFT, category);
@@ -22,14 +18,6 @@ public class Action {
 
 	public static Action unary(String category) {
 		return new Action(ActionType.UNARY, category);
-	}
-
-	public static Action finish() {
-		return FINISH;
-	}
-
-	public static Action idle() {
-		return IDLE;
 	}
 
 	private static enum ActionType {
@@ -110,9 +98,9 @@ public class Action {
 			ActionType type = ActionType.fromString(string);
 
 			if (type == ActionType.FINISH) {
-				return finish();
+				return FINISH;
 			} else if (type == ActionType.IDLE) {
-				return idle();
+				return IDLE;
 			} else {
 				throw new IllegalArgumentException(type
 						+ " action needs category argument");
