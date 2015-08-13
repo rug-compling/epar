@@ -13,6 +13,7 @@ public class Logging {
 	
 	static {
 		LOGGER.setUseParentHandlers(false);
+		LOGGER.setLevel(LEVEL);
 		Handler handler = new ConsoleHandler();
 		handler.setLevel(LEVEL);
 		LOGGER.addHandler(handler);
