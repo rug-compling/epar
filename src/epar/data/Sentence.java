@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import epar.util.Logging;
-
 public class Sentence {
 
 	public final List<Word> words;
@@ -21,10 +19,8 @@ public class Sentence {
 
 		while (scanner.hasNextLine()) {
 			String line = scanner.nextLine();
-			Logging.fine("Read input line: " + line);
 
 			if ("".equals(line)) {
-				Logging.fine("Empty line, sentence done");
 				break;
 			}
 

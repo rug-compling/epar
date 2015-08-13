@@ -12,7 +12,6 @@ import epar.node.LexicalNode;
 import epar.node.Node;
 import epar.node.UnaryNode;
 import epar.util.EStack;
-import epar.util.Logging;
 import epar.util.NEStack;
 import epar.util.Stack;
 
@@ -86,10 +85,7 @@ public class Item {
 	}
 
 	private void shift(List<Item> successors) {
-		Logging.fine("trying shift");
-		
 		if (queue.isEmpty()) {
-			Logging.fine("trying shift: queue is empty");
 			return;
 		}
 
@@ -97,7 +93,6 @@ public class Item {
 		Stack<Word> newQueue = queue.getRest();
 
 		for (String category : word.categories) {
-			Logging.fine("trying shift: " + category);
 			Node newNode = new LexicalNode(category, word);
 			Stack<Node> newStack = stack.push(newNode);
 			Action newAction = Action.shift(category);
@@ -426,7 +421,6 @@ public class Item {
 
 	public static Item initial(Sentence sentence) {
 		Stack<Word> queue = new EStack<Word>();
-		Logging.fine("Sentence has " + sentence.words.size() + " words.");
 		
 		for (int i = sentence.words.size() - 1; i >= 0; i--) {
 			queue = new NEStack<Word>(sentence.words.get(i), queue);

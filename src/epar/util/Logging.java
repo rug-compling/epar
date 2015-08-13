@@ -19,12 +19,4 @@ public class Logging {
 		LOGGER.addHandler(handler);
 	}
 
-	public static void info(String message) {
-		LOGGER.info(message);
-	}
-
-	public static void fine(String message) {
-		LOGGER.fine(message);
-	}
-
 }
