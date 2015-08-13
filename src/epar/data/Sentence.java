@@ -24,6 +24,7 @@ public class Sentence {
 			Logging.fine("Read input line: " + line);
 
 			if ("".equals(line)) {
+				Logging.fine("Empty line, sentence done");
 				break;
 			}
 
