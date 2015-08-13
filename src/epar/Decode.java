@@ -41,7 +41,7 @@ public class Decode {
 		}
 
 		if (nextAgenda.allFinished()) {
-			LOGGER.info("Normal update in generation " + agenda.generation);
+			LOGGER.info("Parsing finished in generation " + nextAgenda.generation);
 			return nextAgenda;
 		}
 
