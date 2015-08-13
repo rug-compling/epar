@@ -48,6 +48,10 @@ public class Item {
 	}
 
 	private void binary(List<Item> successors, Grammar grammar) {
+		if (finished) {
+			return;
+		}
+		
 		if (stack.isEmpty()) {
 			return;
 		}
@@ -70,6 +74,10 @@ public class Item {
 	}
 
 	private void unary(List<Item> successors, Grammar grammar) {
+		if (finished) {
+			return;
+		}
+		
 		if (stack.isEmpty()) {
 			return;
 		}
@@ -99,8 +107,14 @@ public class Item {
 			successors.add(new Item(newAction, newStack, newQueue, false));
 		}
 	}
+	
+	// Could perhaps conflate FINISH and IDLE.
 
 	private void finish(List<Item> successors) {
+		if (finished) {
+			return;
+		}
+		
 		if (!queue.isEmpty()) {
 			return;
 		}
