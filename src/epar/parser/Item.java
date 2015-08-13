@@ -426,6 +426,7 @@ public class Item {
 
 	public static Item initial(Sentence sentence) {
 		Stack<Word> queue = new EStack<Word>();
+		Logging.fine("Sentence has " + sentence.words.size() + " words.");
 		
 		for (int i = sentence.words.size() - 1; i >= 0; i--) {
 			queue = new NEStack<Word>(sentence.words.get(i), queue);
