@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import epar.data.Sentence;
@@ -14,6 +15,10 @@ import epar.oracle.Oracle;
 public class Agenda {
 
 	private final static Logger LOGGER = Logger.getLogger(Agenda.class.getName());
+	
+	static {
+		LOGGER.setLevel(Level.FINE);
+	}
 
 	private static final int BEAM_WIDTH = 16; // TODO make configurable
 
