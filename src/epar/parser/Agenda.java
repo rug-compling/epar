@@ -39,7 +39,7 @@ public class Agenda {
 			candidate.findSuccessors(generation, successors, grammar, model, oracle);
 		}
 		
-		LOGGER.info("Successors: " + successors);
+		LOGGER.fine("Successors: " + successors);
 
 		// Sort by score, descending
 		Collections.sort(successors, new Comparator<Candidate>() {
