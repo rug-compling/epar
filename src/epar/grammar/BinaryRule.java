@@ -3,19 +3,12 @@ package epar.grammar;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.logging.Logger;
 
 import epar.util.RecUtil;
 import epar.util.StringPool;
 
 public class BinaryRule {
 	
-	private final static Logger LOGGER = Logger.getLogger(BinaryRule.class.getName());
-	
-	{
-		//LOGGER.setLevel(Level.FINE);
-	}
-
 	public static enum HeadPosition {
 		LEFT, RIGHT;
 		
@@ -46,7 +39,6 @@ public class BinaryRule {
 	}
 
 	public static List<BinaryRule> read(String line) {
-		LOGGER.fine("Line: " + line);
 		List<BinaryRule> rules = new ArrayList<BinaryRule>();
 		Scanner scanner = new Scanner(line);
 		String leftChildCategory = StringPool.get(scanner.next());
