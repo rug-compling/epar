@@ -38,6 +38,8 @@ public class Agenda {
 		for (Candidate candidate : candidates) {
 			candidate.findSuccessors(generation, successors, grammar, model, oracle);
 		}
+		
+		LOGGER.info("Successors: " + successors);
 
 		// Sort by score, descending
 		Collections.sort(successors, new Comparator<Candidate>() {
@@ -48,8 +50,6 @@ public class Agenda {
 			}
 
 		});
-		
-		LOGGER.fine("Successors: " + successors);
 
 		// Keep the best candidates
 		List<Candidate> nextCandidates = new ArrayList<Candidate>(
