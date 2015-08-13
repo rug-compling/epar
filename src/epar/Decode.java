@@ -93,8 +93,16 @@ public class Decode {
 			// Retrieve parses and write them to STDOUT
 			try (Writer writer = new BufferedWriter(
 					new OutputStreamWriter(new FileOutputStream(outputFile), "utf-8"))) {
+				int i = 0;
 				for (Future<String> parse : parses) {
-					writer.write(parse.get());
+					i++;
+					
+					try {
+						writer.write(parse.get());
+					} catch (InterruptedException | ExecutionException e) {
+						LOGGER.info("Sentence " + i + " caused excpetion");
+						throw e;
+					}
 				}
 			}
 		} catch (IOException e) {
