@@ -33,16 +33,16 @@ public class Decode {
 	private final static Logger LOGGER = Logger.getLogger(Decode.class.getName());
 
 	public static Agenda decode(Agenda agenda, Grammar grammar, Model model, Oracle oracle) {
-		LOGGER.info("Input agenda: " + agenda.getCandidates());
+		LOGGER.info("Input beam: " + agenda.getBeam());
 
 		Agenda nextAgenda = agenda.nextAgenda(grammar, model, oracle);
 
-		if (nextAgenda.noneCorrect()) {
-			LOGGER.info("Early update in generation " + agenda.generation);
-			return agenda;
+		if (nextAgenda.noneCorrectWithinBeam()) {
+			LOGGER.info("Early update in generation " + nextAgenda.generation);
+			return nextAgenda;
 		}
 
-		if (nextAgenda.allFinished()) {
+		if (nextAgenda.allFinishedWithinBeam()) {
 			LOGGER.info("Parsing finished in generation " + nextAgenda.generation);
 			return nextAgenda;
 		}
@@ -52,7 +52,7 @@ public class Decode {
 	
 	private static Stack<Node> selectParse(Agenda finalAgenda) {
 		// Try to return the highest-scoring non-fragmentary analysis:
-		for (Candidate candidate : finalAgenda.getCandidates()) {
+		for (Candidate candidate : finalAgenda.getBeam()) {
 			if (candidate.item.stack.size() == 1) {
 				return candidate.item.stack;
 			}

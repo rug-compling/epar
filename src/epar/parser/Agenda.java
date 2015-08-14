@@ -26,23 +26,46 @@ public class Agenda {
 
 	private final List<Candidate> candidates;
 
+	private final List<Candidate> beam;
+
 	private Agenda(int generation, List<Candidate> candidates) {
 		this.generation = generation;
 		this.candidates = candidates;
+
+		// Keep the best candidates in beam
+		beam = new ArrayList<Candidate>(candidates.subList(0, Math.min(BEAM_WIDTH, candidates.size())));
+
+		// Also keep the best finished candidate, if any
+		boolean gotFinishedCandidate = false;
+
+		for (Candidate nextCandidate : beam) {
+			if (nextCandidate.item.finished) {
+				gotFinishedCandidate = true;
+				break;
+			}
+		}
+
+		if (!gotFinishedCandidate && candidates.size() > BEAM_WIDTH) {
+			for (Candidate successor : candidates.subList(BEAM_WIDTH, candidates.size())) {
+				if (successor.item.finished) {
+					beam.add(successor);
+				}
+			}
+		}
 	}
 
 	public Agenda nextAgenda(Grammar grammar, Model model, Oracle oracle) {
-		List<Candidate> successors = new ArrayList<Candidate>();
+		List<Candidate> beamSuccessors = new ArrayList<Candidate>();
 
-		// Find all successors
-		for (Candidate candidate : candidates) {
-			candidate.findSuccessors(generation, successors, grammar, model, oracle);
+		// Find all successors of candidates on the beam
+		for (Candidate candidate : beam) {
+			candidate.findSuccessors(generation, beamSuccessors, grammar, model, oracle);
 		}
 
-		LOGGER.fine("Successors: " + successors);
+		LOGGER.fine("Successors: " + beamSuccessors);
 
 		// Sort by score, descending
-		Collections.sort(successors, new Comparator<Candidate>() {
+		Collections.sort(beamSuccessors, new Comparator<Candidate>() {
 
 			@Override
 			public int compare(Candidate arg0, Candidate arg1) {
@@ -51,31 +74,11 @@ public class Agenda {
 
 		});
 
-		// Keep the best candidates
-		List<Candidate> nextCandidates = new ArrayList<Candidate>(
-				successors.subList(0, Math.min(BEAM_WIDTH, successors.size())));
-
-		// Also keep the best finished candidate, if any
-		boolean gotFinishedCandidate = false;
-		for (Candidate nextCandidate : nextCandidates) {
-			if (nextCandidate.item.finished) {
-				gotFinishedCandidate = true;
-				break;
-			}
-		}
-		if (!gotFinishedCandidate && successors.size() > BEAM_WIDTH) {
-			for (Candidate successor : successors.subList(BEAM_WIDTH, successors.size())) {
-				if (successor.item.finished) {
-					nextCandidates.add(successor);
-				}
-			}
-		}
-
-		return new Agenda(generation + 1, nextCandidates);
+		return new Agenda(generation + 1, beamSuccessors);
 	}
 
-	public boolean noneCorrect() {
-		for (Candidate candidate : candidates) {
+	public boolean noneCorrectWithinBeam() {
+		for (Candidate candidate : beam) {
 			if (candidate.correct) {
 				return false;
 			}
@@ -84,8 +87,8 @@ public class Agenda {
 		return true;
 	}
 
-	public boolean allFinished() {
-		for (Candidate candidate : candidates) {
+	public boolean allFinishedWithinBeam() {
+		for (Candidate candidate : beam) {
 			if (!candidate.item.finished) {
 				return false;
 			}
@@ -113,13 +116,13 @@ public class Agenda {
 	}
 
 	/**
-	 * Returns an unmodifiable list of candidates in this agenda, sorted by
-	 * score, highest-scoring first.
+	 * Returns an unmodifiable list of the candidates within the beam in this
+	 * agenda, sorted by score, highest-scoring first.
 	 * 
 	 * @return
 	 */
-	public List<Candidate> getCandidates() {
-		return Collections.unmodifiableList(candidates);
+	public List<Candidate> getBeam() {
+		return Collections.unmodifiableList(beam);
 	}
 
 }
