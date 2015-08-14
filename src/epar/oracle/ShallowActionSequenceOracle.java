@@ -1,6 +1,7 @@
 package epar.oracle;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import epar.node.Node;
 import epar.parser.Action;
@@ -8,11 +9,14 @@ import epar.parser.Item;
 
 public class ShallowActionSequenceOracle implements Oracle {
 
+	private final static Logger LOGGER = Logger.getLogger(ShallowActionSequenceOracle.class.getName());
+
 	private final List<Action> goldSequence;
 	
 	public ShallowActionSequenceOracle(Node goldTree) {
 		List<Action> actions = goldTree.actionSequence();
 		actions.add(Action.FINISH);
+		LOGGER.info("Gold sequence: " + actions);
 		this.goldSequence = actions;
 	}
 
