@@ -15,7 +15,7 @@ import epar.oracle.Oracle;
 public class Agenda {
 
 	private final static Logger LOGGER = Logger.getLogger(Agenda.class.getName());
-	
+
 	static {
 		LOGGER.setLevel(Level.FINE);
 	}
@@ -38,7 +38,7 @@ public class Agenda {
 		for (Candidate candidate : candidates) {
 			candidate.findSuccessors(generation, successors, grammar, model, oracle);
 		}
-		
+
 		LOGGER.fine("Successors: " + successors);
 
 		// Sort by score, descending
@@ -112,6 +112,12 @@ public class Agenda {
 		return new Agenda(0, Collections.singletonList(Candidate.initial(sentence)));
 	}
 
+	/**
+	 * Returns an unmodifiable list of candidates in this agenda, sorted by
+	 * score, highest-scoring first.
+	 * 
+	 * @return
+	 */
 	public List<Candidate> getCandidates() {
 		return Collections.unmodifiableList(candidates);
 	}
