@@ -7,7 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +26,7 @@ public class Model {
 		int score = 0;
 
 		for (String feature : stateFeatures) {
-			if (!weights.containsKey(feature)
-					|| !weights.get(feature).containsKey(action)) {
+			if (!weights.containsKey(feature) || !weights.get(feature).containsKey(action)) {
 				continue;
 			}
 
@@ -64,14 +65,27 @@ public class Model {
 		}
 	}
 
+	private List<String> toLines() {
+		List<String> result = new ArrayList<String>();
+
+		for (String feature : weights.keySet()) {
+			for (Action action : weights.get(feature).keySet()) {
+				double weight = weights.get(feature).get(action).weight;
+
+				//if (weight != 0.0) {
+					result.add(feature + " " + action + " " + weight +"\n");
+				//}
+			}
+		}
+
+		Collections.sort(result);
+		return result;
+	}
+
 	public void save(File file) throws IOException {
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(file), "utf-8"))) {
-			for (String feature : weights.keySet()) {
-				for (Action action : weights.get(feature).keySet()) {
-					writer.write(feature + " " + action + " "
-							+ weights.get(feature).get(action).weight + "\n");
-				}
+		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"))) {
+			for (String line : toLines()) {
+				writer.write(line);
 			}
 		}
 	}
@@ -84,8 +98,7 @@ public class Model {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	public static Model load(Collection<? extends File> modelFiles)
-			throws FileNotFoundException {
+	public static Model load(Collection<? extends File> modelFiles) throws FileNotFoundException {
 		int size = modelFiles.size();
 		Model model = new Model();
 
