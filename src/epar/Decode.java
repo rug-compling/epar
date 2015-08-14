@@ -119,9 +119,9 @@ public class Decode {
 					i++;
 					
 					try {
+						LOGGER.info("At sentence " + i);
 						writer.write(parse.get());
 					} catch (InterruptedException | ExecutionException e) {
-						LOGGER.info("Sentence " + i + " caused excpetion");
 						throw e;
 					}
 				}
