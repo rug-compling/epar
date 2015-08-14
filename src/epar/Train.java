@@ -2,74 +2,74 @@ package epar;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Logger;
 
 import epar.data.Sentence;
 import epar.grammar.Grammar;
-import epar.model.Model;
+import epar.model.AveragingModel;
 import epar.node.Node;
 import epar.oracle.Oracle;
 import epar.oracle.ShallowActionSequenceOracle;
 import epar.parser.Agenda;
 import epar.parser.Candidate;
-import epar.util.Pair;
 
 public class Train {
-	
+
 	private final static Logger LOGGER = Logger.getLogger(Train.class.getName());
 
-	public static void trainForOneIteration(
-			Iterable<Pair<Sentence, Node>> examples, Grammar grammar,
-			Model model) {
-		// TODO shuffle examples? Should be done offline for replicable results.
-		int i = 0;
-		for (Pair<Sentence, Node> example : examples) {
-			LOGGER.info("Training on sentence " + ++i);
-			trainOnOneExample(example.fst, example.snd, grammar, model);
-		}
-	}
+	public static AveragingModel train(int numIterations, List<Sentence> sentences, List<Node> goldTrees, Grammar grammar,
+			String outputFilePrefix) throws IOException {
+		AveragingModel model = new AveragingModel();
+		int trainingSetSize = sentences.size();
 
-	private static void trainOnOneExample(Sentence sentence, Node goldTree,
-			Grammar grammar, Model model) {
-		Oracle oracle = new ShallowActionSequenceOracle(goldTree);
-		Agenda agenda = Decode.decode(Agenda.initial(sentence), grammar, model,
-				oracle);
-		Candidate highestScoring = agenda.getHighestScoring();
-		Candidate highestScoringCorrect = agenda.getHighestScoringCorrect();
-
-		if (highestScoring != highestScoringCorrect) {
-			model.update(highestScoringCorrect, 1);
-			model.update(highestScoring, -1);
+		if (goldTrees.size() != trainingSetSize) {
+			throw new IllegalArgumentException("Lengths of sentences and goldTress don't match");
 		}
+
+		for (int i = 0; i < numIterations; i++) {
+			for (int e = 0; e < sentences.size(); e++) {
+				LOGGER.info("Training iteration: " + i + ", sentence: " + e);
+				Sentence sentence = sentences.get(e);
+				Node goldTree = goldTrees.get(e);
+				Oracle oracle = new ShallowActionSequenceOracle(goldTree);
+				Agenda agenda = Decode.decode(Agenda.initial(sentence), grammar, model, oracle);
+				Candidate highestScoring = agenda.getHighestScoring();
+				Candidate highestScoringCorrect = agenda.getHighestScoringCorrect();
+
+				if (highestScoring != highestScoringCorrect) {
+					model.update(trainingSetSize * i + e, highestScoringCorrect, 1.0);
+					model.update(trainingSetSize * i + e, highestScoring, -1.0);
+				}
+			}
+
+			if (outputFilePrefix != null) {
+				model.saveAveraged((i + 1) * trainingSetSize, new File(outputFilePrefix + "." + (i + 1)));
+			}
+		}
+
+		return model;
 	}
 
 	public static void main(String[] args) {
 		if (args.length != 6) {
-			System.err.println("USAGE: java Train SENTENCES GOLDTREES " +
-					"RULES.BIN RULES.UN MODEL.IN MODEL.OUT");
+			System.err.println("USAGE: java Train SENTENCES GOLDTREES " + "RULES.BIN RULES.UN NUM_ITER MODEL.OUT");
 			System.exit(1);
 		}
 
 		try {
-			List<Sentence> sentences = Sentence
-					.readSentences(new File(args[0]));
+			List<Sentence> sentences = Sentence.readSentences(new File(args[0]));
 			List<Node> goldTrees = Node.readTrees(new File(args[1]));
-			Grammar grammar = Grammar
-					.load(new File(args[2]), new File(args[3]));
-			Model model = Model.load(Collections.singletonList(new File(
-					args[4])));
-			File outputModelFile = new File(args[5]);
-
+			Grammar grammar = Grammar.load(new File(args[2]), new File(args[3]));
+			int numIterations = Integer.parseInt(args[4]);
+			String outputModelFile = args[5];
+			
 			if (sentences.size() != goldTrees.size()) {
-				System.err.println("ERROR: Lengths of SENTENCES and GOLDTREES"
-						+ " don't match");
+				System.err.println("ERROR: Lengths of SENTENCES and GOLDTREES" + " don't match");
 				System.exit(1);
 			}
 
-			trainForOneIteration(Pair.zip(sentences, goldTrees), grammar, model);
-			model.save(outputModelFile);
+			train(numIterations, sentences, goldTrees, grammar, outputModelFile);
 		} catch (IOException e) {
 			System.err.println("ERROR: " + e.getLocalizedMessage());
 			System.exit(1);

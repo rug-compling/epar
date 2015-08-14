@@ -19,6 +19,7 @@ import java.util.logging.Logger;
 import epar.data.Sentence;
 import epar.grammar.Grammar;
 import epar.model.Model;
+import epar.model.StaticModel;
 import epar.node.Node;
 import epar.oracle.AcceptAllOracle;
 import epar.oracle.Oracle;
@@ -80,7 +81,7 @@ public class Decode {
 				modelFiles.add(new File(args[i]));
 			}
 
-			final Model model = Model.load(modelFiles);
+			final Model model = StaticModel.load(modelFiles);
 			final Oracle oracle = new AcceptAllOracle();
 			
 			List<Future<String>> parses = new ArrayList<Future<String>>(inputSentences.size());

@@ -11,10 +11,10 @@ public class Candidate {
 
 	public final Candidate parent;
 	public final Item item;
-	public final int score;
+	public final double score;
 	public final boolean correct;
 
-	private Candidate(Candidate parent, Item item, int score, boolean correct) {
+	private Candidate(Candidate parent, Item item, double score, boolean correct) {
 		this.parent = parent;
 		this.item = item;
 		this.score = score;
@@ -26,7 +26,7 @@ public class Candidate {
 		List<String> stateFeatures = item.extractFeatures();
 		
 		for (Item successorItem : item.successors(grammar)) {
-			int successorScore = score + model.score(stateFeatures, successorItem.action);
+			double successorScore = score + model.score(stateFeatures, successorItem.action);
 			boolean successorCorrect = correct && oracle.accept(generation, successorItem);
 			successors
 					.add(new Candidate(this, successorItem, successorScore, successorCorrect));		}

@@ -69,7 +69,13 @@ public class Agenda {
 
 			@Override
 			public int compare(Candidate arg0, Candidate arg1) {
-				return arg1.score - arg0.score;
+				if (arg1.score > arg0.score) {
+					return 1;
+				} else if (arg1.score == arg0.score) {
+					return 0;
+				} else {
+					return -1;
+				}
 			}
 
 		});
