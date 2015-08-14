@@ -65,17 +65,18 @@ public class Decode {
 	public static void main(String[] args) throws InterruptedException, ExecutionException {
 		if (args.length < 5) {
 			System.err.println(
-					"USAGE: java Decode SENTENCES.IN RULES.BIN " + "RULES.UN TREES.OUT MODEL1 MODEL2 ... MODELN");
+					"USAGE: java Decode SENTENCES.IN RULES.BIN RULES.UN NUMCPUS TREES.OUT MODEL1 MODEL2 ... MODELN");
 			System.exit(1);
 		}
 
 		try {
 			List<Sentence> inputSentences = Sentence.readSentences(new File(args[0]));
 			final Grammar grammar = Grammar.load(new File(args[1]), new File(args[2]));
-			File outputFile = new File(args[3]);
-			List<File> modelFiles = new ArrayList<File>(args.length - 4);
+			int numCPUs = Integer.parseInt(args[3]);
+			File outputFile = new File(args[4]);
+			List<File> modelFiles = new ArrayList<File>(args.length - 5);
 
-			for (int i = 4; i < args.length; i++) {
+			for (int i = 5; i < args.length; i++) {
 				modelFiles.add(new File(args[i]));
 			}
 
@@ -83,7 +84,13 @@ public class Decode {
 			final Oracle oracle = new AcceptAllOracle();
 			
 			List<Future<String>> parses = new ArrayList<Future<String>>(inputSentences.size());
-			ForkJoinPool pool = new ForkJoinPool();
+			ForkJoinPool pool;
+			
+			if (numCPUs <= 0) {
+				pool = new ForkJoinPool();
+			} else {
+				pool = new ForkJoinPool(numCPUs);
+			}
 			
 			// Schedule sentences for parsing
 			for (final Sentence sentence : inputSentences) {
