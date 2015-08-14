@@ -33,7 +33,7 @@ public class Decode {
 	private final static Logger LOGGER = Logger.getLogger(Decode.class.getName());
 
 	public static Agenda decode(Agenda agenda, Grammar grammar, Model model, Oracle oracle) {
-		LOGGER.fine("Input agenda: " + agenda.getCandidates());
+		LOGGER.info("Input agenda: " + agenda.getCandidates());
 
 		Agenda nextAgenda = agenda.nextAgenda(grammar, model, oracle);
 
