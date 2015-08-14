@@ -34,13 +34,30 @@ public class Train {
 				Node goldTree = goldTrees.get(e);
 				Oracle oracle = new ShallowActionSequenceOracle(goldTree);
 				Agenda agenda = Decode.decode(Agenda.initial(sentence), grammar, model, oracle);
-				Candidate highestScoring = agenda.getHighestScoring();
-				Candidate highestScoringCorrect = agenda.getHighestScoringCorrect();
-
-				if (highestScoring != highestScoringCorrect) {
-					model.update(trainingSetSize * i + e, highestScoringCorrect, 1.0);
-					model.update(trainingSetSize * i + e, highestScoring, -1.0);
+				Candidate highestScoring;
+				Candidate highestScoringCorrect;
+				
+				try {
+					highestScoring = agenda.getHighestScoring();
+				} catch (IndexOutOfBoundsException y) {
+					LOGGER.warning("No candidates, can't update");
+					continue;
 				}
+				
+				try {
+					highestScoringCorrect = agenda.getHighestScoringCorrect();
+				} catch (IndexOutOfBoundsException y) {
+					LOGGER.warning("No correct candidates, can't update");
+					continue;
+				}
+				
+				if (highestScoring == highestScoringCorrect) {
+					LOGGER.info("Highest-scoring candidate is correct, no update");
+					continue;
+				}
+
+				model.update(trainingSetSize * i + e, highestScoringCorrect, 1.0);
+				model.update(trainingSetSize * i + e, highestScoring, -1.0);
 			}
 
 			if (outputFilePrefix != null) {
