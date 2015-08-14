@@ -147,9 +147,9 @@ public class Item {
 		Node S2 = stack.get(2, NONE_NODE);
 		Node S3 = stack.get(3, NONE_NODE);
 		Word Q0 = queue.get(0, NONE_WORD);
-		Word Q1 = queue.get(0, NONE_WORD);
-		Word Q2 = queue.get(0, NONE_WORD);
-		Word Q3 = queue.get(0, NONE_WORD);
+		Word Q1 = queue.get(1, NONE_WORD);
+		Word Q2 = queue.get(2, NONE_WORD);
+		Word Q3 = queue.get(3, NONE_WORD);
 		Node S0L = getLeftNonHeadChild(S0);
 		Node S0R = getRightNonHeadChild(S0);
 		Node S0H = getHeadChild(S0);
