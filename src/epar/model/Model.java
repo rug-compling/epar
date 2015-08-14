@@ -55,8 +55,8 @@ public class Model {
 	}
 
 	public void update(Candidate candidate, double delta) {
-		while (candidate != null) {
-			for (String feature : candidate.stateFeatures) {
+		while (candidate.parent != null) {
+			for (String feature : candidate.parent.item.extractFeatures()) {
 				getWeight(feature, candidate.item.action).weight += delta;
 			}
 
