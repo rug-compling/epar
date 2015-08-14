@@ -41,7 +41,7 @@ public class Candidate {
 
 	@Override
 	public String toString() {
-		return item.toString();
+		return item.toString() + "/" + correct;
 	}
 
 }
