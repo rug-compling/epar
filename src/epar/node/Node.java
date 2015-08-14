@@ -83,5 +83,7 @@ public abstract class Node {
 	}
 
 	public abstract List<Action> actionSequence();
+	
+	public abstract List<Node> descendants();
 
 }

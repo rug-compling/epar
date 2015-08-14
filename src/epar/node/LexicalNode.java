@@ -1,6 +1,7 @@
 package epar.node;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import epar.data.Word;
@@ -23,6 +24,11 @@ public class LexicalNode extends Node {
 	public String toString() {
 		return "( " + category + " c " + lexicalHead.pos + " "
 				+ lexicalHead.form + " )";
+	}
+
+	@Override
+	public List<Node> descendants() {
+		return Collections.<Node>singletonList(this);
 	}
 
 }

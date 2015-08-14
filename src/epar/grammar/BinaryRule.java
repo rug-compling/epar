@@ -80,4 +80,44 @@ public class BinaryRule {
 		return rules;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((headPosition == null) ? 0 : headPosition.hashCode());
+		result = prime * result + ((leftChildCategory == null) ? 0 : leftChildCategory.hashCode());
+		result = prime * result + ((parentCategory == null) ? 0 : parentCategory.hashCode());
+		result = prime * result + ((rightChildCategory == null) ? 0 : rightChildCategory.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		BinaryRule other = (BinaryRule) obj;
+		if (headPosition != other.headPosition)
+			return false;
+		if (leftChildCategory == null) {
+			if (other.leftChildCategory != null)
+				return false;
+		} else if (!leftChildCategory.equals(other.leftChildCategory))
+			return false;
+		if (parentCategory == null) {
+			if (other.parentCategory != null)
+				return false;
+		} else if (!parentCategory.equals(other.parentCategory))
+			return false;
+		if (rightChildCategory == null) {
+			if (other.rightChildCategory != null)
+				return false;
+		} else if (!rightChildCategory.equals(other.rightChildCategory))
+			return false;
+		return true;
+	}
+
 }

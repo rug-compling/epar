@@ -1,5 +1,6 @@
 package epar.node;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import epar.data.Word;
@@ -34,6 +35,15 @@ public class BinaryNode extends Node {
 	public String toString() {
 		return "( " + category + " " + rule.headPosition + " " + leftChild
 				+ " " + rightChild + " )";
+	}
+
+	@Override
+	public List<Node> descendants() {
+		List<Node> descendants = new ArrayList<Node>();
+		descendants.add(this);
+		descendants.addAll(leftChild.descendants());
+		descendants.addAll(rightChild.descendants());
+		return descendants;
 	}
 
 }

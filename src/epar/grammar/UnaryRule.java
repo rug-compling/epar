@@ -45,4 +45,35 @@ public class UnaryRule {
 		return rules;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((childCategory == null) ? 0 : childCategory.hashCode());
+		result = prime * result + ((parentCategory == null) ? 0 : parentCategory.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UnaryRule other = (UnaryRule) obj;
+		if (childCategory == null) {
+			if (other.childCategory != null)
+				return false;
+		} else if (!childCategory.equals(other.childCategory))
+			return false;
+		if (parentCategory == null) {
+			if (other.parentCategory != null)
+				return false;
+		} else if (!parentCategory.equals(other.parentCategory))
+			return false;
+		return true;
+	}
+
 }

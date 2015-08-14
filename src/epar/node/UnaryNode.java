@@ -1,5 +1,6 @@
 package epar.node;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import epar.data.Word;
@@ -29,6 +30,14 @@ public class UnaryNode extends Node {
 	@Override
 	public String toString() {
 		return "( " + category + " s " + child + " )"; 
+	}
+
+	@Override
+	public List<Node> descendants() {
+		List<Node> descendants = new ArrayList<Node>();
+		descendants.add(this);
+		descendants.addAll(child.descendants());
+		return descendants;
 	}
 
 }
