@@ -17,21 +17,23 @@ import epar.parser.Candidate;
 
 public class AveragingModel implements Model {
 
-	private final Map<String, Map<Action, AveragingWeight>> weights = new HashMap<String, Map<Action, AveragingWeight>>(18000000);
+	private final Map<String, Map<Action, AveragingWeight>> weights = new HashMap<String, Map<Action, AveragingWeight>>();
 
 	public double score(List<String> stateFeatures, Action action) {
 		double score = 0;
 
 		for (String feature : stateFeatures) {
 			// Either: avoid creating weights that are never updated.
-//			if (!weights.containsKey(feature) || !weights.get(feature).containsKey(action)) {
-//				continue;
-//			}
-//
-//			score += weights.get(feature).get(action).getCurrentValue();
+			if (!weights.containsKey(feature) || !weights.get(feature).containsKey(action)) {
+				continue;
+			}
+
+			score += weights.get(feature).get(action).getCurrentValue();
 			
 			// Or: always create them so we can see all features ever extracted in the model file.
-			score += getWeight(feature, action).getCurrentValue();
+			// But this slows the training process to a crawl around training example 20000 in the
+			// first iterations.
+			//score += getWeight(feature, action).getCurrentValue();
 		}
 
 		return score;
