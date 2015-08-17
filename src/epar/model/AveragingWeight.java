@@ -2,7 +2,7 @@ package epar.model;
 
 public class AveragingWeight {
 
-	private double currentValue;
+	private double currentValue; // TODO could be int
 
 	private int currentStateCount;
 
@@ -27,7 +27,7 @@ public class AveragingWeight {
 		stateCountForAverage = currentStateCount;
 	}
 
-	public void update(int currentStateCount, double delta) {
+	public void update(int currentStateCount, double delta) { // TODO delta could be int
 		updateAverage(currentStateCount);
 		currentValue += delta;
 	}

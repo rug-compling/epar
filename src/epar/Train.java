@@ -63,8 +63,6 @@ public class Train {
 			if (outputFilePrefix != null) {
 				model.saveAveraged((i + 1) * trainingSetSize, new File(outputFilePrefix + "." + (i + 1)));
 			}
-			
-			model.saveSeenFeatures(new File("features.seen." + (i + 1))); // HACK
 		}
 
 		return model;

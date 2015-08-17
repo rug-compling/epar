@@ -9,26 +9,21 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import epar.feature.Feature;
 import epar.parser.Action;
 import epar.parser.Candidate;
 
 public class AveragingModel implements Model {
 
-	private final Map<String, Map<Action, AveragingWeight>> weights = new HashMap<String, Map<Action, AveragingWeight>>();
-	
-	public final Set<String> seenFeatures = new HashSet<String>();
+	private final Map<Feature, Map<Action, AveragingWeight>> weights = new HashMap<Feature, Map<Action, AveragingWeight>>();
 
-	public double score(List<String> stateFeatures, Action action) {
+	public double score(List<Feature> stateFeatures, Action action) {
 		double score = 0;
 
-		for (String feature : stateFeatures) {
-			seenFeatures.add(feature + " " + action);
-			
+		for (Feature feature : stateFeatures) {			
 			// Either: avoid creating weights that are never updated.
 			if (!weights.containsKey(feature) || !weights.get(feature).containsKey(action)) {
 				continue;
@@ -45,7 +40,7 @@ public class AveragingModel implements Model {
 		return score;
 	}
 
-	public AveragingWeight getWeight(String feature, Action action) {
+	public AveragingWeight getWeight(Feature feature, Action action) {
 		Map<Action, AveragingWeight> weightByAction = weights.get(feature);
 
 		if (weightByAction == null) {
@@ -65,7 +60,7 @@ public class AveragingModel implements Model {
 
 	public void update(int currentStateCount, Candidate candidate, double delta) {
 		while (candidate.parent != null) {
-			for (String feature : candidate.parent.item.extractFeatures()) {
+			for (Feature feature : candidate.parent.item.extractFeatures()) {
 				getWeight(feature, candidate.item.action).update(currentStateCount, delta);
 			}
 
@@ -76,7 +71,7 @@ public class AveragingModel implements Model {
 	private List<String> toLines(int currentStateCount) {
 		List<String> result = new ArrayList<String>();
 
-		for (String feature : weights.keySet()) {
+		for (Feature feature : weights.keySet()) {
 			for (Action action : weights.get(feature).keySet()) {
 				double weight = weights.get(feature).get(action).getAveragedValue(currentStateCount);
 
@@ -94,15 +89,6 @@ public class AveragingModel implements Model {
 		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"))) {
 			for (String line : toLines(currentStateCount)) {
 				writer.write(line);
-			}
-		}
-	}
-
-	public void saveSeenFeatures(File file) throws IOException {
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "utf-8"))) {
-			for (String feature : seenFeatures) {
-				writer.write(feature);
-				writer.write("\n");
 			}
 		}
 	}
