@@ -5,6 +5,11 @@ import java.util.List;
 
 import epar.data.Sentence;
 import epar.data.Word;
+import epar.feature.Feature;
+import epar.feature.Feature1;
+import epar.feature.Feature2;
+import epar.feature.Feature3;
+import epar.feature.Feature4;
 import epar.grammar.BinaryRule;
 import epar.grammar.Grammar;
 import epar.node.BinaryNode;
@@ -130,8 +135,8 @@ public class Item {
 		successors.add(new Item(Action.IDLE, stack, queue, true));
 	}
 
-	public List<String> extractFeatures() {
-		List<String> features = new ArrayList<String>();
+	public List<Feature> extractFeatures() {
+		List<Feature> features = new ArrayList<Feature>();
 
 		Node S0 = stack.get(0, NONE_NODE);
 
@@ -331,7 +336,7 @@ public class Item {
 		if (S1R != NONE_NODE) {
 			features.add(f("S1cS1HcS1Rc", S1.category, S1H.category, S1R.category));
 		}
-		
+
 		if (S0R != NONE_NODE && Q0 != NONE_WORD) {
 			features.add(f("S0cS0RcQ0p", S0.category, S0R.category, Q0.pos));
 			features.add(f("S0cS0RcQ0w", S0.category, S0R.category, Q0.form));
@@ -350,20 +355,20 @@ public class Item {
 		return features;
 	}
 
-	private String f(String template, String a) {
-		return template + "(" + a + ")";
+	private Feature f(String template, String a) {
+		return new Feature1(template, a);
 	}
 
-	private String f(String template, String a, String b) {
-		return template + "(" + a + "," + b + ")";
+	private Feature f(String template, String a, String b) {
+		return new Feature2(template, a, b);
 	}
 
-	private String f(String template, String a, String b, String c) {
-		return template + "(" + a + "," + b + "," + c + ")";
+	private Feature f(String template, String a, String b, String c) {
+		return new Feature3(template, a, b, c);
 	}
 
-	private String f(String template, String a, String b, String c, String d) {
-		return template + "(" + a + "," + b + "," + c + "," + d + ")";
+	private Feature f(String template, String a, String b, String c, String d) {
+		return new Feature4(template, a, b, c, d);
 	}
 
 	private Node getLeftNonHeadChild(Node node) {

@@ -1,5 +1,7 @@
 package epar.parser;
 
+import epar.util.StringPool;
+
 public class Action {
 
 	public static final Action INIT = new Action(ActionType.INIT, null);
@@ -93,6 +95,7 @@ public class Action {
 
 	public static Action fromString(String string) {
 		String[] parts = string.split("-", 2);
+		parts[1] = StringPool.get(parts[1]);
 
 		if (parts.length == 1) {
 			ActionType type = ActionType.fromString(string);
