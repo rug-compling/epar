@@ -23,11 +23,15 @@ public class AveragingModel implements Model {
 		double score = 0;
 
 		for (String feature : stateFeatures) {
-			if (!weights.containsKey(feature) || !weights.get(feature).containsKey(action)) {
-				continue;
-			}
-
-			score += weights.get(feature).get(action).getCurrentValue();
+			// Either: avoid creating weights that are never updated.
+//			if (!weights.containsKey(feature) || !weights.get(feature).containsKey(action)) {
+//				continue;
+//			}
+//
+//			score += weights.get(feature).get(action).getCurrentValue();
+			
+			// Or: always create them so we can see all features ever extracted in the model file.
+			score += getWeight(feature, action).getCurrentValue();
 		}
 
 		return score;
