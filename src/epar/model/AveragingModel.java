@@ -17,7 +17,7 @@ import epar.parser.Candidate;
 
 public class AveragingModel implements Model {
 
-	private final Map<String, Map<Action, AveragingWeight>> weights = new HashMap<String, Map<Action, AveragingWeight>>();
+	private final Map<String, Map<Action, AveragingWeight>> weights = new HashMap<String, Map<Action, AveragingWeight>>(18000000);
 
 	public double score(List<String> stateFeatures, Action action) {
 		double score = 0;
@@ -38,21 +38,21 @@ public class AveragingModel implements Model {
 	}
 
 	public AveragingWeight getWeight(String feature, Action action) {
-		Map<Action, AveragingWeight> scoreByAction = weights.get(feature);
+		Map<Action, AveragingWeight> weightByAction = weights.get(feature);
 
-		if (scoreByAction == null) {
-			scoreByAction = new HashMap<Action, AveragingWeight>();
-			weights.put(feature, scoreByAction);
+		if (weightByAction == null) {
+			weightByAction = new HashMap<Action, AveragingWeight>();
+			weights.put(feature, weightByAction);
 		}
 		
-		AveragingWeight score = scoreByAction.get(action);
+		AveragingWeight weight = weightByAction.get(action);
 
-		if (score == null) {
-			score = new AveragingWeight();
-			scoreByAction.put(action, score);
+		if (weight == null) {
+			weight = new AveragingWeight();
+			weightByAction.put(action, weight);
 		}
 
-		return score;
+		return weight;
 	}
 
 	public void update(int currentStateCount, Candidate candidate, double delta) {
