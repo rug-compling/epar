@@ -28,23 +28,24 @@ import epar.parser.Candidate;
 import epar.util.ListUtil;
 import epar.util.Stack;
 import epar.util.StringUtil;
+import java.util.logging.Level;
 
 public class Decode {
 
 	private final static Logger LOGGER = Logger.getLogger(Decode.class.getName());
 
 	public static Agenda decode(Agenda agenda, Grammar grammar, Model model, Oracle oracle) {
-		LOGGER.info("Input beam: " + agenda.getBeam());
+		LOGGER.log(Level.FINE, "Input beam: {0}", agenda.getBeam());
 
 		Agenda nextAgenda = agenda.nextAgenda(grammar, model, oracle);
 
 		if (nextAgenda.noneCorrectWithinBeam()) {
-			LOGGER.info("Early update in generation " + nextAgenda.generation);
+			LOGGER.log(Level.INFO, "Early update in generation {0}", nextAgenda.generation);
 			return nextAgenda;
 		}
 
 		if (nextAgenda.allFinishedWithinBeam()) {
-			LOGGER.info("Parsing finished in generation " + nextAgenda.generation);
+			LOGGER.log(Level.INFO, "Parsing finished in generation {0}", nextAgenda.generation);
 			return nextAgenda;
 		}
 
@@ -75,7 +76,7 @@ public class Decode {
 			final Grammar grammar = Grammar.load(new File(args[1]), new File(args[2]));
 			int numCPUs = Integer.parseInt(args[3]);
 			File outputFile = new File(args[4]);
-			List<File> modelFiles = new ArrayList<File>(args.length - 5);
+			List<File> modelFiles = new ArrayList<>(args.length - 5);
 
 			for (int i = 5; i < args.length; i++) {
 				modelFiles.add(new File(args[i]));
@@ -84,7 +85,7 @@ public class Decode {
 			final Model model = StaticModel.load(modelFiles);
 			final Oracle oracle = new AcceptAllOracle();
 			
-			List<Future<String>> parses = new ArrayList<Future<String>>(inputSentences.size());
+			List<Future<String>> parses = new ArrayList<>(inputSentences.size());
 			ForkJoinPool pool;
 			
 			if (numCPUs <= 0) {
@@ -120,7 +121,7 @@ public class Decode {
 					i++;
 					
 					try {
-						LOGGER.info("At sentence " + i);
+						LOGGER.log(Level.INFO, "At sentence {0}", i);
 						writer.write(parse.get());
 					} catch (InterruptedException | ExecutionException e) {
 						throw e;

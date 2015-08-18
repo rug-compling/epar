@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import epar.node.Node;
 import epar.parser.Action;
 import epar.parser.Item;
+import java.util.logging.Level;
 
 public class ShallowActionSequenceOracle implements Oracle {
 
@@ -16,7 +17,7 @@ public class ShallowActionSequenceOracle implements Oracle {
 	public ShallowActionSequenceOracle(Node goldTree) {
 		List<Action> actions = goldTree.actionSequence();
 		actions.add(Action.FINISH);
-		LOGGER.info("Gold sequence: " + actions);
+		LOGGER.log(Level.FINE, "Gold sequence: {0}", actions);
 		this.goldSequence = actions;
 	}
 

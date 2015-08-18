@@ -13,6 +13,7 @@ import epar.oracle.Oracle;
 import epar.oracle.ShallowActionSequenceOracle;
 import epar.parser.Agenda;
 import epar.parser.Candidate;
+import java.util.logging.Level;
 
 public class Train {
 
@@ -29,7 +30,7 @@ public class Train {
 
 		for (int i = 0; i < numIterations; i++) {
 			for (int e = 0; e < sentences.size(); e++) {
-				LOGGER.info("Training iteration: " + i + ", sentence: " + e);
+				LOGGER.log(Level.INFO, "Training iteration: {0}, sentence: {1}", new Object[]{i, e});
 				Sentence sentence = sentences.get(e);
 				Node goldTree = goldTrees.get(e);
 				Oracle oracle = new ShallowActionSequenceOracle(goldTree);
