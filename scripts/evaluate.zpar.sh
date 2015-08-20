@@ -35,12 +35,12 @@ do
     python scripts/zpar2pipe.py -op $scratch/$1.txt.part.$i >$scratch/$1.pipe.part.$i
     python $scripts/ccg/pipe.py split $scratch/$1.pipe.part.$i $scratch/$1.cat.part.$i $scratch/$1.pipe.fragmented.part.$i
     $candc/bin/generate -j $candc/src/data/ccg/cats $candc/src/data/ccg/cats/markedup $scratch/$1.pipe.fragmented.part.$i >$scratch/$1.ccgbank_deps.part.$i
-    python scripts/mergefragmenteddeps.py $scratch/$1.ccgbank_deps.part.$i $scratch/$1.pipe.fragmented.part.$i $scratch/$1.cat.part.$i >$scratch/$1.ccgbank_deps.formatted.part.$i
+    ./scripts/merge_fragmented_deps $scratch/$1.ccgbank_deps.part.$i $scratch/$1.pipe.fragmented.part.$i $scratch/$1.cat.part.$i >$scratch/$1.ccgbank_deps.formatted.part.$i
     if [ `$candc/bin/generate -T $candc/src/data/ccg/cats/ $candc/src/data/ccg/cats/markedup $scratch/$1.pipe.fragmented.part.$i | grep '__PARSE_FAILED__' | wc -l | cut -d\  -f1` == 0 ]
 #    if [ `wc -w $scratch/$1.ccgbank_deps.formatted.part.$i|cut -d\  -f1` == 0 ] 
     then
       grep ^[^\#] $scratch/$1.ccgbank_deps.formatted.part.$i | cat >>$1.ccgbank_deps
-      cat $scratch/$1.cat.part.$i >>$1.ccgbank_deps
+      ./scripts/merge_fragmented_cats $scratch/$1.cat.part.$i >>$1.ccgbank_deps
     else 
       echo bin/generator failed
       echo '' >>$1.ccgbank_deps
@@ -52,4 +52,5 @@ do
 #    rm $1.ccgbank_deps.formatted.part
   fi
 done
-$candc/src/scripts/ccg/evaluate $2.stagged $2.ccgbank_deps $1.ccgbank_deps
+./scripts/filter_ccgbank_deps $2.stagged $2.ccgbank_deps $1.ccgbank_deps $2.filtered.stagged $2.filtered.ccgbank_deps $1.filtered.ccgbank_deps 
+$candc/src/scripts/ccg/evaluate $2.filtered.stagged $2.filtered.ccgbank_deps $1.filtered.ccgbank_deps > $3.txt

@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+
+"""
+Reads in the reference file and the output file, in both keeps only those
+sentences where the output is nonempty.
+"""
+
+import sys
+import util
+
+try:
+    _, stagged_in, reference_in, output_in, stagged_out, reference_out, output_out = sys.argv
+except ValueError:
+    print('Usage: rofl.py STAGGED REFERENCE OUTPUT STAGGED_FILTERED REFERENCE_FILTERED OUTPUT_FILTERED', file=sys.stderr)
+    sys.exit(1)
+
+with open(stagged_in) as r:
+    line1 = r.readline()
+    assert line1.startswith('#')
+    line2 = r.readline() 
+    assert line2.startswith('#')
+    line3 = r.readline()
+    assert not line3.rstrip()
+    slines = [line1 + line2 + line3] + list(r)
+
+with open(reference_in) as r:
+    rblocks = list(util.blocks(r))
+
+with open(output_in) as o:
+    oblocks = list(util.blocks(o))
+
+print('{} stagged lines read'.format(len(slines)), file=sys.stderr)
+print('{} reference blocks read'.format(len(rblocks)), file=sys.stderr)
+print('{} output blocks read'.format(len(rblocks)), file=sys.stderr)
+
+slines, rblocks, oblocks = zip(*((sline, rblock, oblock) for (sline, rblock, oblock) in zip(slines, rblocks, oblocks) if oblock))
+
+with open(stagged_out, 'w') as s:
+    for sline in slines:
+        s.write(sline)
+
+with open(reference_out, 'w') as r:
+    for rblock in rblocks:
+        r.write(rblock)
+        r.write('\n')
+
+with open(output_out, 'w') as o:
+    for oblock in oblocks:
+        o.write(oblock)
+        o.write('\n')
+
+print('{} stagged lines written'.format(len(slines)), file=sys.stderr)
+print('{} reference blocks written'.format(len(rblocks)), file=sys.stderr)
+print('{} output blocks written'.format(len(rblocks)), file=sys.stderr)

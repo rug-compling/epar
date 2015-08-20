@@ -1,0 +1,15 @@
+#!/usr/bin/env python3
+
+import sys
+
+_, catsfile = sys.argv
+
+tokens = []
+
+with open(catsfile) as f:
+    for line in f:
+        assert line.startswith('<c> ')
+        tokens += line.split()[1:]
+        assert f.readline().rstrip() == ''
+
+print('<c> {}\n'.format(' '.join(tokens)))

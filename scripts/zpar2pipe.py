@@ -109,7 +109,6 @@ class CUnBinarizer(object):
          while True:
              srcnode = binarize.CBinarizedTreeNode()
              nIndex = srcnode.load_list(tokens, nIndex)
-             print '###'
              print pipe.PrintBinarizedTree(srcnode)
              assert nIndex <= len(tokens)
              if nIndex == len(tokens):

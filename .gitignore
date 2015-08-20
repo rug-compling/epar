@@ -2,5 +2,6 @@
 /ext/
 /output/
 /scratch/
-nohup.out
-errors.log
+/nohup.out
+/errors.log
+__pycache__
