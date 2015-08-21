@@ -41,8 +41,12 @@ public class Model {
         int hash = stateHashes[templateID];
         hash = 29 * hash + templateID; // include feature template ID in hash
         hash = 29 * hash + actionHash; // include action
-        hash = hash % WEIGHT_VECTOR_SIZE;
-        return hash;
+        
+        if ((WEIGHT_VECTOR_SIZE & (WEIGHT_VECTOR_SIZE - 1)) == 0) { // check if power of two; evaluated at compile-time
+            return hash & (WEIGHT_VECTOR_SIZE - 1); // positive modulo of a power of two
+        } else {
+            return (hash % WEIGHT_VECTOR_SIZE + WEIGHT_VECTOR_SIZE) % WEIGHT_VECTOR_SIZE; // positive modulo of an arbitrary number
+        }
     }
 
     private void updateAverage(int currentStateCount, int hash) {
