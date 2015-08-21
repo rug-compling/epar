@@ -18,7 +18,7 @@ public class Model {
 
     public static int WEIGHT_VECTOR_SIZE = 268435456; // -> 1 GiB float array
 
-    private final float[] weights = new float[WEIGHT_VECTOR_SIZE];
+    public final float[] weights = new float[WEIGHT_VECTOR_SIZE];
 
     private final float[] sumsForAverage = new float[WEIGHT_VECTOR_SIZE];
 
