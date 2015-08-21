@@ -1,0 +1,1 @@
+( S[dcl] l ( S[dcl] r ( NP s ( N r ( N/N c NNP Ms. ) ( N c NNP Haag ) ) ) ( S[dcl]\NP l ( (S[dcl]\NP)/NP c VBZ plays ) ( NP s ( N c NNP Elianti ) ) ) ) ( . c . . ) )
