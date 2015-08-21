@@ -353,14 +353,11 @@ public class Item {
     }
 
     private static int hash(short a, short b, short c, short d) {
-        // Pack four shorts into two ints, then superimpose these:
+        // Pack four shorts into two ints, then aggregate these in the standard
+        // way.
         int firstInt = (a << 16) | b;
         int secondInt = (c << 16) | d;
-        return firstInt ^ secondInt;
-        // TODO Not sure this is a good idea, the input shorts are typically
-        // small which means that the more significant bits will go unused and
-        // the less significant ones will have many collisions. Better do the
-        // standard hashing?
+        return 29 * firstInt + secondInt;
     }
 
     private Node getLeftNonHeadChild(Node node) {
