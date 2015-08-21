@@ -3,9 +3,9 @@ package epar.parser;
 import java.util.List;
 
 import epar.data.Sentence;
-import epar.feature.Feature;
 import epar.grammar.Grammar;
 import epar.model.Model;
+import epar.model.StateFeatures;
 import epar.oracle.Oracle;
 
 public class Candidate {
@@ -24,7 +24,7 @@ public class Candidate {
 
 	public void findSuccessors(int generation, List<Candidate> successors, Grammar grammar, Model model,
 			Oracle oracle) {
-		List<Feature> stateFeatures = item.extractFeatures();
+		StateFeatures stateFeatures = item.extractFeatures();
 		
 		for (Item successorItem : item.successors(grammar)) {
 			double successorScore = score + model.score(stateFeatures, successorItem.action);

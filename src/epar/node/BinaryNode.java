@@ -15,7 +15,7 @@ public class BinaryNode extends Node {
 
 	public final BinaryRule rule;
 
-	public BinaryNode(String category, Word lexicalHead, Node leftChild,
+	public BinaryNode(short category, Word lexicalHead, Node leftChild,
 			Node rightChild, BinaryRule rule) {
 		super(category, lexicalHead);
 		this.leftChild = leftChild;

@@ -13,7 +13,7 @@ public class UnaryNode extends Node {
 	
 	public final UnaryRule rule;
 
-	public UnaryNode(String category, Word lexicalHead, Node child,
+	public UnaryNode(short category, Word lexicalHead, Node child,
 			UnaryRule rule) {
 		super(category, lexicalHead);
 		this.child = child;

@@ -5,119 +5,115 @@ import java.util.List;
 import java.util.Scanner;
 
 import epar.util.RecUtil;
-import epar.util.StringPool;
+import epar.util.SymbolPool;
+import java.util.Objects;
 
 public class BinaryRule {
-	
-	public static enum HeadPosition {
-		LEFT, RIGHT;
-		
-		@Override
-		public String toString() {
-			if (this == LEFT) {
-				return "l";
-			} else {
-				return "r";
-			}
-		}
-	}
 
-	public final String leftChildCategory;
+    public static enum HeadPosition {
 
-	public final String rightChildCategory;
+        LEFT, RIGHT;
 
-	public final String parentCategory;
+        @Override
+        public String toString() {
+            if (this == LEFT) {
+                return "l";
+            } else {
+                return "r";
+            }
+        }
+    }
 
-	public final BinaryRule.HeadPosition headPosition;
+    public final short leftChildCategory;
 
-	public BinaryRule(String leftChildCategory, String rightChildCategory,
-			String parentCategory, BinaryRule.HeadPosition headPosition) {
-		this.leftChildCategory = leftChildCategory;
-		this.rightChildCategory = rightChildCategory;
-		this.parentCategory = parentCategory;
-		this.headPosition = headPosition;
-	}
+    public final short rightChildCategory;
 
-	public static List<BinaryRule> read(String line) {
-		List<BinaryRule> rules = new ArrayList<BinaryRule>();
-		Scanner scanner = new Scanner(line);
-		String leftChildCategory = StringPool.get(scanner.next());
-		RecUtil.expect(",", scanner);
-		String rightChildCategory = StringPool.get(scanner.next());
-		RecUtil.expect(":", scanner);
-		RecUtil.expect("[", scanner);
+    public final short parentCategory;
 
-		while (true) {
-			RecUtil.expect("REDUCE", scanner);
-			RecUtil.expect("BINARY", scanner);
-			String head = scanner.next();
-			HeadPosition headPosition;
+    public final BinaryRule.HeadPosition headPosition;
 
-			if ("LEFT".equals(head)) {
-				headPosition = HeadPosition.LEFT;
-			} else if ("RIGHT".equals(head)) {
-				headPosition = HeadPosition.RIGHT;
-			} else {
-				scanner.close();
-				throw new RuntimeException("Invalid head position indicator: "
-						+ head);
-			}
+    public BinaryRule(short leftChildCategory, short rightChildCategory,
+            short parentCategory, BinaryRule.HeadPosition headPosition) {
+        this.leftChildCategory = leftChildCategory;
+        this.rightChildCategory = rightChildCategory;
+        this.parentCategory = parentCategory;
+        this.headPosition = headPosition;
+    }
 
-			String parentCategory = StringPool.get(scanner.next());
-			rules.add(new BinaryRule(leftChildCategory, rightChildCategory,
-					parentCategory, headPosition));
+    public static List<BinaryRule> read(String line) {
+        List<BinaryRule> rules = new ArrayList<BinaryRule>();
+        Scanner scanner = new Scanner(line);
+        short leftChildCategory = SymbolPool.get(scanner.next());
+        RecUtil.expect(",", scanner);
+        short rightChildCategory = SymbolPool.get(scanner.next());
+        RecUtil.expect(":", scanner);
+        RecUtil.expect("[", scanner);
 
-			String token = scanner.next();
+        while (true) {
+            RecUtil.expect("REDUCE", scanner);
+            RecUtil.expect("BINARY", scanner);
+            String head = scanner.next();
+            HeadPosition headPosition;
 
-			if ("]".equals(token)) {
-				break;
-			} else {
-				RecUtil.expect(",", token);
-			}
-		}
-		
-		scanner.close();
-		return rules;
-	}
+            if ("LEFT".equals(head)) {
+                headPosition = HeadPosition.LEFT;
+            } else if ("RIGHT".equals(head)) {
+                headPosition = HeadPosition.RIGHT;
+            } else {
+                scanner.close();
+                throw new RuntimeException("Invalid head position indicator: "
+                        + head);
+            }
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((headPosition == null) ? 0 : headPosition.hashCode());
-		result = prime * result + ((leftChildCategory == null) ? 0 : leftChildCategory.hashCode());
-		result = prime * result + ((parentCategory == null) ? 0 : parentCategory.hashCode());
-		result = prime * result + ((rightChildCategory == null) ? 0 : rightChildCategory.hashCode());
-		return result;
-	}
+            short parentCategory = SymbolPool.get(scanner.next());
+            rules.add(new BinaryRule(leftChildCategory, rightChildCategory,
+                    parentCategory, headPosition));
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		BinaryRule other = (BinaryRule) obj;
-		if (headPosition != other.headPosition)
-			return false;
-		if (leftChildCategory == null) {
-			if (other.leftChildCategory != null)
-				return false;
-		} else if (!leftChildCategory.equals(other.leftChildCategory))
-			return false;
-		if (parentCategory == null) {
-			if (other.parentCategory != null)
-				return false;
-		} else if (!parentCategory.equals(other.parentCategory))
-			return false;
-		if (rightChildCategory == null) {
-			if (other.rightChildCategory != null)
-				return false;
-		} else if (!rightChildCategory.equals(other.rightChildCategory))
-			return false;
-		return true;
-	}
+            String token = scanner.next();
+
+            if ("]".equals(token)) {
+                break;
+            } else {
+                RecUtil.expect(",", token);
+            }
+        }
+
+        scanner.close();
+        return rules;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 29 * hash + this.leftChildCategory;
+        hash = 29 * hash + this.rightChildCategory;
+        hash = 29 * hash + this.parentCategory;
+        hash = 29 * hash + Objects.hashCode(this.headPosition);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final BinaryRule other = (BinaryRule) obj;
+        if (this.leftChildCategory != other.leftChildCategory) {
+            return false;
+        }
+        if (this.rightChildCategory != other.rightChildCategory) {
+            return false;
+        }
+        if (this.parentCategory != other.parentCategory) {
+            return false;
+        }
+        if (this.headPosition != other.headPosition) {
+            return false;
+        }
+        return true;
+    }
 
 }
