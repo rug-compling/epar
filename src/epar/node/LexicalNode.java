@@ -6,6 +6,7 @@ import java.util.List;
 
 import epar.data.Word;
 import epar.parser.Action;
+import epar.util.SymbolPool;
 
 public class LexicalNode extends Node {
 
@@ -22,8 +23,8 @@ public class LexicalNode extends Node {
 
     @Override
     public String toString() {
-        return "( " + category + " c " + lexicalHead.pos + " "
-                + lexicalHead.form + " )";
+        return "( " + SymbolPool.getString(category) + " c " + SymbolPool.getString(lexicalHead.pos) + " "
+                + SymbolPool.getString(lexicalHead.form) + " )";
     }
 
     @Override

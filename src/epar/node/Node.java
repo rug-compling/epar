@@ -46,7 +46,7 @@ public abstract class Node {
 
     private static Node readTree(Scanner scanner) {
         RecUtil.expect("(", scanner);
-        short category = SymbolPool.get(scanner.next());
+        short category = SymbolPool.getID(scanner.next());
         String head = scanner.next();
         Node node;
 
@@ -69,8 +69,8 @@ public abstract class Node {
             node = new UnaryNode(category, child.lexicalHead, child,
                     new UnaryRule(child.category, category));
         } else if ("c".equals(head)) {
-            short form = SymbolPool.get(scanner.next());
-            short pos = SymbolPool.get(scanner.next());
+            short form = SymbolPool.getID(scanner.next());
+            short pos = SymbolPool.getID(scanner.next());
             Word word = new Word(form, pos, null); // TODO ugh.
             node = new LexicalNode(category, word);
         } else {

@@ -21,7 +21,7 @@ public class UnaryRule {
     public static List<UnaryRule> read(String line) {
         List<UnaryRule> rules = new ArrayList<>();
         try (Scanner scanner = new Scanner(line)) {
-            short childCategory = SymbolPool.get(scanner.next());
+            short childCategory = SymbolPool.getID(scanner.next());
             RecUtil.expect(":", scanner);
             RecUtil.expect("[", scanner);
 
@@ -29,7 +29,7 @@ public class UnaryRule {
                 RecUtil.expect("REDUCE", scanner);
                 RecUtil.expect("UNARY", scanner);
 
-                short parentCategory = SymbolPool.get(scanner.next());
+                short parentCategory = SymbolPool.getID(scanner.next());
                 rules.add(new UnaryRule(childCategory, parentCategory));
 
                 String token = scanner.next();

@@ -43,9 +43,9 @@ public class BinaryRule {
     public static List<BinaryRule> read(String line) {
         List<BinaryRule> rules = new ArrayList<BinaryRule>();
         Scanner scanner = new Scanner(line);
-        short leftChildCategory = SymbolPool.get(scanner.next());
+        short leftChildCategory = SymbolPool.getID(scanner.next());
         RecUtil.expect(",", scanner);
-        short rightChildCategory = SymbolPool.get(scanner.next());
+        short rightChildCategory = SymbolPool.getID(scanner.next());
         RecUtil.expect(":", scanner);
         RecUtil.expect("[", scanner);
 
@@ -65,7 +65,7 @@ public class BinaryRule {
                         + head);
             }
 
-            short parentCategory = SymbolPool.get(scanner.next());
+            short parentCategory = SymbolPool.getID(scanner.next());
             rules.add(new BinaryRule(leftChildCategory, rightChildCategory,
                     parentCategory, headPosition));
 

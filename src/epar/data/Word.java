@@ -25,11 +25,11 @@ public class Word {
         short pos;
         List<Short> categories;
         try (Scanner scanner = new Scanner(line)) {
-            form = SymbolPool.get(scanner.next());
-            pos = SymbolPool.get(scanner.next());
+            form = SymbolPool.getID(scanner.next());
+            pos = SymbolPool.getID(scanner.next());
             categories = new ArrayList<>();
             while (scanner.hasNext()) {
-                categories.add(SymbolPool.get(scanner.next()));
+                categories.add(SymbolPool.getID(scanner.next()));
             }
         }
         return new Word(form, pos, categories);

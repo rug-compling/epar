@@ -5,19 +5,26 @@ import java.util.Map;
 
 public class SymbolPool {
 
-    private static final Map<String, Short> map = new HashMap<>();
+    private static final Map<String, Short> stringToID = new HashMap<>();
+
+    private static final Map<Short, String> idToString = new HashMap<>();
     
     public static final short NONE = 0;
 
     private static short nextID = 1;
 
-    public static Short get(String string) {
-        if (!map.containsKey(string)) {
-            map.put(string, nextID);
+    public static short getID(String string) {
+        if (!stringToID.containsKey(string)) {
+            stringToID.put(string, nextID);
+            idToString.put(nextID, string);
             return nextID++;
         }
 
-        return map.get(string);
+        return stringToID.get(string);
+    }
+
+    public static String getString(short id) {
+        return idToString.get(id);
     }
 
 }
