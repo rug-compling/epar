@@ -6,7 +6,7 @@ package epar.model;
  */
 public class StateFeatures {
 
-    public static final int NUMBER_OF_TEMPLATES = 48;
+    public static final int NUMBER_OF_TEMPLATES = 64;
 
     // Define an ID for each template. It serves 1) as an index into the array
     // of state feature values of each item and 2) as an ingredient to the
