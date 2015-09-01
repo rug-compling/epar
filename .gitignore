@@ -5,3 +5,6 @@
 /nohup.out
 /errors.log
 __pycache__
+/nbproject/private/
+/build/
+/dist/

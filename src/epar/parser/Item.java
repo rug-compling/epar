@@ -162,100 +162,100 @@ public class Item {
 
         // Group 1
         if (S0 != NONE_NODE) {
-            features.values[StateFeatures.S0wp] = hash(S0.lexicalHead.form, S0.lexicalHead.pos);
-            features.values[StateFeatures.S0wp] = hash(S0.lexicalHead.form, S0.lexicalHead.pos);
-            features.values[StateFeatures.S0c] = hash(S0.category);
-            features.values[StateFeatures.S0pc] = hash(S0.lexicalHead.pos, S0.category);
-            features.values[StateFeatures.S0wc] = hash(S0.lexicalHead.form, S0.category);
+            features.hashes[StateFeatures.S0wp] = hash(S0.lexicalHead.form, S0.lexicalHead.pos);
+            features.hashes[StateFeatures.S0wp] = hash(S0.lexicalHead.form, S0.lexicalHead.pos);
+            features.hashes[StateFeatures.S0c] = hash(S0.category);
+            features.hashes[StateFeatures.S0pc] = hash(S0.lexicalHead.pos, S0.category);
+            features.hashes[StateFeatures.S0wc] = hash(S0.lexicalHead.form, S0.category);
         }
 
         if (S1 != NONE_NODE) {
-            features.values[StateFeatures.S1wp] = hash(S1.lexicalHead.form, S1.lexicalHead.pos);
-            features.values[StateFeatures.S1c] = hash(S1.category);
-            features.values[StateFeatures.S1pc] = hash(S1.lexicalHead.pos, S1.category);
-            features.values[StateFeatures.S1wc] = hash(S1.lexicalHead.form, S1.category);
+            features.hashes[StateFeatures.S1wp] = hash(S1.lexicalHead.form, S1.lexicalHead.pos);
+            features.hashes[StateFeatures.S1c] = hash(S1.category);
+            features.hashes[StateFeatures.S1pc] = hash(S1.lexicalHead.pos, S1.category);
+            features.hashes[StateFeatures.S1wc] = hash(S1.lexicalHead.form, S1.category);
         }
 
         if (S2 != NONE_NODE) {
-            features.values[StateFeatures.S2pc] = hash(S2.lexicalHead.pos, S2.category);
-            features.values[StateFeatures.S2wc] = hash(S2.lexicalHead.form, S2.category);
+            features.hashes[StateFeatures.S2pc] = hash(S2.lexicalHead.pos, S2.category);
+            features.hashes[StateFeatures.S2wc] = hash(S2.lexicalHead.form, S2.category);
         }
 
         if (S3 != NONE_NODE) {
-            features.values[StateFeatures.S3pc] = hash(S3.lexicalHead.pos, S3.category);
-            features.values[StateFeatures.S3wc] = hash(S3.lexicalHead.form, S3.category);
+            features.hashes[StateFeatures.S3pc] = hash(S3.lexicalHead.pos, S3.category);
+            features.hashes[StateFeatures.S3wc] = hash(S3.lexicalHead.form, S3.category);
         }
 
         // Group 2
         if (Q0 != NONE_WORD) {
-            features.values[StateFeatures.Q0wp] = hash(Q0.form, Q0.pos);
+            features.hashes[StateFeatures.Q0wp] = hash(Q0.form, Q0.pos);
         }
 
         if (Q1 != NONE_WORD) {
-            features.values[StateFeatures.Q1wp] = hash(Q1.form, Q1.pos);
+            features.hashes[StateFeatures.Q1wp] = hash(Q1.form, Q1.pos);
         }
 
         if (Q2 != NONE_WORD) {
-            features.values[StateFeatures.Q2wp] = hash(Q2.form, Q2.pos);
+            features.hashes[StateFeatures.Q2wp] = hash(Q2.form, Q2.pos);
         }
 
         if (Q3 != NONE_WORD) {
-            features.values[StateFeatures.Q3wp] = hash(Q3.form, Q3.pos);
+            features.hashes[StateFeatures.Q3wp] = hash(Q3.form, Q3.pos);
         }
 
         // Group 3
         if (S0L != NONE_NODE) {
-            features.values[StateFeatures.S0Lpc] = hash(S0L.lexicalHead.pos, S0L.category);
-            features.values[StateFeatures.S0Lwc] = hash(S0L.lexicalHead.form, S0L.category);
+            features.hashes[StateFeatures.S0Lpc] = hash(S0L.lexicalHead.pos, S0L.category);
+            features.hashes[StateFeatures.S0Lwc] = hash(S0L.lexicalHead.form, S0L.category);
         }
 
         if (S0R != NONE_NODE) {
-            features.values[StateFeatures.S0Rpc] = hash(S0R.lexicalHead.pos, S0R.category);
-            features.values[StateFeatures.S0Rwc] = hash(S0R.lexicalHead.form, S0R.category);
+            features.hashes[StateFeatures.S0Rpc] = hash(S0R.lexicalHead.pos, S0R.category);
+            features.hashes[StateFeatures.S0Rwc] = hash(S0R.lexicalHead.form, S0R.category);
         }
 
         if (S0U != NONE_NODE) {
-            features.values[StateFeatures.S0Upc] = hash(S0U.lexicalHead.pos, S0U.category);
-            features.values[StateFeatures.S0Uwc] = hash(S0U.lexicalHead.form, S0U.category);
+            features.hashes[StateFeatures.S0Upc] = hash(S0U.lexicalHead.pos, S0U.category);
+            features.hashes[StateFeatures.S0Uwc] = hash(S0U.lexicalHead.form, S0U.category);
         }
 
         if (S1L != null) {
-            features.values[StateFeatures.S1Lpc] = hash(S1L.lexicalHead.pos, S1L.category);
-            features.values[StateFeatures.S1Lwc] = hash(S1L.lexicalHead.form, S1L.category);
+            features.hashes[StateFeatures.S1Lpc] = hash(S1L.lexicalHead.pos, S1L.category);
+            features.hashes[StateFeatures.S1Lwc] = hash(S1L.lexicalHead.form, S1L.category);
         }
 
         if (S1R != NONE_NODE) {
-            features.values[StateFeatures.S1Rpc] = hash(S1R.lexicalHead.pos, S1R.category);
-            features.values[StateFeatures.S1Rwc] = hash(S1R.lexicalHead.form, S1R.category);
+            features.hashes[StateFeatures.S1Rpc] = hash(S1R.lexicalHead.pos, S1R.category);
+            features.hashes[StateFeatures.S1Rwc] = hash(S1R.lexicalHead.form, S1R.category);
         }
 
         if (S1U != NONE_NODE) {
-            features.values[StateFeatures.S1Upc] = hash(S1U.lexicalHead.pos, S1U.category);
-            features.values[StateFeatures.S1Uwc] = hash(S1U.lexicalHead.form, S1U.category);
+            features.hashes[StateFeatures.S1Upc] = hash(S1U.lexicalHead.pos, S1U.category);
+            features.hashes[StateFeatures.S1Uwc] = hash(S1U.lexicalHead.form, S1U.category);
         }
 
         // Group 4
         if (S1 != NONE_NODE) {
-            features.values[StateFeatures.S0wcS1wc] = hash(S0.lexicalHead.form, S0.lexicalHead.pos,
+            features.hashes[StateFeatures.S0wcS1wc] = hash(S0.lexicalHead.form, S0.lexicalHead.pos,
                     S1.lexicalHead.form, S1.lexicalHead.pos);
-            features.values[StateFeatures.S0cS1w] = hash(S0.category, S1.lexicalHead.form);
-            features.values[StateFeatures.S0wS1c] = hash(S0.lexicalHead.form, S1.category);
+            features.hashes[StateFeatures.S0cS1w] = hash(S0.category, S1.lexicalHead.form);
+            features.hashes[StateFeatures.S0wS1c] = hash(S0.lexicalHead.form, S1.category);
         }
 
         if (S0 != NONE_NODE && Q0 != NONE_WORD) {
-            features.values[StateFeatures.S0wcQ0wp] = hash(S0.lexicalHead.form, S0.category,
+            features.hashes[StateFeatures.S0wcQ0wp] = hash(S0.lexicalHead.form, S0.category,
                     Q0.form, Q0.pos);
-            features.values[StateFeatures.S0cQ0wp] = hash(S0.category, Q0.form, Q0.pos);
-            features.values[StateFeatures.S0wcQ0p] = hash(S0.lexicalHead.form, S0.category, Q0.pos);
-            features.values[StateFeatures.S0cQ0p] = hash(S0.category, Q0.pos);
+            features.hashes[StateFeatures.S0cQ0wp] = hash(S0.category, Q0.form, Q0.pos);
+            features.hashes[StateFeatures.S0wcQ0p] = hash(S0.lexicalHead.form, S0.category, Q0.pos);
+            features.hashes[StateFeatures.S0cQ0p] = hash(S0.category, Q0.pos);
         }
 
         if (S1 != NONE_NODE && Q0 != NONE_WORD) {
-            features.values[StateFeatures.S1wcQ0wp] = hash(S1.lexicalHead.form, S1.category,
+            features.hashes[StateFeatures.S1wcQ0wp] = hash(S1.lexicalHead.form, S1.category,
                     Q0.form, Q0.pos);
-            features.values[StateFeatures.S1cQ0wp] = hash(S1.category, Q0.form, Q0.pos);
-            features.values[StateFeatures.S1wcQ0p] = hash(S1.lexicalHead.form, S1.category, Q0.pos);
-            features.values[StateFeatures.S1cQ0p] = hash(S1.category, Q0.pos);
+            features.hashes[StateFeatures.S1cQ0wp] = hash(S1.category, Q0.form, Q0.pos);
+            features.hashes[StateFeatures.S1wcQ0p] = hash(S1.lexicalHead.form, S1.category, Q0.pos);
+            features.hashes[StateFeatures.S1cQ0p] = hash(S1.category, Q0.pos);
         }
 
         // Group 5: trigrams
@@ -264,41 +264,41 @@ public class Item {
         // not to word forms.
         // S1 S0 Q0
         if (S0 != null) {
-            features.values[StateFeatures.S0wcS1cQ0p] = hash(S0.lexicalHead.form, S0.category, S1.category, Q0.pos);
+            features.hashes[StateFeatures.S0wcS1cQ0p] = hash(S0.lexicalHead.form, S0.category, S1.category, Q0.pos);
             if (S1 != NONE_NODE) {
-                features.values[StateFeatures.S0cS1wcQ0p] = hash(S0.category, S1.lexicalHead.form, S1.category, Q0.pos);
+                features.hashes[StateFeatures.S0cS1wcQ0p] = hash(S0.category, S1.lexicalHead.form, S1.category, Q0.pos);
             }
             if (Q0 != NONE_WORD) {
-                features.values[StateFeatures.S0cS1cQ0wp] = hash(S0.category, S1.category, Q0.form, Q0.pos);
+                features.hashes[StateFeatures.S0cS1cQ0wp] = hash(S0.category, S1.category, Q0.form, Q0.pos);
             }
-            features.values[StateFeatures.S0cS1cQ0p] = hash(S0.category, S1.category, Q0.pos);
-            features.values[StateFeatures.S0pS1pQ0p] = hash(S0.lexicalHead.pos, S1.lexicalHead.pos, Q0.pos);
+            features.hashes[StateFeatures.S0cS1cQ0p] = hash(S0.category, S1.category, Q0.pos);
+            features.hashes[StateFeatures.S0pS1pQ0p] = hash(S0.lexicalHead.pos, S1.lexicalHead.pos, Q0.pos);
         }
 
         // S0 Q0 Q1
         if (Q0 != NONE_WORD) {
             assert S0 != null;
             if (S0 != NONE_NODE) {
-                features.values[StateFeatures.S0wcQ0pQ1p] = hash(S0.lexicalHead.form, S0.category, Q0.pos, Q1.pos);
+                features.hashes[StateFeatures.S0wcQ0pQ1p] = hash(S0.lexicalHead.form, S0.category, Q0.pos, Q1.pos);
             }
-            features.values[StateFeatures.S0cQ0wpQ1p] = hash(S0.category, Q0.form, Q0.pos, Q1.pos);
+            features.hashes[StateFeatures.S0cQ0wpQ1p] = hash(S0.category, Q0.form, Q0.pos, Q1.pos);
             if (Q1 != NONE_WORD) {
-                features.values[StateFeatures.S0cQ0pQ1wp] = hash(S0.category, Q0.pos, Q1.form, Q1.pos);
+                features.hashes[StateFeatures.S0cQ0pQ1wp] = hash(S0.category, Q0.pos, Q1.form, Q1.pos);
             }
-            features.values[StateFeatures.S0cQ0pQ1p] = hash(S0.category, Q0.pos, Q1.pos);
-            features.values[StateFeatures.S0pQ0pQ1p] = hash(S0.lexicalHead.pos, Q0.pos, Q1.pos);
+            features.hashes[StateFeatures.S0cQ0pQ1p] = hash(S0.category, Q0.pos, Q1.pos);
+            features.hashes[StateFeatures.S0pQ0pQ1p] = hash(S0.lexicalHead.pos, Q0.pos, Q1.pos);
         }
 
         // S2 S1 S0
         if (S1 != NONE_NODE) {
             assert S0 != null;
-            features.values[StateFeatures.S0wcS1cS2c] = hash(S0.lexicalHead.form, S0.category, S1.category, S2.category);
-            features.values[StateFeatures.S0cS1wcS2c] = hash(S0.category, S1.lexicalHead.form, S1.category, S2.category);
+            features.hashes[StateFeatures.S0wcS1cS2c] = hash(S0.lexicalHead.form, S0.category, S1.category, S2.category);
+            features.hashes[StateFeatures.S0cS1wcS2c] = hash(S0.category, S1.lexicalHead.form, S1.category, S2.category);
             if (S2 != NONE_NODE) {
-                features.values[StateFeatures.S0cS1cS2wc] = hash(S0.category, S1.category, S2.lexicalHead.form, S2.category);
+                features.hashes[StateFeatures.S0cS1cS2wc] = hash(S0.category, S1.category, S2.lexicalHead.form, S2.category);
             }
-            features.values[StateFeatures.S0cS1cS2c] = hash(S0.category, S1.category, S2.category);
-            features.values[StateFeatures.S0pS1pS2p] = hash(S0.lexicalHead.pos, S1.lexicalHead.pos,
+            features.hashes[StateFeatures.S0cS1cS2c] = hash(S0.category, S1.category, S2.category);
+            features.hashes[StateFeatures.S0pS1pS2p] = hash(S0.lexicalHead.pos, S1.lexicalHead.pos,
                     S2.lexicalHead.pos);
         }
 
@@ -307,34 +307,34 @@ public class Item {
         // nodes here, is this right?
         if (S0L != NONE_NODE) {
             assert S0 != null;
-            features.values[StateFeatures.S0cS0HcS0Lc] = hash(S0.category, S0H.category, S0L.category);
+            features.hashes[StateFeatures.S0cS0HcS0Lc] = hash(S0.category, S0H.category, S0L.category);
         }
 
         if (S0R != NONE_NODE) {
             assert S0 != null;
-            features.values[StateFeatures.S0cS0HcS0Rc] = hash(S0.category, S0H.category, S0R.category);
+            features.hashes[StateFeatures.S0cS0HcS0Rc] = hash(S0.category, S0H.category, S0R.category);
         }
 
         if (S1R != NONE_NODE) {
-            features.values[StateFeatures.S1cS1HcS1Rc] = hash(S1.category, S1H.category, S1R.category);
+            features.hashes[StateFeatures.S1cS1HcS1Rc] = hash(S1.category, S1H.category, S1R.category);
         }
 
         if (S0R != NONE_NODE && Q0 != NONE_WORD) {
             assert S0 != null;
-            features.values[StateFeatures.S0cS0RcQ0p] = hash(S0.category, S0R.category, Q0.pos);
-            features.values[StateFeatures.S0cS0RcQ0w] = hash(S0.category, S0R.category, Q0.form);
+            features.hashes[StateFeatures.S0cS0RcQ0p] = hash(S0.category, S0R.category, Q0.pos);
+            features.hashes[StateFeatures.S0cS0RcQ0w] = hash(S0.category, S0R.category, Q0.form);
         }
 
         if (S0L != NONE_NODE && S1 != NONE_NODE) {
             assert S0 != null;
-            features.values[StateFeatures.S0cS0LcS1c] = hash(S0.category, S0L.category, S1.category);
-            features.values[StateFeatures.S0cS0LcS1c] = hash(S0.category, S0L.category, S1.lexicalHead.form);
+            features.hashes[StateFeatures.S0cS0LcS1c] = hash(S0.category, S0L.category, S1.category);
+            features.hashes[StateFeatures.S0cS0LcS1c] = hash(S0.category, S0L.category, S1.lexicalHead.form);
         }
 
         if (S1R != NONE_NODE) {
             assert S0 != null;
-            features.values[StateFeatures.S0cS1cS1Rc] = hash(S0.category, S1.category, S1R.category);
-            features.values[StateFeatures.S0wS1cS1Rc] = hash(S0.lexicalHead.form, S1.category, S1R.category);
+            features.hashes[StateFeatures.S0cS1cS1Rc] = hash(S0.category, S1.category, S1R.category);
+            features.hashes[StateFeatures.S0wS1cS1Rc] = hash(S0.lexicalHead.form, S1.category, S1R.category);
         }
 
         return features;
