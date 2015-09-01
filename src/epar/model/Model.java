@@ -13,12 +13,8 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Model {
-
-    private final static Logger LOGGER = Logger.getLogger(Model.class.getName());
 
     public static int WEIGHT_VECTOR_SIZE = 268435456; // -> 1 GiB float array
 
@@ -35,34 +31,29 @@ public class Model {
     }
 
     public void update(int currentStateCount, Candidate candidate, double delta) {
-        int updateCount = 0;
-
-        while (candidate.parent != null) {
-            ActionFeatures actionFeatures = candidate.parent.item.extractFeatures().pairWithAction(candidate.item.action);
+        while (candidate.parent != null) { // Iterate over all steps leading up to the candidate
+            StepFeatures stepFeatures = candidate.parent.item.extractFeatures().pairWithAction(candidate.item.action);
 
             for (int templateID = 0; templateID < StateFeatures.NUMBER_OF_TEMPLATES; templateID++) {
-                int hash = actionFeatures.hashes[templateID];
+                int hash = stepFeatures.hashes[templateID];
 
                 if (hash != 0) {
                     int index = index(hash);
                     updateAverage(currentStateCount, index);
                     weights[index] += delta;
-                    updateCount++;
                 }
             }
 
             candidate = candidate.parent;
         }
-
-        LOGGER.log(Level.FINE, "{0} individual feature updates", updateCount);
     }
 
     public double score(StateFeatures stateFeatures, Action action) {
         double score = 0;
-        ActionFeatures actionFeatures = stateFeatures.pairWithAction(action);
+        StepFeatures stepFeatures = stateFeatures.pairWithAction(action);
 
         for (int templateID = 0; templateID < StateFeatures.NUMBER_OF_TEMPLATES; templateID++) {
-            int hash = actionFeatures.hashes[templateID];
+            int hash = stepFeatures.hashes[templateID];
 
             if (hash != 0) {
                 score += weights[index(hash)];

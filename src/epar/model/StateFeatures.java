@@ -149,8 +149,8 @@ public class StateFeatures {
 
     public final int[] hashes = new int[NUMBER_OF_TEMPLATES];
 
-    public ActionFeatures pairWithAction(Action action) {
-        ActionFeatures result = new ActionFeatures();
+    public StepFeatures pairWithAction(Action action) {
+        StepFeatures result = new StepFeatures();
         int actionHash = action.hashCode();
 
         for (int templateID = 0; templateID < StateFeatures.NUMBER_OF_TEMPLATES; templateID++) {
