@@ -30,9 +30,8 @@ public class Model {
 
     private void updateAverage(int currentStateCount, int index) {
         int missedStates = currentStateCount - stateCountsForAverage[index];
-        sumsForAverage[index] += missedStates * weights[index(index)];
+        sumsForAverage[index] += missedStates * weights[index];
         stateCountsForAverage[index] = currentStateCount;
-
     }
 
     public void update(int currentStateCount, Candidate candidate, double delta) {
