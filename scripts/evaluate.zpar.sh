@@ -30,7 +30,7 @@ do
   if [ `wc -w $scratch/$1.txt.part.$i|cut -d\  -f1` == 0 ] 
   then 
     echo parser failed.
-    echo ''>>$1.ccgbank_deps
+    echo ''>$1.ccgbank_deps.part.$i
   else
     python scripts/zpar2pipe.py -op $scratch/$1.txt.part.$i >$scratch/$1.pipe.part.$i
     python $scripts/ccg/pipe.py split $scratch/$1.pipe.part.$i $scratch/$1.cat.part.$i $scratch/$1.pipe.fragmented.part.$i
@@ -39,18 +39,25 @@ do
     if [ `$candc/bin/generate -T $candc/src/data/ccg/cats/ $candc/src/data/ccg/cats/markedup $scratch/$1.pipe.fragmented.part.$i | grep '__PARSE_FAILED__' | wc -l | cut -d\  -f1` == 0 ]
 #    if [ `wc -w $scratch/$1.ccgbank_deps.formatted.part.$i|cut -d\  -f1` == 0 ] 
     then
-      grep ^[^\#] $scratch/$1.ccgbank_deps.formatted.part.$i | cat >>$1.ccgbank_deps
-      ./scripts/merge_fragmented_cats $scratch/$1.cat.part.$i >>$1.ccgbank_deps
+      grep ^[^\#] $scratch/$1.ccgbank_deps.formatted.part.$i | cat >$1.ccgbank_deps.part.$i
+      ./scripts/merge_fragmented_cats $scratch/$1.cat.part.$i >>$1.ccgbank_deps.part.$i
     else 
       echo bin/generator failed
-      echo '' >>$1.ccgbank_deps
+      echo '' >$1.ccgbank_deps.part.$i
     fi
 #    rm $1.cat.part
 #    rm $1.ccgbank_deps.part
 #    rm $1.pipe.part
 #    rm $1.pipe.fragmented.part
 #    rm $1.ccgbank_deps.formatted.part
-  fi
+  fi &
 done
+
+for i in `seq 1 $count`;
+do
+  cat $1.ccgbank_deps.part.$i >> $1.ccgbank_deps
+  rm $1.ccgbank_deps.part.$i
+done
+
 ./scripts/filter_ccgbank_deps $2.stagged $2.ccgbank_deps $1.ccgbank_deps $2.filtered.stagged $2.filtered.ccgbank_deps $1.filtered.ccgbank_deps 
 $candc/src/scripts/ccg/evaluate $2.filtered.stagged $2.filtered.ccgbank_deps $1.filtered.ccgbank_deps > $3.txt
