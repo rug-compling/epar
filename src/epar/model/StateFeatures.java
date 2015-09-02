@@ -151,7 +151,6 @@ public class StateFeatures {
 
     public StepFeatures pairWithAction(Action action) {
         StepFeatures result = new StepFeatures();
-        int actionHash = action.hashCode();
 
         for (int templateID = 0; templateID < StateFeatures.NUMBER_OF_TEMPLATES; templateID++) {
             int featureHash = hashes[templateID];
@@ -162,7 +161,8 @@ public class StateFeatures {
             }
 
             featureHash = 29 * featureHash + templateID; // include feature template ID in hash
-            featureHash = 29 * featureHash + actionHash; // include action
+            featureHash = 29 * featureHash + action.type; // include action
+            featureHash = 20 * featureHash + action.category;
             result.hashes[templateID] = featureHash;
         }
 
