@@ -13,8 +13,12 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Model {
+
+    private final static Logger LOGGER = Logger.getLogger(Model.class.getName());
 
     public static int WEIGHT_VECTOR_SIZE = 268435456; // -> 1 GiB float array
 
@@ -88,8 +92,9 @@ public class Model {
     /**
      * Modulo the signed hash into an unsigned index within the range of the
      * weight vector.
+     *
      * @param hash
-     * @return 
+     * @return
      */
     private int index(int hash) {
         if ((WEIGHT_VECTOR_SIZE & (WEIGHT_VECTOR_SIZE - 1)) == 0) { // check if power of two; evaluated at compile-time
