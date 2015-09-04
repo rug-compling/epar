@@ -22,6 +22,14 @@ public class BinaryRule {
                 return "r";
             }
         }
+
+        public HeadPosition flip() {
+            if (this == LEFT) {
+                return RIGHT;
+            } else {
+                return LEFT;
+            }
+        }
     }
 
     public final short leftChildCategory;
