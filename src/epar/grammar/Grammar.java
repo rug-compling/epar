@@ -20,6 +20,7 @@ import epar.grammar.BinaryRule.HeadPosition;
 import epar.node.BinaryNode;
 import epar.node.Node;
 import epar.node.UnaryNode;
+import epar.util.SymbolPool;
 
 public class Grammar {
 
@@ -47,21 +48,44 @@ public class Grammar {
         return binaryRulesMap.get(leftChildCategory).get(rightChildCategory);
     }
 
-    private Grammar() {
+    /**
+     * Creates a grammar initially containing no rules.
+     */
+    public Grammar() {
         unaryRulesMap = new HashMap<>();
         binaryRulesMap = new HashMap<>();
     }
 
-    public Grammar(List<UnaryRule> unaryRules, List<BinaryRule> binaryRules) {
-        this();
+    public void add(UnaryRule rule) {
+        getUnaryRules(rule.childCategory).add(rule);
+    }
 
-        for (UnaryRule rule : unaryRules) {
-            getUnaryRules(rule.childCategory).add(rule);
+    public void add(BinaryRule rule) {
+        getBinaryRules(rule.leftChildCategory, rule.rightChildCategory).add(rule);
+    }
+    
+    public List<UnaryRule> getUnaryRules() {
+        List<UnaryRule> rules = new ArrayList<>();
+        
+        for (short childCategory : unaryRulesMap.keySet()) {
+            rules.addAll(unaryRulesMap.get(childCategory));
         }
-
-        for (BinaryRule rule : binaryRules) {
-            getBinaryRules(rule.leftChildCategory, rule.rightChildCategory).add(rule);
+        
+        return rules;
+    }
+    
+    public List<BinaryRule> getBinaryRules() {
+        List<BinaryRule> rules = new ArrayList<>();
+        
+        for (short leftChildCategory : binaryRulesMap.keySet()) {
+            Map<Short, List<BinaryRule>> map = binaryRulesMap.get(leftChildCategory);
+            
+            for (short rightChildCategory : map.keySet()) {
+                rules.addAll(map.get(rightChildCategory));
+            }
         }
+        
+        return rules;
     }
 
     public List<Node> unary(Node child) {
@@ -141,22 +165,25 @@ public class Grammar {
     }
 
     public static Grammar load(File binaryFile, File unaryFile) throws FileNotFoundException {
-        List<BinaryRule> binaryRules = new ArrayList<>();
-        List<UnaryRule> unaryRules = new ArrayList<>();
+        Grammar grammar = new Grammar();
 
         try (Scanner scanner = new Scanner(binaryFile, "utf-8")) {
             while (scanner.hasNextLine()) {
-                binaryRules.addAll(BinaryRule.read(scanner.nextLine()));
+                for (BinaryRule rule : BinaryRule.read(scanner.nextLine())) {
+                    grammar.add(rule);
+                }
             }
         }
 
         try (Scanner scanner = new Scanner(unaryFile, "utf-8")) {
             while (scanner.hasNextLine()) {
-                unaryRules.addAll(UnaryRule.read(scanner.nextLine()));
+                for (UnaryRule rule : UnaryRule.read(scanner.nextLine())) {
+                    grammar.add(rule);
+                }
             }
         }
 
-        return new Grammar(unaryRules, binaryRules);
+        return grammar;
     }
 
     public void save(File binaryFile, File unaryFile)
@@ -178,20 +205,20 @@ public class Grammar {
     }
 
     private void writeBinaryRules(Writer writer, List<BinaryRule> rules) throws IOException {
-        writer.write(rules.get(0).leftChildCategory);
+        writer.write(SymbolPool.getString(rules.get(0).leftChildCategory));
         writer.write(" , ");
-        writer.write(rules.get(0).rightChildCategory);
+        writer.write(SymbolPool.getString(rules.get(0).rightChildCategory));
         writer.write(" : [ REDUCE BINARY ");
         writeHeadPosition(writer, rules.get(0).headPosition);
         writer.write(" ");
-        writer.write(rules.get(0).parentCategory);
+        writer.write(SymbolPool.getString(rules.get(0).parentCategory));
         writer.write(" ");
 
         for (BinaryRule rule : rules.subList(1, rules.size())) {
             writer.write(", REDUCE BINARY ");
             writeHeadPosition(writer, rule.headPosition);
             writer.write(" ");
-            writer.write(rule.parentCategory);
+            writer.write(SymbolPool.getString(rule.parentCategory));
             writer.write(" ");
         }
 
@@ -207,14 +234,14 @@ public class Grammar {
     }
 
     private void writeUnaryRules(Writer writer, List<UnaryRule> rules) throws IOException {
-        writer.write(rules.get(0).childCategory);
+        writer.write(SymbolPool.getString(rules.get(0).childCategory));
         writer.write(" : [ REDUCE UNARY ");
-        writer.write(rules.get(0).parentCategory);
+        writer.write(SymbolPool.getString(rules.get(0).parentCategory));
         writer.write(" ");
 
         for (UnaryRule rule : rules.subList(1, rules.size())) {
             writer.write(", REDUCE UNARY ");
-            writer.write(rule.parentCategory);
+            writer.write(SymbolPool.getString(rule.parentCategory));
             writer.write(" ");
         }
 
