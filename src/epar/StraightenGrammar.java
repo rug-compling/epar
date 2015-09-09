@@ -25,16 +25,16 @@ public class StraightenGrammar {
             Grammar grammarOut = new Grammar();
 
             for (BinaryRule rule : grammarIn.getBinaryRules()) {
-                short leftCat = SymbolPool.getID(SymbolPool.getString(rule.leftChildCategory).replace('\\', '|').replace('/', '|'));
-                short rightCat = SymbolPool.getID(SymbolPool.getString(rule.rightChildCategory).replace('\\', '|').replace('/', '|'));
-                short parentCat = SymbolPool.getID(SymbolPool.getString(rule.parentCategory).replace('\\', '|').replace('/', '|'));
+                short leftCat = SymbolPool.getID(SymbolPool.getString(rule.leftChildCategory).replace('\\', '/'));
+                short rightCat = SymbolPool.getID(SymbolPool.getString(rule.rightChildCategory).replace('\\', '/'));
+                short parentCat = SymbolPool.getID(SymbolPool.getString(rule.parentCategory).replace('\\', '/'));
                 grammarOut.add(new BinaryRule(leftCat, rightCat, parentCat, rule.headPosition));
                 grammarOut.add(new BinaryRule(rightCat, leftCat, parentCat, rule.headPosition.flip()));
             }
 
             for (UnaryRule rule : grammarIn.getUnaryRules()) {
-                short childCat = SymbolPool.getID(SymbolPool.getString(rule.childCategory).replace('\\', '|').replace('/', '|'));
-                short parentCat = SymbolPool.getID(SymbolPool.getString(rule.parentCategory).replace('\\', '|').replace('/', '|'));
+                short childCat = SymbolPool.getID(SymbolPool.getString(rule.childCategory).replace('\\', '/'));
+                short parentCat = SymbolPool.getID(SymbolPool.getString(rule.parentCategory).replace('\\', '/'));
                 grammarOut.add(new UnaryRule(childCat, parentCat));
             }
 
