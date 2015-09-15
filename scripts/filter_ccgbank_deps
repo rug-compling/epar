@@ -11,7 +11,7 @@ import util
 try:
     _, stagged_in, reference_in, output_in, stagged_out, reference_out, output_out = sys.argv
 except ValueError:
-    print('Usage: rofl.py STAGGED REFERENCE OUTPUT STAGGED_FILTERED REFERENCE_FILTERED OUTPUT_FILTERED', file=sys.stderr)
+    print('Usage: filter_ccgbank_deps STAGGED REFERENCE OUTPUT STAGGED_FILTERED REFERENCE_FILTERED OUTPUT_FILTERED', file=sys.stderr)
     sys.exit(1)
 
 with open(stagged_in) as r:
