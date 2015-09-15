@@ -48,6 +48,10 @@ public class BinaryRule {
         this.headPosition = headPosition;
     }
 
+    public BinaryRule flip() {
+        return new BinaryRule(rightChildCategory, leftChildCategory, parentCategory, headPosition.flip());
+    }
+
     public static List<BinaryRule> read(String line) {
         List<BinaryRule> rules = new ArrayList<BinaryRule>();
         Scanner scanner = new Scanner(line);

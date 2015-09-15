@@ -57,34 +57,42 @@ public class Grammar {
     }
 
     public void add(UnaryRule rule) {
-        getUnaryRules(rule.childCategory).add(rule);
+        List<UnaryRule> rules = getUnaryRules(rule.childCategory);
+
+        if (!rules.contains(rule)) {
+            rules.add(rule);
+        }
     }
 
     public void add(BinaryRule rule) {
-        getBinaryRules(rule.leftChildCategory, rule.rightChildCategory).add(rule);
+        List<BinaryRule> rules = getBinaryRules(rule.leftChildCategory, rule.rightChildCategory);
+
+        if (!rules.contains(rule)) {
+            rules.add(rule);
+        }
     }
-    
+
     public List<UnaryRule> getUnaryRules() {
         List<UnaryRule> rules = new ArrayList<>();
-        
+
         for (short childCategory : unaryRulesMap.keySet()) {
             rules.addAll(unaryRulesMap.get(childCategory));
         }
-        
+
         return rules;
     }
-    
+
     public List<BinaryRule> getBinaryRules() {
         List<BinaryRule> rules = new ArrayList<>();
-        
+
         for (short leftChildCategory : binaryRulesMap.keySet()) {
             Map<Short, List<BinaryRule>> map = binaryRulesMap.get(leftChildCategory);
-            
+
             for (short rightChildCategory : map.keySet()) {
                 rules.addAll(map.get(rightChildCategory));
             }
         }
-        
+
         return rules;
     }
 
@@ -149,17 +157,11 @@ public class Grammar {
                 BinaryNode binaryNode = (BinaryNode) node;
                 List<BinaryRule> rules = getBinaryRules(binaryNode.rule.leftChildCategory,
                         binaryNode.rule.rightChildCategory);
-
-                if (!rules.contains(binaryNode.rule)) {
-                    rules.add(binaryNode.rule);
-                }
+                add(binaryNode.rule);
             } else if (node instanceof UnaryNode) {
                 UnaryNode unaryNode = (UnaryNode) node;
                 List<UnaryRule> rules = getUnaryRules(unaryNode.rule.childCategory);
-
-                if (!rules.contains(unaryNode.rule)) {
-                    rules.add(unaryNode.rule);
-                }
+                add(unaryNode.rule);
             }
         }
     }
