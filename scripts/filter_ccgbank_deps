@@ -1,18 +1,23 @@
 #!/usr/bin/env python3
 
 """
-Reads in the reference file and the output file, in both keeps only those
-sentences where the output is nonempty.
+Reads in the reference file and output files, in all keeps only those
+sentences where the output in all output files is nonempty.
 """
 
 import sys
 import util
 
-try:
-    _, stagged_in, reference_in, output_in, stagged_out, reference_out, output_out = sys.argv
-except ValueError:
-    print('Usage: filter_ccgbank_deps STAGGED REFERENCE OUTPUT STAGGED_FILTERED REFERENCE_FILTERED OUTPUT_FILTERED', file=sys.stderr)
+if len(sys.argv[1:]) < 6 or not len(sys.argv[1:]) % 2 == 0:
+    print('Usage: filter_ccgbank_deps STAGGED REFERENCE OUTPUT1 OUTPUT2 ... STAGGED_FILTERED REFERENCE_FILTERED OUTPUT1_FILTERED OUTPUT2_FILTERED ...', file=sys.stderr)
     sys.exit(1)
+
+number_of_outputs = int((len(sys.argv[1:]) - 4) / 2)
+print('{} outputs'.format(number_of_outputs), file=sys.stderr)
+stagged_in, reference_in = sys.argv[1:3]
+outputs_in = sys.argv[3:3 + number_of_outputs]
+stagged_out, reference_out = sys.argv[3 + number_of_outputs:3 + number_of_outputs + 2]
+outputs_out = sys.argv[3 + number_of_outputs + 2:]
 
 with open(stagged_in) as r:
     line1 = r.readline()
@@ -26,14 +31,29 @@ with open(stagged_in) as r:
 with open(reference_in) as r:
     rblocks = list(util.blocks(r))
 
-with open(output_in) as o:
-    oblocks = list(util.blocks(o))
+oblockss = []
+
+for output_in in outputs_in:
+    with open(output_in) as o:
+        oblockss.append(list(util.blocks(o)))
 
 print('{} stagged lines read'.format(len(slines)), file=sys.stderr)
 print('{} reference blocks read'.format(len(rblocks)), file=sys.stderr)
-print('{} output blocks read'.format(len(rblocks)), file=sys.stderr)
+assert len(slines) == len(rblocks)
+for oblocks in oblockss:
+    print('{} output blocks read'.format(len(oblocks)), file=sys.stderr)
+    assert len(oblocks) == len(rblocks)
 
-slines, rblocks, oblocks = zip(*((sline, rblock, oblock) for (sline, rblock, oblock) in zip(slines, rblocks, oblocks) if oblock))
+num_deleted = 0
+
+for i in range(len(rblocks)):
+    if not all([oblocks[i - num_deleted] for oblocks in oblockss]): # check if all output blocks for this sentence are nonempty
+        # Remove the failed sentence from stagged, reference and all outputs:
+        del slines[i - num_deleted]
+        del rblocks[i - num_deleted]
+        for oblocks in oblockss:
+            del oblocks[i - num_deleted]
+        num_deleted += 1
 
 with open(stagged_out, 'w') as s:
     for sline in slines:
@@ -44,11 +64,15 @@ with open(reference_out, 'w') as r:
         r.write(rblock)
         r.write('\n')
 
-with open(output_out, 'w') as o:
-    for oblock in oblocks:
-        o.write(oblock)
-        o.write('\n')
+for oblocks, output_out in zip(oblockss, outputs_out):
+    with open(output_out, 'w') as o:
+        for oblock in oblocks:
+            o.write(oblock)
+            o.write('\n')
 
 print('{} stagged lines written'.format(len(slines)), file=sys.stderr)
 print('{} reference blocks written'.format(len(rblocks)), file=sys.stderr)
-print('{} output blocks written'.format(len(rblocks)), file=sys.stderr)
+assert len(slines) == len(rblocks)
+for oblocks in oblockss:
+    print('{} output blocks written'.format(len(oblocks)), file=sys.stderr)
+    assert len(oblocks) == len(rblocks)
