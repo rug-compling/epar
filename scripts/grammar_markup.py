@@ -21,13 +21,13 @@ grammar_in = grammar.load(binary_in, unary_in)
 grammar_out = grammar.Grammar()
 
 for (left_cat, right_cat), action in grammar_in.get_binary_rules():
-    left_cat = markup.markup(left_cat)
-    right_cat = markup.markup(right_cat)
+    left_cat = markup.markup(left_cat, lambda cat: cat)
+    right_cat = markup.markup(right_cat, lambda cat: cat)
     action = action_markup(action)
     grammar_out.add_binary_rule(left_cat, right_cat, action)
 
 for daughter_cat, action in grammar_in.get_unary_rules():
-    daughter_cat = markup.markup(daughter_cat)
+    daughter_cat = markup.markup(daughter_cat, lambda cat: cat)
     action = action_markup(action)
     grammar_out.add_unary_rule(daughter_cat, action)
 
