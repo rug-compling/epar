@@ -70,8 +70,8 @@ public abstract class Node {
             node = new UnaryNode(category, child.lexicalHead, child,
                     new UnaryRule(child.category, category));
         } else if ("c".equals(head)) {
-            short form = SymbolPool.getID(scanner.next());
             short pos = SymbolPool.getID(scanner.next());
+            short form = SymbolPool.getID(scanner.next());
             Word word = new Word(form, pos, null); // TODO ugh.
             node = new LexicalNode(category, word);
         } else {
