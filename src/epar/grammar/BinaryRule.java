@@ -14,6 +14,10 @@ public class BinaryRule {
 
         LEFT, RIGHT;
 
+        /**
+         * String representation as used in ZPar trees
+         * @return @code{@code "l"} or {@code "r"}
+         */
         @Override
         public String toString() {
             if (this == LEFT) {
@@ -28,6 +32,18 @@ public class BinaryRule {
                 return RIGHT;
             } else {
                 return LEFT;
+            }
+        }
+
+        /**
+         * String representation as used in ZPar grammars
+         * @return @code{@code "LEFT"} or {@code "RIGHT"}
+         */
+        private String toActionString() {
+            if (this == LEFT) {
+                return "LEFT";
+            } else {
+                return "RIGHT";
             }
         }
     }
@@ -136,7 +152,7 @@ public class BinaryRule {
 
     @Override
     public String toString() {
-        return SymbolPool.getString(parentCategory) + " -> " + SymbolPool.getString(leftChildCategory) + " " + SymbolPool.getString(rightChildCategory);
+        return SymbolPool.getString(leftChildCategory) + " " + SymbolPool.getString(rightChildCategory) + " : REDUCE BINARY " + headPosition.toActionString() + " " + SymbolPool.getString(parentCategory);
     }
 
 }

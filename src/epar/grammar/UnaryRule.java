@@ -77,7 +77,7 @@ public class UnaryRule {
 
     @Override
     public String toString() {
-        return SymbolPool.getString(parentCategory) + " -> " + SymbolPool.getString(childCategory);
+        return SymbolPool.getString(childCategory) + " : REDUCE UNARY " + SymbolPool.getString(parentCategory);
     }
 
 }
