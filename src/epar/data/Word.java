@@ -24,6 +24,7 @@ public class Word {
         short form;
         short pos;
         List<Short> categories;
+        
         try (Scanner scanner = new Scanner(line)) {
             form = SymbolPool.getID(scanner.next());
             pos = SymbolPool.getID(scanner.next());
@@ -32,6 +33,7 @@ public class Word {
                 categories.add(SymbolPool.getID(scanner.next()));
             }
         }
+        
         return new Word(form, pos, categories);
     }
 

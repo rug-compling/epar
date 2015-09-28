@@ -252,14 +252,14 @@ public class Grammar {
     }
 
     /**
-     * Rewrite the tree with straight categories according to this grammar
-     * with leaning categories. In its current form, this is almost useless
-     * because it accepts only bijective mappings between rules, which is not
-     * the case in practical grammars. Not sure there is a good way to fix
-     * this.
+     * Rewrite the tree with straight categories according to this grammar with
+     * leaning categories. In its current form, this is almost useless because
+     * it accepts only bijective mappings between rules, which is not the case
+     * in practical grammars. Not sure there is a good way to fix this.
+     *
      * @param node
      * @param cat
-     * @return 
+     * @return
      */
     public Node regrammaticalize(Node node, Short cat) {
         return node.regrammaticalize(cat, this);
