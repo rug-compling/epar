@@ -83,7 +83,7 @@ public abstract class Node {
         return node;
     }
 
-    public abstract List<Action> actionSequence();
+    public abstract List<Action> actionSequence(Grammar grammar);
 
     public abstract List<Node> descendants();
 

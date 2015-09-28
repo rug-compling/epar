@@ -24,8 +24,12 @@ public class UnaryNode extends Node {
     }
 
     @Override
-    public List<Action> actionSequence() {
-        List<Action> actions = child.actionSequence();
+    public List<Action> actionSequence(Grammar grammar) {
+        if (!grammar.contains(rule)) {
+            throw new IllegalArgumentException("No action sequence for " + this + " according to " + grammar + " because of missing rule " + rule);
+        }
+        
+        List<Action> actions = child.actionSequence(grammar);
         actions.add(Action.unary(category));
         return actions;
     }

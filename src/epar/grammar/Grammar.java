@@ -264,4 +264,12 @@ public class Grammar {
     public Node regrammaticalize(Node node, Short cat) {
         return node.regrammaticalize(cat, this);
     }
+
+    public boolean contains(BinaryRule rule) {
+        return getBinaryRules(rule.leftChildCategory, rule.rightChildCategory).contains(rule);
+    }
+
+    public boolean contains(UnaryRule rule) {
+        return getUnaryRules(rule.childCategory).contains(rule);
+    }
 }

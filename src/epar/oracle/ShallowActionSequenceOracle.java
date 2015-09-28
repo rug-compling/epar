@@ -1,5 +1,6 @@
 package epar.oracle;
 
+import epar.grammar.Grammar;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,8 +15,8 @@ public class ShallowActionSequenceOracle implements Oracle {
 
 	private final List<Action> goldSequence;
 	
-	public ShallowActionSequenceOracle(Node goldTree) {
-		List<Action> actions = goldTree.actionSequence();
+	public ShallowActionSequenceOracle(Node goldTree, Grammar grammar) {
+		List<Action> actions = goldTree.actionSequence(grammar);
 		actions.add(Action.FINISH);
 		LOGGER.log(Level.FINE, "Gold sequence: {0}", actions);
 		this.goldSequence = actions;

@@ -33,7 +33,7 @@ public class Train {
                 LOGGER.log(Level.INFO, "Training iteration: {0}, sentence: {1}", new Object[]{i, e});
                 Sentence sentence = sentences.get(e);
                 Node goldTree = goldTrees.get(e);
-                Oracle oracle = new ShallowActionSequenceOracle(goldTree);
+                Oracle oracle = new ShallowActionSequenceOracle(goldTree, grammar);
                 Agenda agenda = Decode.decode(Agenda.initial(sentence), grammar, model, oracle);
                 Candidate highestScoring;
                 Candidate highestScoringCorrect;

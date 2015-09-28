@@ -26,9 +26,13 @@ public class BinaryNode extends Node {
     }
 
     @Override
-    public List<Action> actionSequence() {
-        List<Action> actions = leftChild.actionSequence();
-        actions.addAll(rightChild.actionSequence());
+    public List<Action> actionSequence(Grammar grammar) {
+        if (!grammar.contains(rule)) {
+            throw new IllegalArgumentException("No action sequence for " + this + " according to " + grammar + " because of missing rule " + rule);
+        }
+
+        List<Action> actions = leftChild.actionSequence(grammar);
+        actions.addAll(rightChild.actionSequence(grammar));
         actions.add(Action.binary(category));
         return actions;
     }
