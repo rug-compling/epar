@@ -8,6 +8,7 @@ import epar.grammar.Grammar;
 import epar.grammar.UnaryRule;
 import epar.util.SymbolPool;
 
+// TODO port this to Python
 public class StraightenGrammarNoConj {
 
     public static void main(String[] args) {

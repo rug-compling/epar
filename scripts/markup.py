@@ -1,3 +1,14 @@
+cached_mapping = None
+
+def markup(cat, default=lambda cat: '__MISSING__'):
+    global cached_mapping
+    if cached_mapping is None:
+        cached_mapping = mapping()
+    try:
+        return cached_mapping[cat]
+    except KeyError:
+        return default(cat)
+
 def mapping():
     mapping = {}
     with open('ext/candc/src/data/ccg/cats/markedup') as f:
