@@ -18,6 +18,11 @@ public class UnaryRule {
         this.parentCategory = parentCategory;
     }
 
+    public UnaryRule straighten() {
+        return new UnaryRule(SymbolPool.straighten(childCategory), SymbolPool.straighten(parentCategory
+        ));
+    }
+
     public static List<UnaryRule> read(String line) {
         List<UnaryRule> rules = new ArrayList<>();
         try (Scanner scanner = new Scanner(line)) {
@@ -68,6 +73,11 @@ public class UnaryRule {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return SymbolPool.getString(parentCategory) + " -> " + SymbolPool.getString(childCategory);
     }
 
 }

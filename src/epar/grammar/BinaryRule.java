@@ -48,6 +48,12 @@ public class BinaryRule {
         this.headPosition = headPosition;
     }
 
+    public BinaryRule straighten() {
+        return new BinaryRule(SymbolPool.straighten(leftChildCategory),
+                SymbolPool.straighten(rightChildCategory), SymbolPool.straighten(parentCategory),
+                headPosition);
+    }
+
     public BinaryRule flip() {
         return new BinaryRule(rightChildCategory, leftChildCategory, parentCategory, headPosition.flip());
     }
@@ -126,6 +132,11 @@ public class BinaryRule {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return SymbolPool.getString(parentCategory) + " -> " + SymbolPool.getString(leftChildCategory) + " " + SymbolPool.getString(rightChildCategory);
     }
 
 }

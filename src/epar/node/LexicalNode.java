@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import epar.data.Word;
+import epar.grammar.Grammar;
 import epar.parser.Action;
 import epar.util.SymbolPool;
 
@@ -30,6 +31,15 @@ public class LexicalNode extends Node {
     @Override
     public List<Node> descendants() {
         return Collections.<Node>singletonList(this);
+    }
+
+    @Override
+    public Node regrammaticalize(Short cat, Grammar grammar) {
+        if (cat == null) {
+            throw new IllegalArgumentException("Cannot regrammaticalize " + this + " without knowing the category");
+        }
+
+        return new LexicalNode(cat, lexicalHead);
     }
 
 }

@@ -18,6 +18,7 @@ import java.util.Scanner;
 import epar.data.Word;
 import epar.grammar.BinaryRule.HeadPosition;
 import epar.node.BinaryNode;
+import epar.node.LexicalNode;
 import epar.node.Node;
 import epar.node.UnaryNode;
 import epar.util.SymbolPool;
@@ -248,5 +249,19 @@ public class Grammar {
         }
 
         writer.write("]\n");
+    }
+
+    /**
+     * Rewrite the tree with straight categories according to this grammar
+     * with leaning categories. In its current form, this is almost useless
+     * because it accepts only bijective mappings between rules, which is not
+     * the case in practical grammars. Not sure there is a good way to fix
+     * this.
+     * @param node
+     * @param cat
+     * @return 
+     */
+    public Node regrammaticalize(Node node, Short cat) {
+        return node.regrammaticalize(cat, this);
     }
 }

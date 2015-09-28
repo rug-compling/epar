@@ -26,5 +26,9 @@ public class SymbolPool {
     public static String getString(short id) {
         return idToString.get(id);
     }
+    
+    public static short straighten(short originalCategory) {
+        return SymbolPool.getID(SymbolPool.getString(originalCategory).replace('\\', '/'));
+    }
 
 }
