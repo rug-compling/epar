@@ -3,9 +3,11 @@
 import re
 import sys
 
+MARKUP = re.compile(r'<[0-9]>|\{[A-Z_]\*?\}|\[X\]')
+
 def remove_markup(cat):
     length = len(cat)
-    cat = re.sub(r'<\d+>|{[A-Z_]+}', '', cat)
+    cat = MARKUP.sub('', cat)
     # Compare length to see if anything was removed: if there was markup, then
     # there is also an extra pair of parentheses around the whole category,
     # which we need to remove as well.
