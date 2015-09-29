@@ -17,7 +17,6 @@ public class LexicalNode extends Node {
 
     @Override
     public List<Action> actionSequence(Grammar grammar) {
-        // TODO should check if grammar contains category
         List<Action> actions = new ArrayList<>();
         actions.add(Action.shift(category));
         return actions;
