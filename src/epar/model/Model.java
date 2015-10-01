@@ -13,7 +13,6 @@ import java.io.ObjectInput;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Model {
@@ -23,6 +22,9 @@ public class Model {
     public static int WEIGHT_VECTOR_SIZE = 268435456; // -> 1 GiB float array
 
     public final float[] weights = new float[WEIGHT_VECTOR_SIZE];
+    
+    // TODO the following two arrays are not needed for decoding, that's 2 GiB
+    // of memory wasted just like that #YOLO #SWAG
 
     private final float[] sumsForAverage = new float[WEIGHT_VECTOR_SIZE];
 
