@@ -16,9 +16,11 @@ public class Action {
     
     private static final short TYPE_IDLE = 6;
     
+    private static final short TYPE_SKIP = 7;
+    
     /**
      * The action type: 1 for init, 2 for shift, 3 for binary, 4 for unary, 5
-     * for finish and 6 for idle.
+     * for finish and 6 for idle, 7 for skip.
      */
     public final short type;
     
@@ -33,6 +35,8 @@ public class Action {
     public static final Action FINISH = new Action(TYPE_FINISH, SymbolPool.NONE);
 
     public static final Action IDLE = new Action(TYPE_IDLE, SymbolPool.NONE);
+
+    public static final Action SKIP = new Action(TYPE_SKIP, SymbolPool.NONE);
 
     public static Action shift(short category) {
         return new Action(TYPE_SHIFT, category);

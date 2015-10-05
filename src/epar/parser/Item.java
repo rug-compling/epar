@@ -46,6 +46,7 @@ public class Item {
         unary(successors, grammar);
         finish(successors);
         idle(successors);
+        skip(successors);
         return successors;
     }
 
@@ -92,6 +93,22 @@ public class Item {
             Stack<Node> newStack = rest.push(parent);
             successors.add(new Item(newAction, newStack, queue, false));
         }
+    }
+
+    private void skip(List<Item> successors) {
+        if (finished) {
+            return;
+        }
+        
+        if (stack.isEmpty()) {
+            return;
+        }
+
+        if (stack.getFirst().category != Grammar.SKIP_CATEGORY) {
+            return;
+        }
+        
+        successors.add(new Item(Action.SKIP, stack.getRest(), queue, false));
     }
 
     private void shift(List<Item> successors) {
@@ -428,15 +445,16 @@ public class Item {
     }
 
     public static Item initial(Sentence sentence) {
-        Stack<Word> queue = new EStack<Word>();
+        Stack<Word> queue = new EStack<>();
 
         for (int i = sentence.words.size() - 1; i >= 0; i--) {
-            queue = new NEStack<Word>(sentence.words.get(i), queue);
+            queue = new NEStack<>(sentence.words.get(i), queue);
         }
 
         return new Item(Action.INIT, new EStack<Node>(), queue, false);
     }
 
+    @Override
     public String toString() {
         return "(" + action + ", " + stack.size() + ", " + queue.size() + ", " + finished + ")";
     }

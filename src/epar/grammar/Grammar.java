@@ -18,12 +18,13 @@ import java.util.Scanner;
 import epar.data.Word;
 import epar.grammar.BinaryRule.HeadPosition;
 import epar.node.BinaryNode;
-import epar.node.LexicalNode;
 import epar.node.Node;
 import epar.node.UnaryNode;
 import epar.util.SymbolPool;
 
 public class Grammar {
+    
+    public static final short SKIP_CATEGORY = SymbolPool.getID("SKIP");
 
     private final Map<Short, List<UnaryRule>> unaryRulesMap;
 
