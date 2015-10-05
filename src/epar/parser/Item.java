@@ -377,7 +377,7 @@ public class Item {
         return 29 * firstInt + secondInt;
     }
 
-    private Node getLeftNonHeadChild(Node node) {
+    private static Node getLeftNonHeadChild(Node node) {
         if (node == NONE_NODE) {
             return NONE_NODE;
         }
@@ -395,7 +395,7 @@ public class Item {
         return binaryNode.leftChild;
     }
 
-    private Node getRightNonHeadChild(Node node) {
+    private static Node getRightNonHeadChild(Node node) {
         if (node == NONE_NODE) {
             return NONE_NODE;
         }
@@ -413,7 +413,7 @@ public class Item {
         return binaryNode.rightChild;
     }
 
-    private Node getHeadChild(Node node) {
+    private static Node getHeadChild(Node node) {
         if (node == NONE_NODE) {
             return NONE_NODE;
         }
@@ -431,7 +431,7 @@ public class Item {
         }
     }
 
-    private Node getUnaryChild(Node node) {
+    private static Node getUnaryChild(Node node) {
         if (node == NONE_NODE) {
             return NONE_NODE;
         }
