@@ -8,7 +8,6 @@ import java.util.Scanner;
 
 import epar.data.Word;
 import epar.grammar.BinaryRule;
-import epar.grammar.Grammar;
 import epar.grammar.UnaryRule;
 import epar.parser.Action;
 import epar.util.RecUtil;
@@ -86,7 +85,5 @@ public abstract class Node {
     public abstract List<Action> actionSequence(Grammar grammar);
 
     public abstract List<Node> descendants();
-
-    public abstract Node regrammaticalize(Short cat, Grammar grammar);
 
 }

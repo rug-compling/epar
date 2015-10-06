@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import epar.data.Word;
-import epar.grammar.BinaryRule;
-import epar.grammar.Grammar;
 import epar.grammar.UnaryRule;
 import epar.parser.Action;
 import epar.util.SymbolPool;
@@ -45,32 +43,6 @@ public class UnaryNode extends Node {
         descendants.add(this);
         descendants.addAll(child.descendants());
         return descendants;
-    }
-
-    @Override
-    public Node regrammaticalize(Short cat, Grammar grammar) {
-        UnaryRule straightenedRule = rule.straighten();
-        List<UnaryRule> candidates = new ArrayList<>();
-
-        for (UnaryRule candidate : grammar.getUnaryRules()) { // TODO linear search, inefficient
-            if (candidate.straighten().equals(straightenedRule) && (cat == null || candidate.parentCategory == cat)) {
-                candidates.add(candidate);
-            }
-        }
-
-        if (candidates.isEmpty()) {
-            throw new IllegalArgumentException("No rule found corresponding to "
-                    + rule);
-        }
-
-        if (candidates.size() > 1) {
-            throw new IllegalArgumentException("More than one rule corresponding to " + rule + ": " + candidates);
-        }
-
-        UnaryRule newRule = candidates.get(0);
-        return new UnaryNode(newRule.parentCategory, lexicalHead,
-                child.regrammaticalize(newRule.childCategory, grammar),
-                newRule);
     }
 
 }

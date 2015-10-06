@@ -64,12 +64,6 @@ public class BinaryRule {
         this.headPosition = headPosition;
     }
 
-    public BinaryRule straighten() {
-        return new BinaryRule(SymbolPool.straighten(leftChildCategory),
-                SymbolPool.straighten(rightChildCategory), SymbolPool.straighten(parentCategory),
-                headPosition);
-    }
-
     public BinaryRule flip() {
         return new BinaryRule(rightChildCategory, leftChildCategory, parentCategory, headPosition.flip());
     }
