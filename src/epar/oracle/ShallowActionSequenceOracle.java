@@ -23,6 +23,10 @@ public class ShallowActionSequenceOracle implements Oracle {
         this.goldSequence = actions;
     }
 
+    ShallowActionSequenceOracle(List<Action> goldSequence) {
+        this.goldSequence = goldSequence;
+    }
+
     @Override
     public boolean accept(int generation, Candidate candidate, Item item) {
         if (generation >= goldSequence.size()) {
