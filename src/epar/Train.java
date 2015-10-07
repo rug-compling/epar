@@ -12,64 +12,53 @@ import epar.oracle.MultiActionSequenceOracle;
 import epar.oracle.Oracle;
 import epar.parser.Agenda;
 import epar.parser.Candidate;
-import java.util.logging.Level;
 
 public class Train {
 
     private final static Logger LOGGER = Logger.getLogger(Train.class.getName());
 
-    public static UpdatableModel train(int numIterations, List<Sentence> sentences, List<Oracle> oracles, Grammar grammar,
-            String outputFilePrefix) throws IOException {
-        UpdatableModel model = new UpdatableModel();
+    public static void train(List<Sentence> sentences, List<Oracle> oracles, Grammar grammar,
+            UpdatableModel model) throws IOException {
         int trainingSetSize = sentences.size();
 
         if (oracles.size() != trainingSetSize) {
             throw new IllegalArgumentException("Numbers of sentences and oracles don't match");
         }
 
-        for (int i = 0; i < numIterations; i++) {
-            for (int e = 0; e < trainingSetSize; e++) {
-                LOGGER.log(Level.INFO, "Training iteration: {0}, sentence: {1}", new Object[]{i, e});
-                Sentence sentence = sentences.get(e);
-                Oracle oracle = oracles.get(e);
-                Agenda agenda = Decode.decode(Agenda.initial(sentence), grammar, model, oracle);
-                Candidate highestScoring;
-                Candidate highestScoringCorrect;
+        for (int e = 0; e < trainingSetSize; e++) {
+            Sentence sentence = sentences.get(e);
+            Oracle oracle = oracles.get(e);
+            Agenda agenda = Decode.decode(Agenda.initial(sentence), grammar, model, oracle);
+            Candidate highestScoring;
+            Candidate highestScoringCorrect;
 
-                try {
-                    highestScoring = agenda.getHighestScoring();
-                } catch (IndexOutOfBoundsException y) {
-                    LOGGER.warning("No candidates, can't update");
-                    continue;
-                }
-
-                try {
-                    highestScoringCorrect = agenda.getHighestScoringCorrect();
-                } catch (IndexOutOfBoundsException y) {
-                    LOGGER.warning("No correct candidates, can't update");
-                    continue;
-                }
-
-                if (highestScoring == highestScoringCorrect) {
-                    LOGGER.info("Highest-scoring candidate is correct, no update");
-                    continue;
-                }
-
-                model.update(trainingSetSize * i + e, highestScoringCorrect, 1.0);
-                model.update(trainingSetSize * i + e, highestScoring, -1.0);
+            try {
+                highestScoring = agenda.getHighestScoring();
+            } catch (IndexOutOfBoundsException y) {
+                LOGGER.warning("No candidates, can't update");
+                continue;
             }
 
-            if (outputFilePrefix != null) {
-                model.save((i + 1) * trainingSetSize, new File(outputFilePrefix + "." + (i + 1)));
+            try {
+                highestScoringCorrect = agenda.getHighestScoringCorrect();
+            } catch (IndexOutOfBoundsException y) {
+                LOGGER.warning("No correct candidates, can't update");
+                continue;
             }
+
+            if (highestScoring == highestScoringCorrect) {
+                LOGGER.info("Highest-scoring candidate is correct, no update");
+                continue;
+            }
+
+            model.update(highestScoringCorrect, 1.0);
+            model.update(highestScoring, -1.0);
         }
-
-        return model;
     }
 
     public static void main(String[] args) {
         if (args.length != 6) {
-            System.err.println("USAGE: java Train SENTENCES ORACLES RULES.BIN RULES.UN NUM_ITER MODEL.OUT");
+            System.err.println("USAGE: java Train SENTENCES ORACLES RULES.BIN RULES.UN MODEL.IN MODEL.OUT");
             System.exit(1);
         }
 
@@ -80,15 +69,16 @@ public class Train {
             Grammar grammar = Grammar.load(new File(args[2]), new File(args[3]));
 
             // Process further command-line arguments:
-            int numIterations = Integer.parseInt(args[4]);
-            String outputModelFile = args[5];
-
+            UpdatableModel model = UpdatableModel.load(new File(args[4]));
+            File outputModelFile = new File(args[5]);
+            
             if (sentences.size() != oracles.size()) {
                 System.err.println("ERROR: Lengths of SENTENCES and ORACLES" + " don't match");
                 System.exit(1);
             }
 
-            train(numIterations, sentences, oracles, grammar, outputModelFile);
+            train(sentences, oracles, grammar, model);
+            model.save(outputModelFile);
         } catch (IOException e) {
             System.err.println("ERROR: " + e.getLocalizedMessage());
             System.exit(1);
