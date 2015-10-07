@@ -1,5 +1,6 @@
 package epar;
 
+import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -11,6 +12,7 @@ import epar.model.Model;
 import epar.node.Node;
 import epar.oracle.Oracle;
 import epar.oracle.ShallowActionSequenceOracle;
+import epar.parser.Action;
 import epar.parser.Agenda;
 import epar.parser.Candidate;
 import java.util.logging.Level;
@@ -19,21 +21,20 @@ public class Train {
 
     private final static Logger LOGGER = Logger.getLogger(Train.class.getName());
 
-    public static Model train(int numIterations, List<Sentence> sentences, List<Node> goldTrees, Grammar grammar,
+    public static Model train(int numIterations, List<Sentence> sentences, List<Oracle> oracles, Grammar grammar,
             String outputFilePrefix) throws IOException {
         Model model = new Model();
         int trainingSetSize = sentences.size();
 
-        if (goldTrees.size() != trainingSetSize) {
-            throw new IllegalArgumentException("Lengths of sentences and goldTress don't match");
+        if (oracles.size() != trainingSetSize) {
+            throw new IllegalArgumentException("Numbers of sentences and oracles don't match");
         }
 
         for (int i = 0; i < numIterations; i++) {
             for (int e = 0; e < trainingSetSize; e++) {
                 LOGGER.log(Level.INFO, "Training iteration: {0}, sentence: {1}", new Object[]{i, e});
                 Sentence sentence = sentences.get(e);
-                Node goldTree = goldTrees.get(e);
-                Oracle oracle = new ShallowActionSequenceOracle(goldTree, grammar);
+                Oracle oracle = oracles.get(e);
                 Agenda agenda = Decode.decode(Agenda.initial(sentence), grammar, model, oracle);
                 Candidate highestScoring;
                 Candidate highestScoringCorrect;
@@ -89,8 +90,17 @@ public class Train {
                 System.err.println("ERROR: Lengths of SENTENCES and GOLDTREES" + " don't match");
                 System.exit(1);
             }
+            
+            // Create oracles from training sentences
+            List<Oracle> oracles = new ArrayList<>(goldTrees.size());
+            
+            for (Node tree : goldTrees) {
+                List<Action> actionSequence = tree.actionSequence(grammar);
+                actionSequence.add(Action.FINISH);
+                oracles.add(new ShallowActionSequenceOracle(actionSequence));
+            }
 
-            train(numIterations, sentences, goldTrees, grammar, outputModelFile);
+            train(numIterations, sentences, oracles, grammar, outputModelFile);
         } catch (IOException e) {
             System.err.println("ERROR: " + e.getLocalizedMessage());
             System.exit(1);
