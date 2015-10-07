@@ -87,7 +87,7 @@ public class Decode {
             List<Sentence> inputSentences = Sentence.readSentences(new File(args[7]));
 
             // Load model
-            final Model model = Model.load(new File(args[6]));
+            final Model model = Model.loadAveraged(new File(args[6]));
 
             int numCPUs = Integer.parseInt(args[8]);
             File outputFile = new File(args[9]);

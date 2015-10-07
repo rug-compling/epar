@@ -60,7 +60,7 @@ public class Train {
             }
 
             if (outputFilePrefix != null) {
-                model.saveAveraged((i + 1) * trainingSetSize, new File(outputFilePrefix + "." + (i + 1)));
+                model.save((i + 1) * trainingSetSize, new File(outputFilePrefix + "." + (i + 1)));
             }
         }
 

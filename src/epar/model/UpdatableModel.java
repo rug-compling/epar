@@ -8,6 +8,7 @@ import epar.parser.Candidate;
 import java.io.BufferedOutputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.util.zip.GZIPOutputStream;
 
 public class UpdatableModel extends Model {
 
@@ -38,16 +39,17 @@ public class UpdatableModel extends Model {
             candidate = candidate.parent;
         }
     }
-
-
-    public void saveAveraged(int currentStateCount, File file) throws IOException {
-        try (ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+    
+    public void save(int currentStateCount, File file) throws IOException {
+        try (ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(file))))) {
+            output.writeInt(currentStateCount);
+            
             for (int i = 0; i < WEIGHT_VECTOR_SIZE; i++) {
                 updateAverage(currentStateCount, i);
-                output.writeFloat(sumsForAverage[i] / stateCountsForAverage[i]);
+                output.writeFloat(weights[i]);
+                output.writeFloat(sumsForAverage[i]);
             }
         }
     }
-
 
 }
