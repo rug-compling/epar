@@ -1,5 +1,6 @@
 package epar.parser;
 
+import epar.util.StringUtil;
 import epar.util.SymbolPool;
 
 import java.util.ArrayList;
@@ -30,6 +31,45 @@ public class Action {
         }
 
         return actionSequence;
+    }
+    
+    @Override
+    public String toString() {
+        String string;
+        
+        switch (type) {
+            case TYPE_INIT:
+                string = "INIT";
+                break;
+            case TYPE_SHIFT:
+                string = "SHIFT";
+                break;
+            case TYPE_BINARY:
+                string = "BINARY";
+                break;
+            case TYPE_UNARY:
+                string = "UNARY";
+                break;
+            case TYPE_FINISH:
+                string = "FINISH";
+                break;
+            case TYPE_IDLE:
+                string = "IDLE";
+                break;
+            case TYPE_SKIP:
+                string = "SKIP";
+                break;
+            default:
+                throw new IllegalArgumentException("Action with unknown type code " + type);
+        }
+        
+        if (category != SymbolPool.NONE) {
+            string += "-" + SymbolPool.getString(category);
+        }
+        
+        // TODO semantics
+        
+        return string;
     }
 
     public static Action fromString(String actionString) {
@@ -68,6 +108,10 @@ public class Action {
         if (actualNumArgs != expectedNumArgs) {
             throw new IllegalArgumentException("Invalid action " + actionString + ": expected " + expectedNumArgs + " arguments for " + parts[0] + ", got " + actualNumArgs);
         }
+    }
+
+    public static String sequenceToString(List<Action> actionSequence) {
+        return StringUtil.join(actionSequence, " ");
     }
 
     /**
