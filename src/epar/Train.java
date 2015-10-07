@@ -80,7 +80,7 @@ public class Train {
             List<Sentence> sentences = Sentence.readSentences(new File(args[0]));
             List<Node> goldTrees = Node.readTrees(new File(args[1]));
             Grammar grammar = Grammar.load(new File(args[2]), new File(args[3]));
-            
+
             // Process further command-line arguments:
             int numIterations = Integer.parseInt(args[4]);
             String outputModelFile = args[5];
