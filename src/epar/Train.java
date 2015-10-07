@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 import epar.data.Sentence;
 import epar.grammar.Grammar;
-import epar.model.Model;
+import epar.model.UpdatableModel;
 import epar.oracle.MultiActionSequenceOracle;
 import epar.oracle.Oracle;
 import epar.parser.Agenda;
@@ -18,9 +18,9 @@ public class Train {
 
     private final static Logger LOGGER = Logger.getLogger(Train.class.getName());
 
-    public static Model train(int numIterations, List<Sentence> sentences, List<Oracle> oracles, Grammar grammar,
+    public static UpdatableModel train(int numIterations, List<Sentence> sentences, List<Oracle> oracles, Grammar grammar,
             String outputFilePrefix) throws IOException {
-        Model model = new Model();
+        UpdatableModel model = new UpdatableModel();
         int trainingSetSize = sentences.size();
 
         if (oracles.size() != trainingSetSize) {
