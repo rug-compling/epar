@@ -66,8 +66,8 @@ public class MultiActionSequenceOracle implements Oracle {
         return new MultiActionSequenceOracle(actionSequences);
     }
     
-    public static List<MultiActionSequenceOracle> load(File file) throws FileNotFoundException {
-        List<MultiActionSequenceOracle> oracles = new ArrayList<>();
+    public static List<Oracle> load(File file) throws FileNotFoundException {
+        List<Oracle> oracles = new ArrayList<>();
         
         try (Scanner scanner = new Scanner(file, "utf-8")) {
             while (scanner.hasNextLine()) {

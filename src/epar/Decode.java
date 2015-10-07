@@ -21,6 +21,7 @@ import epar.grammar.Grammar;
 import epar.model.Model;
 import epar.node.Node;
 import epar.oracle.AcceptAllOracle;
+import epar.oracle.MultiActionSequenceOracle;
 import epar.oracle.Oracle;
 import epar.parser.Agenda;
 import epar.parser.Candidate;
@@ -66,7 +67,7 @@ public class Decode {
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         if (args.length != 10) {
             System.err.println(
-                    "USAGE: java Decode SENTENCES_TRAIN GOLDTREES RULES.BIN.TRAIN RULES.UN.TRAIN RULES.BIN.DECODE RULES.UN.DECODE MODEL SENTENCES NUMCPUS TREES.OUT");
+                    "USAGE: java Decode SENTENCES_TRAIN ORACLES RULES.BIN.TRAIN RULES.UN.TRAIN RULES.BIN.DECODE RULES.UN.DECODE MODEL SENTENCES NUMCPUS TREES.OUT");
             System.exit(1);
         }
 
@@ -75,7 +76,7 @@ public class Decode {
             // TODO solve this in a better way, training corpus should not be
             // needed for decoding.
             Sentence.readSentences(new File(args[0]));
-            Node.readTrees(new File(args[1]));
+            MultiActionSequenceOracle.load(new File(args[1]));
             Grammar.load(new File(args[2]), new File(args[3]));
             
             // Load grammar for decoding - expected to be a subset of the grammar for training

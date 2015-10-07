@@ -1,6 +1,5 @@
 package epar;
 
-import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -9,10 +8,8 @@ import java.util.logging.Logger;
 import epar.data.Sentence;
 import epar.grammar.Grammar;
 import epar.model.Model;
-import epar.node.Node;
+import epar.oracle.MultiActionSequenceOracle;
 import epar.oracle.Oracle;
-import epar.oracle.ShallowActionSequenceOracle;
-import epar.parser.Action;
 import epar.parser.Agenda;
 import epar.parser.Candidate;
 import java.util.logging.Level;
@@ -72,32 +69,23 @@ public class Train {
 
     public static void main(String[] args) {
         if (args.length != 6) {
-            System.err.println("USAGE: java Train SENTENCES GOLDTREES RULES.BIN RULES.UN NUM_ITER MODEL.OUT");
+            System.err.println("USAGE: java Train SENTENCES ORACLES RULES.BIN RULES.UN NUM_ITER MODEL.OUT");
             System.exit(1);
         }
 
         try {
             // Populate symbol tables:
             List<Sentence> sentences = Sentence.readSentences(new File(args[0]));
-            List<Node> goldTrees = Node.readTrees(new File(args[1]));
+            List<Oracle> oracles = MultiActionSequenceOracle.load(new File(args[1]));
             Grammar grammar = Grammar.load(new File(args[2]), new File(args[3]));
 
             // Process further command-line arguments:
             int numIterations = Integer.parseInt(args[4]);
             String outputModelFile = args[5];
 
-            if (sentences.size() != goldTrees.size()) {
-                System.err.println("ERROR: Lengths of SENTENCES and GOLDTREES" + " don't match");
+            if (sentences.size() != oracles.size()) {
+                System.err.println("ERROR: Lengths of SENTENCES and ORACLES" + " don't match");
                 System.exit(1);
-            }
-            
-            // Create oracles from training sentences
-            List<Oracle> oracles = new ArrayList<>(goldTrees.size());
-            
-            for (Node tree : goldTrees) {
-                List<Action> actionSequence = tree.actionSequence(grammar);
-                actionSequence.add(Action.FINISH);
-                oracles.add(new ShallowActionSequenceOracle(actionSequence));
             }
 
             train(numIterations, sentences, oracles, grammar, outputModelFile);
