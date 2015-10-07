@@ -1,12 +1,16 @@
 package epar.oracle;
 
-import epar.parser.Action;
-import epar.parser.Candidate;
-import epar.parser.Item;
-
+import epar.grammar.BinaryRule;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import epar.parser.Action;
+import epar.parser.Candidate;
+import epar.parser.Item;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 /**
  * An oracle that accepts actions which are part of one of a fixed collection of
@@ -21,7 +25,17 @@ public class MultiActionSequenceOracle implements Oracle {
         oracles = new ArrayList<>(goldSequences.size());
         
         for (List<Action> sequence : goldSequences) {
-            oracles.add(new DeepActionSequenceOracle(sequence));
+            Oracle subOracle;
+            
+            if (sequence.size() == 1) {
+                // If there is only one allowed action sequence, we only need
+                // shallow checks.
+                subOracle = new ShallowActionSequenceOracle(sequence);
+            } else {
+                subOracle = new DeepActionSequenceOracle(sequence);
+            }
+            
+            oracles.add(subOracle);
         }
     }
 
@@ -50,6 +64,18 @@ public class MultiActionSequenceOracle implements Oracle {
         }
         
         return new MultiActionSequenceOracle(actionSequences);
+    }
+    
+    public static List<MultiActionSequenceOracle> load(File file) throws FileNotFoundException {
+        List<MultiActionSequenceOracle> oracles = new ArrayList<>();
+        
+        try (Scanner scanner = new Scanner(file, "utf-8")) {
+            while (scanner.hasNextLine()) {
+                oracles.add(fromString(scanner.nextLine()));
+            }
+        }
+        
+        return oracles;
     }
     
 }
