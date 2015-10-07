@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import epar.data.Word;
+import epar.grammar.Grammar;
 import epar.grammar.UnaryRule;
 import epar.parser.Action;
 import epar.util.SymbolPool;
