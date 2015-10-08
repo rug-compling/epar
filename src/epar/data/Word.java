@@ -31,17 +31,7 @@ public class Word {
             lexicalEntries = new ArrayList<>();
 
             while (scanner.hasNext()) {
-                String[] parts = scanner.next().split("-", 1);
-                short category = SymbolPool.getID(parts[0]);
-                short semantics;
-
-                if (parts.length == 1) {
-                    semantics = (short) 0;
-                } else {
-                    semantics = Short.parseShort(parts[1]);
-                }
-
-                lexicalEntries.add(new LexicalEntry(category, semantics));
+                lexicalEntries.add(LexicalEntry.fromString(scanner.next()));
             }
         }
 

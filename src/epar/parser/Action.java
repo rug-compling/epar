@@ -1,5 +1,6 @@
 package epar.parser;
 
+import epar.data.LexicalEntry;
 import epar.util.StringUtil;
 import epar.util.SymbolPool;
 
@@ -152,15 +153,16 @@ public class Action {
     // STATIC METHODS
 
     public static Action fromString(String actionString) {
-        String[] parts = actionString.split("-");
+        String[] parts = actionString.split("-", 2);
 
         switch (parts[0]) {
             case "INIT":
                 checkArgs(actionString, parts, 0);
                 return INIT;
             case "SHIFT":
-                checkArgs(actionString, parts, 2);
-                return shift(SymbolPool.getID(parts[1]), Short.parseShort(parts[2]));
+                checkArgs(actionString, parts, 1);
+                LexicalEntry entry = LexicalEntry.fromString(parts[1]);
+                return shift(entry.category, entry.semantics);
             case "BINARY":
                 checkArgs(actionString, parts, 1);
                 return binary(SymbolPool.getID(parts[1]));
