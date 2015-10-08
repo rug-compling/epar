@@ -18,7 +18,7 @@ public class LexicalNode extends Node {
     @Override
     public List<Action> actionSequence(Grammar grammar) {
         List<Action> actions = new ArrayList<>();
-        actions.add(Action.shift(category));
+        actions.add(Action.shift(category, ((short) 0))); // TODO pass semantics
         return actions;
     }
 

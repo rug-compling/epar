@@ -99,7 +99,7 @@ public class Item {
         if (finished) {
             return;
         }
-        
+
         if (stack.isEmpty()) {
             return;
         }
@@ -107,7 +107,7 @@ public class Item {
         if (stack.getFirst().category != Grammar.SKIP_CATEGORY) {
             return;
         }
-        
+
         successors.add(new Item(Action.SKIP, stack.getRest(), queue, false));
     }
 
@@ -122,7 +122,7 @@ public class Item {
         for (short category : word.categories) {
             Node newNode = new LexicalNode(category, word);
             Stack<Node> newStack = stack.push(newNode);
-            Action newAction = Action.shift(category);
+            Action newAction = Action.shift(category, ((short) 0)); // TODO copy semantics
             successors.add(new Item(newAction, newStack, newQueue, false));
         }
     }

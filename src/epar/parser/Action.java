@@ -63,8 +63,12 @@ public class Action {
                 throw new IllegalArgumentException("Action with unknown type code " + type);
         }
         
-        if (category != SymbolPool.NONE) {
+        if (type == TYPE_SHIFT || type == TYPE_BINARY || type == TYPE_UNARY) {
             string += "-" + SymbolPool.getString(category);
+        }
+        
+        if (type == TYPE_SHIFT) {
+            string += "-" + semantics;
         }
         
         // TODO semantics
@@ -80,8 +84,8 @@ public class Action {
                 checkArgs(actionString, parts, 0);
                 return INIT;
             case "SHIFT":
-                checkArgs(actionString, parts, 1); // TODO add semantics
-                return shift(SymbolPool.getID(parts[1]));
+                checkArgs(actionString, parts, 2);
+                return shift(SymbolPool.getID(parts[1]), Short.parseShort(parts[2]));
             case "BINARY":
                 checkArgs(actionString, parts, 1);
                 return binary(SymbolPool.getID(parts[1]));
@@ -125,6 +129,8 @@ public class Action {
      * associated with a category.
      */
     public final short category;
+    
+    public final short semantics;
 
     public static final Action INIT = new Action(TYPE_INIT, SymbolPool.NONE);
 
@@ -134,8 +140,8 @@ public class Action {
 
     public static final Action SKIP = new Action(TYPE_SKIP, SymbolPool.NONE);
 
-    public static Action shift(short category) {
-        return new Action(TYPE_SHIFT, category);
+    public static Action shift(short category, short semantics) {
+        return new Action(TYPE_SHIFT, category, semantics);
     }
 
     public static Action binary(short category) {
@@ -145,17 +151,23 @@ public class Action {
     public static Action unary(short category) {
         return new Action(TYPE_UNARY, category);
     }
-
+    
     private Action(short type, short category) {
+        this(type, category, SymbolPool.NONE);
+    }
+
+    private Action(short type, short category, short semantics) {
         this.type = type;
         this.category = category;
+        this.semantics = semantics;
     }
 
     @Override
     public int hashCode() {
-        int hash = 5;
-        hash = 17 * hash + this.type;
-        hash = 17 * hash + this.category;
+        int hash = 3;
+        hash = 13 * hash + this.type;
+        hash = 13 * hash + this.category;
+        hash = 13 * hash + this.semantics;
         return hash;
     }
 
@@ -172,6 +184,9 @@ public class Action {
             return false;
         }
         if (this.category != other.category) {
+            return false;
+        }
+        if (this.semantics != other.semantics) {
             return false;
         }
         return true;
