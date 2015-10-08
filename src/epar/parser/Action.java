@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Action {
+    
+    // STATIC CONSTANTS
 
     private static final short TYPE_INIT = 1;
 
@@ -22,16 +24,57 @@ public class Action {
 
     private static final short TYPE_SKIP = 7;
 
-    public static List<Action> sequenceFromString(String sequenceString) {
-        String[] actionStrings = sequenceString.split(" ");
-        List<Action> actionSequence = new ArrayList<>(actionStrings.length);
+    public static final Action INIT = new Action(TYPE_INIT, SymbolPool.NONE);
 
-        for (String actionString : actionStrings) {
-            actionSequence.add(Action.fromString(actionString));
-        }
+    public static final Action FINISH = new Action(TYPE_FINISH, SymbolPool.NONE);
 
-        return actionSequence;
+    public static final Action IDLE = new Action(TYPE_IDLE, SymbolPool.NONE);
+
+    public static final Action SKIP = new Action(TYPE_SKIP, SymbolPool.NONE);
+    
+    // INSTANCE CONSTANTS
+
+    /**
+     * The action type: 1 for init, 2 for shift, 3 for binary, 4 for unary, 5
+     * for finish and 6 for idle, 7 for skip.
+     */
+    public final short type;
+
+    /**
+     * The category, or {@link SymbolPool.NONE} for action types that are not
+     * associated with a category.
+     */
+    public final short category;
+    
+    public final short semantics;
+    
+    // CONSTRUCTORS
+    
+    private Action(short type, short category) {
+        this(type, category, SymbolPool.NONE);
     }
+
+    private Action(short type, short category, short semantics) {
+        this.type = type;
+        this.category = category;
+        this.semantics = semantics;
+    }
+    
+    // FACTORY METHODS
+
+    public static Action shift(short category, short semantics) {
+        return new Action(TYPE_SHIFT, category, semantics);
+    }
+
+    public static Action binary(short category) {
+        return new Action(TYPE_BINARY, category);
+    }
+
+    public static Action unary(short category) {
+        return new Action(TYPE_UNARY, category);
+    }
+    
+    // INSTANCE METHODS
     
     @Override
     public String toString() {
@@ -76,6 +119,38 @@ public class Action {
         return string;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 13 * hash + this.type;
+        hash = 13 * hash + this.category;
+        hash = 13 * hash + this.semantics;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Action other = (Action) obj;
+        if (this.type != other.type) {
+            return false;
+        }
+        if (this.category != other.category) {
+            return false;
+        }
+        if (this.semantics != other.semantics) {
+            return false;
+        }
+        return true;
+    }
+    
+    // STATIC METHODS
+
     public static Action fromString(String actionString) {
         String[] parts = actionString.split("-");
 
@@ -106,6 +181,17 @@ public class Action {
         }
     }
 
+    public static List<Action> sequenceFromString(String sequenceString) {
+        String[] actionStrings = sequenceString.split(" ");
+        List<Action> actionSequence = new ArrayList<>(actionStrings.length);
+
+        for (String actionString : actionStrings) {
+            actionSequence.add(Action.fromString(actionString));
+        }
+
+        return actionSequence;
+    }
+
     private static void checkArgs(String actionString, String[] parts, int expectedNumArgs) {
         int actualNumArgs = parts.length - 1;
 
@@ -116,80 +202,6 @@ public class Action {
 
     public static String sequenceToString(List<Action> actionSequence) {
         return StringUtil.join(actionSequence, " ");
-    }
-
-    /**
-     * The action type: 1 for init, 2 for shift, 3 for binary, 4 for unary, 5
-     * for finish and 6 for idle, 7 for skip.
-     */
-    public final short type;
-
-    /**
-     * The category, or {@link SymbolPool.NONE} for action types that are not
-     * associated with a category.
-     */
-    public final short category;
-    
-    public final short semantics;
-
-    public static final Action INIT = new Action(TYPE_INIT, SymbolPool.NONE);
-
-    public static final Action FINISH = new Action(TYPE_FINISH, SymbolPool.NONE);
-
-    public static final Action IDLE = new Action(TYPE_IDLE, SymbolPool.NONE);
-
-    public static final Action SKIP = new Action(TYPE_SKIP, SymbolPool.NONE);
-
-    public static Action shift(short category, short semantics) {
-        return new Action(TYPE_SHIFT, category, semantics);
-    }
-
-    public static Action binary(short category) {
-        return new Action(TYPE_BINARY, category);
-    }
-
-    public static Action unary(short category) {
-        return new Action(TYPE_UNARY, category);
-    }
-    
-    private Action(short type, short category) {
-        this(type, category, SymbolPool.NONE);
-    }
-
-    private Action(short type, short category, short semantics) {
-        this.type = type;
-        this.category = category;
-        this.semantics = semantics;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 13 * hash + this.type;
-        hash = 13 * hash + this.category;
-        hash = 13 * hash + this.semantics;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Action other = (Action) obj;
-        if (this.type != other.type) {
-            return false;
-        }
-        if (this.category != other.category) {
-            return false;
-        }
-        if (this.semantics != other.semantics) {
-            return false;
-        }
-        return true;
     }
 
 }
