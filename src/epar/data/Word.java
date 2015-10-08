@@ -12,29 +12,40 @@ public class Word {
 
     public final short pos;
 
-    public final List<Short> categories;
+    public final List<LexicalEntry> lexicalEntries;
 
-    public Word(short form, short pos, List<Short> categories) {
+    public Word(short form, short pos, List<LexicalEntry> lexicalEntries) {
         this.form = form;
         this.pos = pos;
-        this.categories = categories;
+        this.lexicalEntries = lexicalEntries;
     }
 
     public static Word read(String line) {
         short form;
         short pos;
-        List<Short> categories;
-
+        List<LexicalEntry> lexicalEntries;
+        
         try (Scanner scanner = new Scanner(line)) {
             form = SymbolPool.getID(scanner.next());
             pos = SymbolPool.getID(scanner.next());
-            categories = new ArrayList<>();
+            lexicalEntries = new ArrayList<>();
+
             while (scanner.hasNext()) {
-                categories.add(SymbolPool.getID(scanner.next()));
+                String[] parts = scanner.next().split("-", 1);
+                short category = SymbolPool.getID(parts[0]);
+                short semantics;
+
+                if (parts.length == 1) {
+                    semantics = (short) 0;
+                } else {
+                    semantics = Short.parseShort(parts[1]);
+                }
+
+                lexicalEntries.add(new LexicalEntry(category, semantics));
             }
         }
 
-        return new Word(form, pos, categories);
+        return new Word(form, pos, lexicalEntries);
     }
 
 }

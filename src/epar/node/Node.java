@@ -73,7 +73,7 @@ public abstract class Node {
             short pos = SymbolPool.getID(scanner.next());
             short form = SymbolPool.getID(scanner.next());
             Word word = new Word(form, pos, null); // TODO ugh.
-            node = new LexicalNode(category, word);
+            node = new LexicalNode(category, (short) 0, word); // TODO support semantics in trees?
         } else {
             scanner.close();
             throw new RuntimeException("Invalid head indicator: " + head);

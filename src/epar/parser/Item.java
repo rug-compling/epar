@@ -1,5 +1,6 @@
 package epar.parser;
 
+import epar.data.LexicalEntry;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class Item {
 
     private static final Word NONE_WORD = new Word(SymbolPool.NONE, SymbolPool.NONE, null);
 
-    private static final Node NONE_NODE = new LexicalNode(SymbolPool.NONE, NONE_WORD);
+    private static final Node NONE_NODE = new LexicalNode(SymbolPool.NONE, (short) 0, NONE_WORD);
 
     private Item(Action action, Stack<Node> stack, Stack<Word> queue,
             boolean finished) {
@@ -119,10 +120,10 @@ public class Item {
         Word word = queue.getFirst();
         Stack<Word> newQueue = queue.getRest();
 
-        for (short category : word.categories) {
-            Node newNode = new LexicalNode(category, word);
+        for (LexicalEntry entry : word.lexicalEntries) {
+            Node newNode = new LexicalNode(entry.category, entry.semantics, word);
             Stack<Node> newStack = stack.push(newNode);
-            Action newAction = Action.shift(category, ((short) 0)); // TODO copy semantics
+            Action newAction = Action.shift(entry.category, entry.semantics);
             successors.add(new Item(newAction, newStack, newQueue, false));
         }
     }
