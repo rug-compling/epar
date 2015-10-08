@@ -1,5 +1,6 @@
 package epar.node;
 
+import epar.data.LexicalEntry;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -47,33 +48,37 @@ public abstract class Node {
 
     private static Node readTree(Scanner scanner) {
         RecUtil.expect("(", scanner);
-        short category = SymbolPool.getID(scanner.next());
+        String category = scanner.next();
         String head = scanner.next();
         Node node;
 
         if ("l".equals(head)) {
             Node leftChild = readTree(scanner);
             Node rightChild = readTree(scanner);
-            node = new BinaryNode(category, leftChild.lexicalHead, leftChild,
+            node = new BinaryNode(SymbolPool.getID(category),
+                    leftChild.lexicalHead, leftChild,
                     rightChild, new BinaryRule(leftChild.category,
-                            rightChild.category, category,
-                            BinaryRule.HeadPosition.LEFT));
+                    rightChild.category, SymbolPool.getID(category),
+                    BinaryRule.HeadPosition.LEFT));
         } else if ("r".equals(head)) {
             Node leftChild = readTree(scanner);
             Node rightChild = readTree(scanner);
-            node = new BinaryNode(category, rightChild.lexicalHead, leftChild,
+            node = new BinaryNode(SymbolPool.getID(category),
+                    rightChild.lexicalHead, leftChild,
                     rightChild, new BinaryRule(leftChild.category,
-                            rightChild.category, category,
-                            BinaryRule.HeadPosition.RIGHT));
+                    rightChild.category, SymbolPool.getID(category),
+                    BinaryRule.HeadPosition.RIGHT));
         } else if ("s".equals(head)) {
             Node child = readTree(scanner);
-            node = new UnaryNode(category, child.lexicalHead, child,
-                    new UnaryRule(child.category, category));
+            node = new UnaryNode(SymbolPool.getID(category), child.lexicalHead,
+                    child, new UnaryRule(child.category,
+                    SymbolPool.getID(category)));
         } else if ("c".equals(head)) {
+            LexicalEntry entry = LexicalEntry.fromString(category);
             short pos = SymbolPool.getID(scanner.next());
             short form = SymbolPool.getID(scanner.next());
             Word word = new Word(form, pos, null); // TODO ugh.
-            node = new LexicalNode(category, (short) 0, word); // TODO support semantics in trees?
+            node = new LexicalNode(entry, word);
         } else {
             scanner.close();
             throw new RuntimeException("Invalid head indicator: " + head);

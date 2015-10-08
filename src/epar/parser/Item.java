@@ -30,7 +30,7 @@ public class Item {
 
     private static final Word NONE_WORD = new Word(SymbolPool.NONE, SymbolPool.NONE, null);
 
-    private static final Node NONE_NODE = new LexicalNode(SymbolPool.NONE, (short) 0, NONE_WORD);
+    private static final Node NONE_NODE = new LexicalNode(LexicalEntry.NONE, NONE_WORD);
 
     private Item(Action action, Stack<Node> stack, Stack<Word> queue,
             boolean finished) {
@@ -121,7 +121,7 @@ public class Item {
         Stack<Word> newQueue = queue.getRest();
 
         for (LexicalEntry entry : word.lexicalEntries) {
-            Node newNode = new LexicalNode(entry.category, entry.semantics, word);
+            Node newNode = new LexicalNode(entry, word);
             Stack<Node> newStack = stack.push(newNode);
             Action newAction = Action.shift(entry.category, entry.semantics);
             successors.add(new Item(newAction, newStack, newQueue, false));

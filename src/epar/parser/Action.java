@@ -108,14 +108,8 @@ public class Action {
         }
         
         if (type == TYPE_SHIFT || type == TYPE_BINARY || type == TYPE_UNARY) {
-            string += "-" + SymbolPool.getString(category);
+            string += "-" + (new LexicalEntry(category, semantics));
         }
-        
-        if (type == TYPE_SHIFT) {
-            string += "-" + semantics;
-        }
-        
-        // TODO semantics
         
         return string;
     }
