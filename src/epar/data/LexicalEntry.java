@@ -8,7 +8,7 @@ import epar.util.SymbolPool;
  */
 public class LexicalEntry {
     
-    public static final LexicalEntry NONE = new LexicalEntry(SymbolPool.NONE, (short) 0);
+    public static final LexicalEntry NONE = new LexicalEntry(SymbolPool.NONE, SymbolPool.NONE);
     
     public final short category;
     
@@ -19,11 +19,12 @@ public class LexicalEntry {
         this.semantics = semantics;
     }
     
+    @Override
     public String toString() {
         String result = SymbolPool.getString(category);
         
-        if (semantics != 0) {
-            result += "-" + semantics;
+        if (semantics != SymbolPool.NONE) {
+            result += "-" + SymbolPool.getString(semantics);
         }
         
         return result;
@@ -35,9 +36,9 @@ public class LexicalEntry {
         short semantics;
         
         if (parts.length == 1) {
-            semantics = 0;
+            semantics = SymbolPool.NONE;
         } else {
-            semantics = Short.parseShort(parts[1]);
+            semantics = SymbolPool.getID(parts[1]);
         }
         
         return new LexicalEntry(category, semantics);
