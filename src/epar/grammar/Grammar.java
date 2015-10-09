@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import epar.data.SentencePosition;
 import epar.grammar.BinaryRule.HeadPosition;
 import epar.node.BinaryNode;
 import epar.node.Node;
