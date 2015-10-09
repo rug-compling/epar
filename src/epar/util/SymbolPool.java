@@ -15,6 +15,10 @@ public class SymbolPool {
 
     public static short getID(String string) {
         if (!stringToID.containsKey(string)) {
+            if (nextID == 0) {
+                throw new RuntimeException("Symbol pool overflow!");
+            }
+            
             stringToID.put(string, nextID);
             idToString.put(nextID, string);
             return nextID++;
