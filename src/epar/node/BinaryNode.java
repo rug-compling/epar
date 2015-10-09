@@ -1,9 +1,9 @@
 package epar.node;
 
+import epar.data.LexicalItem;
 import java.util.ArrayList;
 import java.util.List;
 
-import epar.data.Word;
 import epar.grammar.BinaryRule;
 import epar.grammar.Grammar;
 import epar.parser.Action;
@@ -17,7 +17,7 @@ public class BinaryNode extends Node {
 
     public final BinaryRule rule;
 
-    public BinaryNode(short category, Word lexicalHead, Node leftChild,
+    public BinaryNode(short category, LexicalItem lexicalHead, Node leftChild,
             Node rightChild, BinaryRule rule) {
         super(category, lexicalHead);
         this.leftChild = leftChild;

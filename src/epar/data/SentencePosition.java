@@ -6,24 +6,24 @@ import java.util.Scanner;
 
 import epar.util.SymbolPool;
 
-public class Word {
+public class SentencePosition {
 
     public final short form;
 
     public final short pos;
 
-    public final List<LexicalEntry> lexicalEntries;
+    public final List<LexicalItem> lexicalItems;
 
-    public Word(short form, short pos, List<LexicalEntry> lexicalEntries) {
+    public SentencePosition(short form, short pos, List<LexicalItem> lexicalEntries) {
         this.form = form;
         this.pos = pos;
-        this.lexicalEntries = lexicalEntries;
+        this.lexicalItems = lexicalEntries;
     }
 
-    public static Word read(String line) {
+    public static SentencePosition read(String line) {
         short form;
         short pos;
-        List<LexicalEntry> lexicalEntries;
+        List<LexicalItem> lexicalEntries;
         
         try (Scanner scanner = new Scanner(line)) {
             form = SymbolPool.getID(scanner.next());
@@ -31,11 +31,11 @@ public class Word {
             lexicalEntries = new ArrayList<>();
 
             while (scanner.hasNext()) {
-                lexicalEntries.add(LexicalEntry.fromString(scanner.next()));
+                lexicalEntries.add(LexicalItem.read(scanner));
             }
         }
 
-        return new Word(form, pos, lexicalEntries);
+        return new SentencePosition(form, pos, lexicalEntries);
     }
 
 }

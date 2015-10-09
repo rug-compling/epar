@@ -161,6 +161,8 @@ public class StateFeatures {
             }
 
             featureHash = 29 * featureHash + templateID; // include feature template ID in hash
+            // We do *not* use the action's hashCode but are specifically
+            // interested only in the type and category.
             featureHash = 29 * featureHash + action.type; // include action
             featureHash = 20 * featureHash + action.category;
             result.hashes[templateID] = featureHash;

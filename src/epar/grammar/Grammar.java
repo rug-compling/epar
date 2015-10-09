@@ -1,5 +1,6 @@
 package epar.grammar;
 
+import epar.data.LexicalItem;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -15,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
-import epar.data.Word;
+import epar.data.SentencePosition;
 import epar.grammar.BinaryRule.HeadPosition;
 import epar.node.BinaryNode;
 import epar.node.Node;
@@ -23,7 +24,7 @@ import epar.node.UnaryNode;
 import epar.util.SymbolPool;
 
 public class Grammar {
-    
+
     public static final short SKIP_CATEGORY = SymbolPool.getID("SKIP");
 
     private final Map<Short, List<UnaryRule>> unaryRulesMap;
@@ -135,9 +136,11 @@ public class Grammar {
         List<Node> possibleParents = new ArrayList<>();
 
         for (BinaryRule rule : rules) {
-            Word lexicalHead = rule.headPosition == BinaryRule.HeadPosition.LEFT ? leftChild.lexicalHead
-                    : rightChild.lexicalHead;
-            possibleParents.add(new BinaryNode(rule.parentCategory, lexicalHead, leftChild, rightChild, rule));
+            LexicalItem lexicalHead
+                    = rule.headPosition == BinaryRule.HeadPosition.LEFT
+                            ? leftChild.lexicalHead : rightChild.lexicalHead;
+            possibleParents.add(new BinaryNode(rule.parentCategory, lexicalHead,
+                    leftChild, rightChild, rule));
         }
 
         return possibleParents;

@@ -1,13 +1,13 @@
 package epar.node;
 
-import epar.data.LexicalEntry;
+import epar.data.LexicalItem;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import epar.data.Word;
+import epar.data.SentencePosition;
 import epar.grammar.BinaryRule;
 import epar.grammar.Grammar;
 import epar.grammar.UnaryRule;
@@ -19,66 +19,71 @@ public abstract class Node {
 
     public final short category;
 
-    public final Word lexicalHead;
+    public final LexicalItem lexicalHead;
 
-    public Node(short category, Word lexicalHead) {
+    public Node(short category, LexicalItem lexicalHead) {
         this.category = category;
         this.lexicalHead = lexicalHead;
     }
 
     public static List<Node> readTrees(File file) throws FileNotFoundException {
-        List<Node> trees = new ArrayList<Node>();
-        Scanner scanner = new Scanner(file);
-
-        while (scanner.hasNextLine()) {
-            trees.add(readTree(scanner.nextLine()));
+        List<Node> trees = new ArrayList<>();
+        
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                trees.add(readTree(scanner.nextLine()));
+            }
         }
-
-        scanner.close();
+        
         return trees;
     }
 
     public static Node readTree(String line) {
-        Scanner scanner = new Scanner(line);
-        Node node = readTree(scanner);
-        assert !scanner.hasNext();
-        scanner.close();
+        Node node;
+        
+        try (Scanner scanner = new Scanner(line)) {
+            node = readTree(scanner);
+            assert !scanner.hasNext();
+        }
+        
         return node;
     }
 
     private static Node readTree(Scanner scanner) {
         RecUtil.expect("(", scanner);
-        String category = scanner.next();
+        short category = SymbolPool.getID(scanner.next());
         String head = scanner.next();
         Node node;
 
         if ("l".equals(head)) {
             Node leftChild = readTree(scanner);
             Node rightChild = readTree(scanner);
-            node = new BinaryNode(SymbolPool.getID(category),
+            node = new BinaryNode(category,
                     leftChild.lexicalHead, leftChild,
                     rightChild, new BinaryRule(leftChild.category,
-                    rightChild.category, SymbolPool.getID(category),
+                    rightChild.category, category,
                     BinaryRule.HeadPosition.LEFT));
         } else if ("r".equals(head)) {
             Node leftChild = readTree(scanner);
             Node rightChild = readTree(scanner);
-            node = new BinaryNode(SymbolPool.getID(category),
+            node = new BinaryNode(category,
                     rightChild.lexicalHead, leftChild,
                     rightChild, new BinaryRule(leftChild.category,
-                    rightChild.category, SymbolPool.getID(category),
+                    rightChild.category, category,
                     BinaryRule.HeadPosition.RIGHT));
         } else if ("s".equals(head)) {
             Node child = readTree(scanner);
-            node = new UnaryNode(SymbolPool.getID(category), child.lexicalHead,
+            node = new UnaryNode(category, child.lexicalHead,
                     child, new UnaryRule(child.category,
-                    SymbolPool.getID(category)));
+                    category));
         } else if ("c".equals(head)) {
-            LexicalEntry entry = LexicalEntry.fromString(category);
+            // TODO the ZPar tree format doesn't handle semantics or multiwords
             short pos = SymbolPool.getID(scanner.next());
             short form = SymbolPool.getID(scanner.next());
-            Word word = new Word(form, pos, null); // TODO ugh.
-            node = new LexicalNode(entry, word);
+            LexicalItem item = new LexicalItem(1, form, pos, category,
+                    SymbolPool.NONE);
+            SentencePosition word = new SentencePosition(form, pos, null); // TODO ugh.
+            node = new LexicalNode(item);
         } else {
             scanner.close();
             throw new RuntimeException("Invalid head indicator: " + head);

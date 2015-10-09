@@ -1,34 +1,33 @@
 package epar.node;
 
-import epar.data.LexicalEntry;
+import epar.data.LexicalItem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import epar.data.Word;
+import epar.data.SentencePosition;
 import epar.grammar.Grammar;
 import epar.parser.Action;
 import epar.util.SymbolPool;
 
 public class LexicalNode extends Node {
 
-    public final short semantics;
-
-    public LexicalNode(LexicalEntry entry, Word word) {
-        super(entry.category, word);
-        this.semantics = entry.semantics;
+    public LexicalNode(LexicalItem item) {
+        super(item.category, item);
     }
 
     @Override
     public List<Action> actionSequence(Grammar grammar) {
         List<Action> actions = new ArrayList<>();
-        actions.add(Action.shift(category, semantics));
+        actions.add(Action.shift(lexicalHead.length, lexicalHead.category,
+                lexicalHead.semantics));
         return actions;
     }
 
     @Override
     public String toString() {
-        return "( " + (new LexicalEntry(category, semantics)) + " c " +
+        // TODO the ZPar tree format doesn't handle semantics
+        return "( " + SymbolPool.getString(category) + " c " +
                 SymbolPool.getString(lexicalHead.pos) + " " +
                 SymbolPool.getString(lexicalHead.form) + " )";
     }

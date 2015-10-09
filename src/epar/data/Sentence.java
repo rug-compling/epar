@@ -8,38 +8,38 @@ import java.util.Scanner;
 
 public class Sentence {
 
-	public final List<Word> words;
+    public final List<SentencePosition> positions;
 
-	private Sentence(List<Word> words) {
-		this.words = words;
-	}
+    private Sentence(List<SentencePosition> words) {
+        this.positions = words;
+    }
 
-	public static Sentence readSentence(Scanner scanner) {
-		List<Word> words = new ArrayList<Word>();
+    public static Sentence readSentence(Scanner scanner) {
+        List<SentencePosition> words = new ArrayList<>();
 
-		while (scanner.hasNextLine()) {
-			String line = scanner.nextLine();
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
 
-			if ("".equals(line)) {
-				break;
-			}
+            if ("".equals(line)) {
+                break;
+            }
 
-			words.add(Word.read(line));
-		}
+            words.add(SentencePosition.read(line));
+        }
 
-		return new Sentence(words);
-	}
+        return new Sentence(words);
+    }
 
-	public static List<Sentence> readSentences(File file)
-			throws FileNotFoundException {
-		List<Sentence> sentences = new ArrayList<Sentence>();
-		Scanner scanner = new Scanner(file);
+    public static List<Sentence> readSentences(File file)
+            throws FileNotFoundException {
+        List<Sentence> sentences = new ArrayList<>();
+        Scanner scanner = new Scanner(file);
 
-		while (scanner.hasNextLine()) {
-			sentences.add(readSentence(scanner));
-		}
+        while (scanner.hasNextLine()) {
+            sentences.add(readSentence(scanner));
+        }
 
-		return sentences;
-	}
+        return sentences;
+    }
 
 }

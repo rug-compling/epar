@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+
+import sys
+
+for line in sys.stdin:
+    fields = line.split()
+    if fields:
+        word = fields[0]
+        pos = fields[1]
+        print('{}\t{}'.format(word, pos), end='')
+        for cat in fields[3::2]:
+            print('\t1\t{}\t{}\t{}\t0'.format(word, pos, cat), end='')
+    print()

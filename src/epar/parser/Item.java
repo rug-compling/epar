@@ -1,11 +1,11 @@
 package epar.parser;
 
-import epar.data.LexicalEntry;
+import epar.data.LexicalItem;
 import java.util.ArrayList;
 import java.util.List;
 
 import epar.data.Sentence;
-import epar.data.Word;
+import epar.data.SentencePosition;
 import epar.model.StateFeatures;
 import epar.grammar.BinaryRule;
 import epar.grammar.Grammar;
@@ -24,15 +24,16 @@ public class Item {
 
     public final Stack<Node> stack;
 
-    public final Stack<Word> queue;
+    public final Stack<SentencePosition> queue;
 
     public final boolean finished;
 
-    private static final Word NONE_WORD = new Word(SymbolPool.NONE, SymbolPool.NONE, null);
+    private static final SentencePosition NONE_SENTENCE_POSITION =
+            new SentencePosition(SymbolPool.NONE, SymbolPool.NONE, null);
 
-    private static final Node NONE_NODE = new LexicalNode(LexicalEntry.NONE, NONE_WORD);
+    private static final Node NONE_NODE = new LexicalNode(LexicalItem.NONE);
 
-    private Item(Action action, Stack<Node> stack, Stack<Word> queue,
+    private Item(Action action, Stack<Node> stack, Stack<SentencePosition> queue,
             boolean finished) {
         this.action = action;
         this.stack = stack;
@@ -117,13 +118,21 @@ public class Item {
             return;
         }
 
-        Word word = queue.getFirst();
-        Stack<Word> newQueue = queue.getRest();
+        SentencePosition sentencePosition = queue.getFirst();
 
-        for (LexicalEntry entry : word.lexicalEntries) {
-            Node newNode = new LexicalNode(entry, word);
+        for (LexicalItem item : sentencePosition.lexicalItems) {
+            Action newAction = Action.shift(item.length, item.category,
+                    item.semantics);
+            Node newNode = new LexicalNode(item);
             Stack<Node> newStack = stack.push(newNode);
-            Action newAction = Action.shift(entry.category, entry.semantics);
+            Stack<SentencePosition> newQueue = queue;
+            
+            // Pop as many positions from the queue as the item is long (> 1 if
+            // it is a multiword;
+            for (int i = 0; i < item.length; i++) {
+                newQueue = newQueue.getRest();
+            }
+            
             successors.add(new Item(newAction, newStack, newQueue, false));
         }
     }
@@ -165,10 +174,10 @@ public class Item {
         Node S1 = stack.get(1, NONE_NODE);
         Node S2 = stack.get(2, NONE_NODE);
         Node S3 = stack.get(3, NONE_NODE);
-        Word Q0 = queue.get(0, NONE_WORD);
-        Word Q1 = queue.get(1, NONE_WORD);
-        Word Q2 = queue.get(2, NONE_WORD);
-        Word Q3 = queue.get(3, NONE_WORD);
+        SentencePosition Q0 = queue.get(0, NONE_SENTENCE_POSITION);
+        SentencePosition Q1 = queue.get(1, NONE_SENTENCE_POSITION);
+        SentencePosition Q2 = queue.get(2, NONE_SENTENCE_POSITION);
+        SentencePosition Q3 = queue.get(3, NONE_SENTENCE_POSITION);
         Node S0L = getLeftNonHeadChild(S0);
         Node S0R = getRightNonHeadChild(S0);
         Node S0H = getHeadChild(S0);
@@ -205,19 +214,19 @@ public class Item {
         }
 
         // Group 2
-        if (Q0 != NONE_WORD) {
+        if (Q0 != NONE_SENTENCE_POSITION) {
             features.hashes[StateFeatures.Q0wp] = hash(Q0.form, Q0.pos);
         }
 
-        if (Q1 != NONE_WORD) {
+        if (Q1 != NONE_SENTENCE_POSITION) {
             features.hashes[StateFeatures.Q1wp] = hash(Q1.form, Q1.pos);
         }
 
-        if (Q2 != NONE_WORD) {
+        if (Q2 != NONE_SENTENCE_POSITION) {
             features.hashes[StateFeatures.Q2wp] = hash(Q2.form, Q2.pos);
         }
 
-        if (Q3 != NONE_WORD) {
+        if (Q3 != NONE_SENTENCE_POSITION) {
             features.hashes[StateFeatures.Q3wp] = hash(Q3.form, Q3.pos);
         }
 
@@ -260,7 +269,7 @@ public class Item {
             features.hashes[StateFeatures.S0wS1c] = hash(S0.lexicalHead.form, S1.category);
         }
 
-        if (S0 != NONE_NODE && Q0 != NONE_WORD) {
+        if (S0 != NONE_NODE && Q0 != NONE_SENTENCE_POSITION) {
             features.hashes[StateFeatures.S0wcQ0wp] = hash(S0.lexicalHead.form, S0.category,
                     Q0.form, Q0.pos);
             features.hashes[StateFeatures.S0cQ0wp] = hash(S0.category, Q0.form, Q0.pos);
@@ -268,7 +277,7 @@ public class Item {
             features.hashes[StateFeatures.S0cQ0p] = hash(S0.category, Q0.pos);
         }
 
-        if (S1 != NONE_NODE && Q0 != NONE_WORD) {
+        if (S1 != NONE_NODE && Q0 != NONE_SENTENCE_POSITION) {
             features.hashes[StateFeatures.S1wcQ0wp] = hash(S1.lexicalHead.form, S1.category,
                     Q0.form, Q0.pos);
             features.hashes[StateFeatures.S1cQ0wp] = hash(S1.category, Q0.form, Q0.pos);
@@ -286,7 +295,7 @@ public class Item {
             if (S1 != NONE_NODE) {
                 features.hashes[StateFeatures.S0cS1wcQ0p] = hash(S0.category, S1.lexicalHead.form, S1.category, Q0.pos);
             }
-            if (Q0 != NONE_WORD) {
+            if (Q0 != NONE_SENTENCE_POSITION) {
                 features.hashes[StateFeatures.S0cS1cQ0wp] = hash(S0.category, S1.category, Q0.form, Q0.pos);
             }
             features.hashes[StateFeatures.S0cS1cQ0p] = hash(S0.category, S1.category, Q0.pos);
@@ -294,13 +303,13 @@ public class Item {
         }
 
         // S0 Q0 Q1
-        if (Q0 != NONE_WORD) {
+        if (Q0 != NONE_SENTENCE_POSITION) {
             assert S0 != null;
             if (S0 != NONE_NODE) {
                 features.hashes[StateFeatures.S0wcQ0pQ1p] = hash(S0.lexicalHead.form, S0.category, Q0.pos, Q1.pos);
             }
             features.hashes[StateFeatures.S0cQ0wpQ1p] = hash(S0.category, Q0.form, Q0.pos, Q1.pos);
-            if (Q1 != NONE_WORD) {
+            if (Q1 != NONE_SENTENCE_POSITION) {
                 features.hashes[StateFeatures.S0cQ0pQ1wp] = hash(S0.category, Q0.pos, Q1.form, Q1.pos);
             }
             features.hashes[StateFeatures.S0cQ0pQ1p] = hash(S0.category, Q0.pos, Q1.pos);
@@ -337,7 +346,7 @@ public class Item {
             features.hashes[StateFeatures.S1cS1HcS1Rc] = hash(S1.category, S1H.category, S1R.category);
         }
 
-        if (S0R != NONE_NODE && Q0 != NONE_WORD) {
+        if (S0R != NONE_NODE && Q0 != NONE_SENTENCE_POSITION) {
             assert S0 != null;
             features.hashes[StateFeatures.S0cS0RcQ0p] = hash(S0.category, S0R.category, Q0.pos);
             features.hashes[StateFeatures.S0cS0RcQ0w] = hash(S0.category, S0R.category, Q0.form);
@@ -446,10 +455,10 @@ public class Item {
     }
 
     public static Item initial(Sentence sentence) {
-        Stack<Word> queue = new EStack<>();
+        Stack<SentencePosition> queue = new EStack<>();
 
-        for (int i = sentence.words.size() - 1; i >= 0; i--) {
-            queue = new NEStack<>(sentence.words.get(i), queue);
+        for (int i = sentence.positions.size() - 1; i >= 0; i--) {
+            queue = new NEStack<>(sentence.positions.get(i), queue);
         }
 
         return new Item(Action.INIT, new EStack<Node>(), queue, false);

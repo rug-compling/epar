@@ -1,16 +1,16 @@
 package epar.parser;
 
-import epar.data.LexicalEntry;
+import epar.data.LexicalItem;
 import epar.util.StringUtil;
 import epar.util.SymbolPool;
 
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO split this class into a hierarchy of action-type specific subclasses
 public class Action {
-    
-    // STATIC CONSTANTS
 
+    // STATIC CONSTANTS
     private static final short TYPE_INIT = 1;
 
     private static final short TYPE_SHIFT = 2;
@@ -32,9 +32,8 @@ public class Action {
     public static final Action IDLE = new Action(TYPE_IDLE, SymbolPool.NONE);
 
     public static final Action SKIP = new Action(TYPE_SKIP, SymbolPool.NONE);
-    
-    // INSTANCE CONSTANTS
 
+    // INSTANCE CONSTANTS
     /**
      * The action type: 1 for init, 2 for shift, 3 for binary, 4 for unary, 5
      * for finish and 6 for idle, 7 for skip.
@@ -42,29 +41,35 @@ public class Action {
     public final short type;
 
     /**
+     * 1 for normal shift action, > 1 for multiword shift actions, irrelevant
+     * for non-shift actions.
+     */
+    public final int length;
+
+    /**
      * The category, or {@link SymbolPool.NONE} for action types that are not
      * associated with a category.
      */
     public final short category;
-    
+
     public final short semantics;
-    
+
     // CONSTRUCTORS
-    
     private Action(short type, short category) {
-        this(type, category, SymbolPool.NONE);
+        this(type, 1, category, SymbolPool.NONE);
     }
 
-    private Action(short type, short category, short semantics) {
+    private Action(short type, int length, short category, short semantics) {
         this.type = type;
+        this.length = length;
         this.category = category;
         this.semantics = semantics;
     }
-    
-    // FACTORY METHODS
 
-    public static Action shift(short category, short semantics) {
-        return new Action(TYPE_SHIFT, category, semantics);
+    // FACTORY METHODS
+    public static Action shift(int length, short category, short semantics) {
+        return new Action(TYPE_SHIFT, length, category,
+                semantics);
     }
 
     public static Action binary(short category) {
@@ -74,13 +79,12 @@ public class Action {
     public static Action unary(short category) {
         return new Action(TYPE_UNARY, category);
     }
-    
+
     // INSTANCE METHODS
-    
     @Override
     public String toString() {
         String string;
-        
+
         switch (type) {
             case TYPE_INIT:
                 string = "INIT";
@@ -106,14 +110,29 @@ public class Action {
             default:
                 throw new IllegalArgumentException("Action with unknown type code " + type);
         }
-        
-        if (type == TYPE_SHIFT || type == TYPE_BINARY || type == TYPE_UNARY) {
-            string += "-" + (new LexicalEntry(category, semantics));
+
+        if (type == TYPE_SHIFT) {
+            string += "-" + length;
         }
-        
+
+        if (type == TYPE_SHIFT || type == TYPE_BINARY || type == TYPE_UNARY) {
+            string += "-" + SymbolPool.getString(category);
+        }
+
+        if (type == TYPE_SHIFT) {
+            if (semantics == SymbolPool.NONE) {
+                string += "-0";
+            } else {
+                string += "-" + SymbolPool.getString(semantics);
+            }
+        }
+
         return string;
     }
 
+    // FIXME to reliably check against oracle, shift actions need to be compared
+    // for length, too! The hash kernel, on the other hand, should probably not
+    // take the length into account! Argh.
     @Override
     public int hashCode() {
         int hash = 3;
@@ -143,20 +162,19 @@ public class Action {
         }
         return true;
     }
-    
-    // STATIC METHODS
 
+    // STATIC METHODS
     public static Action fromString(String actionString) {
-        String[] parts = actionString.split("-", 2);
+        String[] parts = actionString.split("-");
 
         switch (parts[0]) {
             case "INIT":
                 checkArgs(actionString, parts, 0);
                 return INIT;
             case "SHIFT":
-                checkArgs(actionString, parts, 1);
-                LexicalEntry entry = LexicalEntry.fromString(parts[1]);
-                return shift(entry.category, entry.semantics);
+                checkArgs(actionString, parts, 3);
+                return shift(Integer.parseInt(parts[1]),
+                        SymbolPool.getID(parts[2]), SymbolPool.getID(parts[3]));
             case "BINARY":
                 checkArgs(actionString, parts, 1);
                 return binary(SymbolPool.getID(parts[1]));
