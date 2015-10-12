@@ -21,7 +21,6 @@ public class TreesToActionSequences {
         try {
             List<Node> goldTrees = Node.readTrees(new File(args[0]));
             Grammar grammar = Grammar.load(new File(args[1]));
-            grammar.save(new File("TEST"));
             
             List<Oracle> oracles = new ArrayList<>(goldTrees.size());
             
