@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+# FIXME rewrite this to use the epar grammar format
+
 import grammar
 import markup
 import sys

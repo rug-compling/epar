@@ -46,6 +46,17 @@ public class BinaryRule {
                 return "RIGHT";
             }
         }
+        
+        public static HeadPosition fromActionString(String actionString) {
+            if ("LEFT".equals(actionString)) {
+                return LEFT;
+            } else if ("RIGHT".equals(actionString)) {
+                return RIGHT;
+            } else {
+                throw new IllegalArgumentException("Invalid head position: "
+                        + actionString);
+            }
+        }
     }
 
     public final short leftChildCategory;
@@ -55,59 +66,22 @@ public class BinaryRule {
     public final short parentCategory;
 
     public final BinaryRule.HeadPosition headPosition;
+    
+    public final String schemaName;
 
     public BinaryRule(short leftChildCategory, short rightChildCategory,
-            short parentCategory, BinaryRule.HeadPosition headPosition) {
+            short parentCategory, BinaryRule.HeadPosition headPosition,
+            String schemaName) {
         this.leftChildCategory = leftChildCategory;
         this.rightChildCategory = rightChildCategory;
         this.parentCategory = parentCategory;
         this.headPosition = headPosition;
+        this.schemaName = schemaName;
     }
 
     public BinaryRule flip() {
-        return new BinaryRule(rightChildCategory, leftChildCategory, parentCategory, headPosition.flip());
-    }
-
-    public static List<BinaryRule> read(String line) {
-        List<BinaryRule> rules = new ArrayList<BinaryRule>();
-        Scanner scanner = new Scanner(line);
-        short leftChildCategory = SymbolPool.getID(scanner.next());
-        RecUtil.expect(",", scanner);
-        short rightChildCategory = SymbolPool.getID(scanner.next());
-        RecUtil.expect(":", scanner);
-        RecUtil.expect("[", scanner);
-
-        while (true) {
-            RecUtil.expect("REDUCE", scanner);
-            RecUtil.expect("BINARY", scanner);
-            String head = scanner.next();
-            HeadPosition headPosition;
-
-            if ("LEFT".equals(head)) {
-                headPosition = HeadPosition.LEFT;
-            } else if ("RIGHT".equals(head)) {
-                headPosition = HeadPosition.RIGHT;
-            } else {
-                scanner.close();
-                throw new RuntimeException("Invalid head position indicator: "
-                        + head);
-            }
-
-            short parentCategory = SymbolPool.getID(scanner.next());
-            rules.add(new BinaryRule(leftChildCategory, rightChildCategory,
-                    parentCategory, headPosition));
-
-            String token = scanner.next();
-
-            if ("]".equals(token)) {
-                break;
-            } else {
-                RecUtil.expect(",", token);
-            }
-        }
-
-        scanner.close();
-        return rules;
+        return new BinaryRule(rightChildCategory, leftChildCategory,
+                parentCategory, headPosition.flip(), schemaName);
     }
 
     @Override
@@ -146,7 +120,10 @@ public class BinaryRule {
 
     @Override
     public String toString() {
-        return SymbolPool.getString(leftChildCategory) + " " + SymbolPool.getString(rightChildCategory) + " : REDUCE BINARY " + headPosition.toActionString() + " " + SymbolPool.getString(parentCategory);
+        return SymbolPool.getString(leftChildCategory) + "\t" +
+                SymbolPool.getString(rightChildCategory) + "\t" +
+                SymbolPool.getString(parentCategory) + "\t"+ 
+                headPosition.toActionString() + "\t" + schemaName;
     }
 
 }

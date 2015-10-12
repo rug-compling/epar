@@ -45,7 +45,6 @@ def load(binary_rules_file, unary_rules_file):
     grammar = Grammar()
     with open(binary_rules_file) as f:
        for line in f:
-          print(line, file=sys.stderr, end='')
           fields = line.split()
           left_cat = fields[0]
           assert fields[1] == ','

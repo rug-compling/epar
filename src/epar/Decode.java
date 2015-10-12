@@ -65,9 +65,9 @@ public class Decode {
     }
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        if (args.length != 10) {
+        if (args.length != 8) {
             System.err.println(
-                    "USAGE: java Decode SENTENCES_TRAIN ORACLES RULES.BIN.TRAIN RULES.UN.TRAIN RULES.BIN.DECODE RULES.UN.DECODE MODEL SENTENCES NUMCPUS TREES.OUT");
+                    "USAGE: java Decode SENTENCES_TRAIN ORACLES GRAMMAR.TRAIN GRAMMAR.DECODE MODEL SENTENCES NUMCPUS TREES.OUT");
             System.exit(1);
         }
 
@@ -77,20 +77,20 @@ public class Decode {
             // needed for decoding.
             Sentence.readSentences(new File(args[0]));
             MultiActionSequenceOracle.load(new File(args[1]));
-            Grammar.load(new File(args[2]), new File(args[3]));
+            Grammar.load(new File(args[2]));
             
             // Load grammar for decoding - expected to be a subset of the grammar for training
-            final Grammar grammar = Grammar.load(new File(args[4]), new File(args[5]));
+            final Grammar grammar = Grammar.load(new File(args[3]));
 
             // Load input sentences. This further pollutes the symbol pool,
             // which is not too bad I guess.
-            List<Sentence> inputSentences = Sentence.readSentences(new File(args[7]));
+            List<Sentence> inputSentences = Sentence.readSentences(new File(args[5]));
 
             // Load model
-            final Model model = Model.loadAveraged(new File(args[6]));
+            final Model model = Model.loadAveraged(new File(args[4]));
 
-            int numCPUs = Integer.parseInt(args[8]);
-            File outputFile = new File(args[9]);
+            int numCPUs = Integer.parseInt(args[6]);
+            File outputFile = new File(args[7]);
 
             final Oracle oracle = new AcceptAllOracle();
 

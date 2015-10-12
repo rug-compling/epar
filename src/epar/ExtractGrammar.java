@@ -10,16 +10,15 @@ import epar.node.Node;
 public class ExtractGrammar {
 
 	public static void main(String[] args) {
-		if (args.length != 3) {
-			System.err.println("USAGE: java ExtractGrammar TREES RULES.BIN.OUT RULES.UN.OUT");
+		if (args.length != 2) {
+			System.err.println("USAGE: java ExtractGrammar TREES GRAMMAR");
 			System.exit(1);
 		}
 
 		try {
 			List<Node> trees = Node.readTrees(new File(args[0]));
-			File binaryRuleFile = new File(args[1]);
-			File unaryRuleFile = new File(args[2]);
-			Grammar.extract(trees).save(binaryRuleFile, unaryRuleFile);
+			File grammarFile = new File(args[1]);
+			Grammar.extract(trees).save(grammarFile);
 		} catch (IOException e) {
 			System.err.println("ERROR: " + e.getLocalizedMessage());
 			System.exit(1);

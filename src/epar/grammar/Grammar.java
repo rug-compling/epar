@@ -170,21 +170,32 @@ public class Grammar {
         }
     }
 
-    public static Grammar load(File binaryFile, File unaryFile) throws FileNotFoundException {
+    public static Grammar load(File grammarFile) throws FileNotFoundException {
         Grammar grammar = new Grammar();
 
-        try (Scanner scanner = new Scanner(binaryFile, "utf-8")) {
+        try (Scanner scanner = new Scanner(grammarFile, "utf-8")) {
             while (scanner.hasNextLine()) {
-                for (BinaryRule rule : BinaryRule.read(scanner.nextLine())) {
-                    grammar.add(rule);
-                }
-            }
-        }
-
-        try (Scanner scanner = new Scanner(unaryFile, "utf-8")) {
-            while (scanner.hasNextLine()) {
-                for (UnaryRule rule : UnaryRule.read(scanner.nextLine())) {
-                    grammar.add(rule);
+                String line = scanner.nextLine();
+                String[] parts = line.split("\t");
+                
+                if (parts.length == 3) {
+                    short daughterCat = SymbolPool.getID(parts[0]);
+                    short motherCat = SymbolPool.getID(parts[1]);
+                    String schemaName = parts[2];
+                    grammar.add(new UnaryRule(daughterCat, motherCat,
+                            schemaName));
+                } else if (parts.length == 5) {
+                    short leftCat = SymbolPool.getID(parts[0]);
+                    short rightCat = SymbolPool.getID(parts[1]);
+                    short motherCat = SymbolPool.getID(parts[2]);
+                    BinaryRule.HeadPosition headPosition =
+                            BinaryRule.HeadPosition.fromActionString(parts[3]);
+                    String schemaName = parts[4];
+                    grammar.add(new BinaryRule(leftCat, rightCat, motherCat,
+                            headPosition, schemaName));
+                } else {
+                    throw new IllegalArgumentException("Invalid rule: " +
+                            line);
                 }
             }
         }
@@ -192,66 +203,19 @@ public class Grammar {
         return grammar;
     }
 
-    public void save(File binaryFile, File unaryFile)
+    public void save(File grammarFile)
             throws UnsupportedEncodingException, FileNotFoundException, IOException {
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(binaryFile), "utf-8"))) {
-            for (Map<Short, List<BinaryRule>> map : binaryRulesMap.values()) {
-                for (List<BinaryRule> rules : map.values()) {
-                    writeBinaryRules(writer, rules);
-                }
+        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(grammarFile), "utf-8"))) {
+            for (UnaryRule rule : getUnaryRules()) {
+                writer.write(rule.toString());
+                writer.write("\n");
+            }
+            
+            for (BinaryRule rule : getBinaryRules()) {
+                writer.write(rule.toString());
+                writer.write("\n");
             }
         }
-
-        try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(unaryFile), "utf-8"))) {
-            for (List<UnaryRule> rules : unaryRulesMap.values()) {
-                writeUnaryRules(writer, rules);
-            }
-
-        }
-    }
-
-    private void writeBinaryRules(Writer writer, List<BinaryRule> rules) throws IOException {
-        writer.write(SymbolPool.getString(rules.get(0).leftChildCategory));
-        writer.write(" , ");
-        writer.write(SymbolPool.getString(rules.get(0).rightChildCategory));
-        writer.write(" : [ REDUCE BINARY ");
-        writeHeadPosition(writer, rules.get(0).headPosition);
-        writer.write(" ");
-        writer.write(SymbolPool.getString(rules.get(0).parentCategory));
-        writer.write(" ");
-
-        for (BinaryRule rule : rules.subList(1, rules.size())) {
-            writer.write(", REDUCE BINARY ");
-            writeHeadPosition(writer, rule.headPosition);
-            writer.write(" ");
-            writer.write(SymbolPool.getString(rule.parentCategory));
-            writer.write(" ");
-        }
-
-        writer.write("]\n");
-    }
-
-    private void writeHeadPosition(Writer writer, HeadPosition headPosition) throws IOException {
-        if (headPosition.equals(BinaryRule.HeadPosition.LEFT)) {
-            writer.write("LEFT");
-        } else {
-            writer.write("RIGHT");
-        }
-    }
-
-    private void writeUnaryRules(Writer writer, List<UnaryRule> rules) throws IOException {
-        writer.write(SymbolPool.getString(rules.get(0).childCategory));
-        writer.write(" : [ REDUCE UNARY ");
-        writer.write(SymbolPool.getString(rules.get(0).parentCategory));
-        writer.write(" ");
-
-        for (UnaryRule rule : rules.subList(1, rules.size())) {
-            writer.write(", REDUCE UNARY ");
-            writer.write(SymbolPool.getString(rule.parentCategory));
-            writer.write(" ");
-        }
-
-        writer.write("]\n");
     }
 
     public boolean contains(BinaryRule rule) {

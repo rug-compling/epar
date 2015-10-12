@@ -50,6 +50,7 @@ public abstract class Node {
     }
 
     private static Node readTree(Scanner scanner) {
+        // TODO the ZPar tree format doesn't handle schema names
         RecUtil.expect("(", scanner);
         short category = SymbolPool.getID(scanner.next());
         String head = scanner.next();
@@ -62,7 +63,7 @@ public abstract class Node {
                     leftChild.lexicalHead, leftChild,
                     rightChild, new BinaryRule(leftChild.category,
                     rightChild.category, category,
-                    BinaryRule.HeadPosition.LEFT));
+                    BinaryRule.HeadPosition.LEFT, "dummy"));
         } else if ("r".equals(head)) {
             Node leftChild = readTree(scanner);
             Node rightChild = readTree(scanner);
@@ -70,12 +71,12 @@ public abstract class Node {
                     rightChild.lexicalHead, leftChild,
                     rightChild, new BinaryRule(leftChild.category,
                     rightChild.category, category,
-                    BinaryRule.HeadPosition.RIGHT));
+                    BinaryRule.HeadPosition.RIGHT, "dummy"));
         } else if ("s".equals(head)) {
             Node child = readTree(scanner);
             node = new UnaryNode(category, child.lexicalHead,
                     child, new UnaryRule(child.category,
-                    category));
+                    category, "dummy"));
         } else if ("c".equals(head)) {
             // TODO the ZPar tree format doesn't handle semantics or multiwords
             short pos = SymbolPool.getID(scanner.next());

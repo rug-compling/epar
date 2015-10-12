@@ -7,20 +7,20 @@ import java.io.IOException;
 import epar.grammar.Grammar;
 import epar.grammar.UnaryRule;
 
+// TODO port this to Python
 public class FlipGrammar {
 
     public static void main(String[] args) {
-        if (args.length != 4) {
-            System.err.println("USAGE: java FlipGrammar RULES.BIN.IN RULES.UN.IN RULES.BIN.OUT RULES.UN.OUT");
+        if (args.length != 2) {
+            System.err.println(
+                    "USAGE: java FlipGrammar GRAMMAR.IN GRAMMAR.OUT");
             System.exit(1);
         }
 
         try {
-            File binaryRuleFileIn = new File(args[0]);
-            File unaryRuleFileIn = new File(args[1]);
-            File binaryRuleFileOut = new File(args[2]);
-            File unaryRuleFileOut = new File(args[3]);
-            Grammar grammarIn = Grammar.load(binaryRuleFileIn, unaryRuleFileIn);
+            File grammarFileIn = new File(args[0]);
+            File grammarFileOut = new File(args[1]);
+            Grammar grammarIn = Grammar.load(grammarFileIn);
             Grammar grammarOut = new Grammar();
 
             for (BinaryRule rule : grammarIn.getBinaryRules()) {
@@ -32,7 +32,7 @@ public class FlipGrammar {
                 grammarOut.add(rule);
             }
 
-            grammarOut.save(binaryRuleFileOut, unaryRuleFileOut);
+            grammarOut.save(grammarFileOut);
         } catch (IOException e) {
             System.err.println("ERROR: " + e.getLocalizedMessage());
             System.exit(1);

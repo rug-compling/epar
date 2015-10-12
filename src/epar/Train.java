@@ -57,8 +57,8 @@ public class Train {
     }
 
     public static void main(String[] args) {
-        if (args.length != 6) {
-            System.err.println("USAGE: java Train SENTENCES ORACLES RULES.BIN RULES.UN MODEL.IN MODEL.OUT");
+        if (args.length != 5) {
+            System.err.println("USAGE: java Train SENTENCES ORACLES GRAMMAR MODEL.IN MODEL.OUT");
             System.exit(1);
         }
 
@@ -66,11 +66,11 @@ public class Train {
             // Populate symbol tables:
             List<Sentence> sentences = Sentence.readSentences(new File(args[0]));
             List<Oracle> oracles = MultiActionSequenceOracle.load(new File(args[1]));
-            Grammar grammar = Grammar.load(new File(args[2]), new File(args[3]));
+            Grammar grammar = Grammar.load(new File(args[2]));
 
             // Process further command-line arguments:
-            UpdatableModel model = UpdatableModel.load(new File(args[4]));
-            File outputModelFile = new File(args[5]);
+            UpdatableModel model = UpdatableModel.load(new File(args[3]));
+            File outputModelFile = new File(args[4]);
             
             if (sentences.size() != oracles.size()) {
                 System.err.println("ERROR: Lengths of SENTENCES and ORACLES" + " don't match");

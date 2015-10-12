@@ -13,14 +13,15 @@ import epar.parser.Action;
 public class TreesToActionSequences {
 
     public static void main(String[] args) {
-        if (args.length != 3) {
-            System.err.println("USAGE: java TreesToActionSequences GOLDTREES RULES.BIN RULES.UN");
+        if (args.length != 2) {
+            System.err.println("USAGE: java TreesToActionSequences GOLDTREES GRAMMAR");
             System.exit(1);
         }
 
         try {
             List<Node> goldTrees = Node.readTrees(new File(args[0]));
-            Grammar grammar = Grammar.load(new File(args[1]), new File(args[2]));
+            Grammar grammar = Grammar.load(new File(args[1]));
+            grammar.save(new File("TEST"));
             
             List<Oracle> oracles = new ArrayList<>(goldTrees.size());
             
