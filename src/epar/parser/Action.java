@@ -191,7 +191,8 @@ public class Action {
                 checkArgs(actionString, parts, 0);
                 return SKIP;
             default:
-                throw new IllegalArgumentException("Invalid action type: " + parts[0]);
+                throw new IllegalArgumentException("Invalid action type " +
+                        parts[0] + " in action string " + actionString);
         }
     }
 

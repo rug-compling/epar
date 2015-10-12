@@ -10,6 +10,7 @@ import epar.parser.Action;
 import epar.parser.Candidate;
 import epar.parser.Item;
 import java.io.FileNotFoundException;
+import java.util.Collections;
 import java.util.Scanner;
 
 /**
@@ -56,6 +57,11 @@ public class MultiActionSequenceOracle implements Oracle {
     }
     
     public static MultiActionSequenceOracle fromString(String line) {
+        if ("".equals(line)) {
+            return new MultiActionSequenceOracle(
+                    Collections.<List<Action>>emptyList());
+        }
+        
         String[] parts = line.split(" \\|\\| ");
         List<List<Action>> actionSequences = new ArrayList<>(parts.length);
         

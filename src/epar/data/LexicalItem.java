@@ -29,13 +29,5 @@ public class LexicalItem {
         this.category = category;
         this.semantics = semantics;
     }
-
-    public static LexicalItem read(Scanner scanner) {
-        return new LexicalItem(Integer.parseInt(scanner.next()),
-                SymbolPool.getID(scanner.next()),
-                SymbolPool.getID(scanner.next()),
-                SymbolPool.getID(scanner.next()),
-                SymbolPool.getID(scanner.next()));
-    }
     
 }
