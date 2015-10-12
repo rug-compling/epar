@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import grammar
 import sys
 
 def straighten(cat):
@@ -12,26 +11,25 @@ def flip(action):
     else:
         return action.replace('RIGHT', 'LEFT')
 
-try:
-    _, binary_in, unary_in, binary_out, unary_out = sys.argv
-except ValueError:
-    print('Usage: grammar_straighten.py BINARY_IN UNARY_IN BINARY_OUT '
-            'UNARY_OUT', file=sys.stderr)
-    sys.exit(1)
+rules = []
 
-grammar_in = grammar.load(binary_in, unary_in)
-grammar_out = grammar.Grammar()
+for line in sys.stdin:
+    try:
+        left_cat, right_cat, cat, head, name = line.split()
+        rule = '{}\t{}\t{}\t{}\t{}'.format(straighten(left_cat),
+                straighten(right_cat), straighten(cat), head, name)
+        if rule not in rules:
+            rules.append(rule)
+        rule = '{}\t{}\t{}\t{}\t{}'.format(straighten(right_cat),
+                straighten(left_cat), straighten(cat), flip(head), name)
+        if rule not in rules:
+            rules.append(rule)
+    except ValueError:
+        old_cat, new_cat, name = line.split()
+        rule = '{}\t{}\t{}'.format(straighten(old_cat), straighten(new_cat),
+                name)
+        if rule not in rules:
+            rules.append(rule)
 
-for (left_cat, right_cat), action in grammar_in.get_binary_rules():
-    left_cat = straighten(left_cat)
-    right_cat = straighten(right_cat)
-    action = straighten(action)
-    grammar_out.add_binary_rule(left_cat, right_cat, action)
-    grammar_out.add_binary_rule(right_cat, left_cat, flip(action))
-
-for daughter_cat, action in grammar_in.get_unary_rules():
-    daughter_cat = straighten(daughter_cat)
-    action = straighten(action)
-    grammar_out.add_unary_rule(daughter_cat, action)
-
-grammar_out.save(binary_out, unary_out)
+for rule in rules:
+    print(rule)

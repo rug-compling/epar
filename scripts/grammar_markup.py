@@ -1,36 +1,26 @@
 #!/usr/bin/env python3
 
-# FIXME rewrite this to use the epar grammar format
-
-import grammar
 import markup
 import sys
 
-def action_markup(action):
-    print('Action to mark up: {}'.format(action), file=sys.stderr)
-    fields = action.split()
-    fields[-1] = markup.markup(fields[-1], lambda cat: cat)
-    return ' '.join(fields)
+def m(cat):
+    return markup.markup(cat, lambda x: x)
 
-try:
-    _, binary_in, unary_in, binary_out, unary_out = sys.argv
-except ValueError:
-    print('Usage: grammar_markup.py BINARY_IN UNARY_IN BINARY_OUT UNARY_OUT',
-            file=sys.stderr)
-    sys.exit(1)
+rules = []
 
-grammar_in = grammar.load(binary_in, unary_in)
-grammar_out = grammar.Grammar()
+for line in sys.stdin:
+    try:
+        left_cat, right_cat, cat, head, name = line.split()
+        rule = '{}\t{}\t{}\t{}\t{}'.format(m(left_cat),
+                m(right_cat), m(cat), head, name)
+        if rule not in rules:
+            rules.append(rule)
+    except ValueError:
+        old_cat, new_cat, name = line.split()
+        rule = '{}\t{}\t{}'.format(m(old_cat), m(new_cat),
+                name)
+        if rule not in rules:
+            rules.append(rule)
 
-for (left_cat, right_cat), action in grammar_in.get_binary_rules():
-    left_cat = markup.markup(left_cat, lambda cat: cat)
-    right_cat = markup.markup(right_cat, lambda cat: cat)
-    action = action_markup(action)
-    grammar_out.add_binary_rule(left_cat, right_cat, action)
-
-for daughter_cat, action in grammar_in.get_unary_rules():
-    daughter_cat = markup.markup(daughter_cat, lambda cat: cat)
-    action = action_markup(action)
-    grammar_out.add_unary_rule(daughter_cat, action)
-
-grammar_out.save(binary_out, unary_out)
+for rule in rules:
+    print(rule)
