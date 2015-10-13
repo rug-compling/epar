@@ -48,9 +48,9 @@ public class Model {
 
     public double score(StateFeatures stateFeatures, Item successor) {
         double score = 0;
-        StepFeatures stepFeatures = stateFeatures.pairWithAction(successor);
+        StepFeatures stepFeatures = new StepFeatures(stateFeatures, successor);
 
-        for (int templateID = 0; templateID < StateFeatures.NUMBER_OF_TEMPLATES;
+        for (int templateID = 0; templateID < StepFeatures.NUMBER_OF_TEMPLATES;
                 templateID++) {
             int hash = stepFeatures.hashes[templateID];
 

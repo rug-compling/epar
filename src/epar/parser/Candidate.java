@@ -24,7 +24,7 @@ public class Candidate {
 
     public void findSuccessors(int generation, List<Candidate> successors, Grammar grammar, Model model,
             Oracle oracle) {
-        StateFeatures stateFeatures = StateFeatures.extractFeatures(item);
+        StateFeatures stateFeatures = item.extractFeatures();
 
         for (Item successorItem : item.successors(grammar)) {
             double successorScore = score + model.score(stateFeatures, successorItem);

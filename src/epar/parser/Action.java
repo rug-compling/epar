@@ -11,19 +11,19 @@ import java.util.List;
 public class Action {
 
     // STATIC CONSTANTS
-    private static final short TYPE_INIT = 1;
+    public static final short TYPE_INIT = 1;
 
-    private static final short TYPE_SHIFT = 2;
+    public static final short TYPE_SHIFT = 2;
 
-    private static final short TYPE_BINARY = 3;
+    public static final short TYPE_BINARY = 3;
 
-    private static final short TYPE_UNARY = 4;
+    public static final short TYPE_UNARY = 4;
 
-    private static final short TYPE_FINISH = 5;
+    public static final short TYPE_FINISH = 5;
 
-    private static final short TYPE_IDLE = 6;
+    public static final short TYPE_IDLE = 6;
 
-    private static final short TYPE_SKIP = 7;
+    public static final short TYPE_SKIP = 7;
 
     public static final Action INIT = new Action(TYPE_INIT, SymbolPool.NONE);
 

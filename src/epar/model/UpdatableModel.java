@@ -43,10 +43,10 @@ public class UpdatableModel extends Model {
 
     public void update(Candidate candidate, double delta) {
         while (candidate.parent != null) { // Iterate over all steps leading up to the candidate
-            StepFeatures stepFeatures = StateFeatures.extractFeatures(
-                    candidate.parent.item).pairWithAction(candidate.item);
+            StepFeatures stepFeatures = new StepFeatures(
+                    candidate.parent.item.extractFeatures(), candidate.item);
 
-            for (int templateID = 0; templateID < StateFeatures.NUMBER_OF_TEMPLATES; templateID++) {
+            for (int templateID = 0; templateID < StepFeatures.NUMBER_OF_TEMPLATES; templateID++) {
                 int hash = stepFeatures.hashes[templateID];
 
                 if (hash != 0) {
