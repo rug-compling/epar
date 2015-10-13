@@ -6,6 +6,7 @@
 package epar.model;
 
 import epar.parser.Action;
+import epar.parser.Item;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,9 +46,9 @@ public class Model {
         return model;
     }
 
-    public double score(StateFeatures stateFeatures, Action action) {
+    public double score(StateFeatures stateFeatures, Item successor) {
         double score = 0;
-        StepFeatures stepFeatures = stateFeatures.pairWithAction(action);
+        StepFeatures stepFeatures = stateFeatures.pairWithAction(successor);
 
         for (int templateID = 0; templateID < StateFeatures.NUMBER_OF_TEMPLATES;
                 templateID++) {

@@ -163,7 +163,7 @@ public class StateFeatures {
 
     public final int[] hashes = new int[NUMBER_OF_TEMPLATES];
 
-    public StepFeatures pairWithAction(Action action) {
+    public StepFeatures pairWithAction(Item successor) {
         StepFeatures result = new StepFeatures();
 
         for (int templateID = 0; templateID < StateFeatures.NUMBER_OF_TEMPLATES; templateID++) {
@@ -177,8 +177,8 @@ public class StateFeatures {
             featureHash = 29 * featureHash + templateID; // include feature template ID in hash
             // We do *not* use the action's hashCode but are specifically
             // interested only in the type, category and semantics.
-            featureHash = 29 * featureHash + action.type; // include action
-            featureHash = 29 * featureHash + action.category;
+            featureHash = 29 * featureHash + successor.action.type; // include action
+            featureHash = 29 * featureHash + successor.action.category;
             result.hashes[templateID] = featureHash;
         }
 
