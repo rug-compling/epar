@@ -19,6 +19,8 @@ import epar.util.Stack;
 import epar.util.SymbolPool;
 
 public class Item {
+    
+    public final Item parent;
 
     public final Action action;
 
@@ -33,8 +35,9 @@ public class Item {
 
     private static final Node NONE_NODE = new LexicalNode(LexicalItem.NONE);
 
-    private Item(Action action, Stack<Node> stack, Stack<SentencePosition> queue,
-            boolean finished) {
+    private Item(Item parent, Action action, Stack<Node> stack,
+            Stack<SentencePosition> queue, boolean finished) {
+        this.parent = parent;
         this.action = action;
         this.stack = stack;
         this.queue = queue;
@@ -74,7 +77,7 @@ public class Item {
         for (Node parent : grammar.binary(leftChild, rightChild)) {
             Action newAction = Action.binary(parent.category);
             Stack<Node> newStack = restRest.push(parent);
-            successors.add(new Item(newAction, newStack, queue, false));
+            successors.add(new Item(this, newAction, newStack, queue, false));
         }
     }
 
@@ -93,7 +96,7 @@ public class Item {
         for (Node parent : grammar.unary(child)) {
             Action newAction = Action.unary(parent.category);
             Stack<Node> newStack = rest.push(parent);
-            successors.add(new Item(newAction, newStack, queue, false));
+            successors.add(new Item(this, newAction, newStack, queue, false));
         }
     }
 
@@ -110,7 +113,8 @@ public class Item {
             return;
         }
 
-        successors.add(new Item(Action.SKIP, stack.getRest(), queue, false));
+        successors.add(new Item(this, Action.SKIP, stack.getRest(), queue,
+                false));
     }
 
     private void shift(List<Item> successors) {
@@ -133,7 +137,8 @@ public class Item {
                 newQueue = newQueue.getRest();
             }
             
-            successors.add(new Item(newAction, newStack, newQueue, false));
+            successors.add(new Item(this, newAction, newStack, newQueue,
+                    false));
         }
     }
 
@@ -147,7 +152,7 @@ public class Item {
             return;
         }
 
-        successors.add(new Item(Action.FINISH, stack, queue, true));
+        successors.add(new Item(this, Action.FINISH, stack, queue, true));
     }
 
     private void idle(List<Item> successors) {
@@ -155,7 +160,7 @@ public class Item {
             return;
         }
 
-        successors.add(new Item(Action.IDLE, stack, queue, true));
+        successors.add(new Item(this, Action.IDLE, stack, queue, true));
     }
 
     public static Item initial(Sentence sentence) {
@@ -165,7 +170,7 @@ public class Item {
             queue = new NEStack<>(sentence.positions.get(i), queue);
         }
 
-        return new Item(Action.INIT, new EStack<Node>(), queue, false);
+        return new Item(null, Action.INIT, new EStack<Node>(), queue, false);
     }
 
     public StateFeatures extractFeatures() {
