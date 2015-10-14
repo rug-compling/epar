@@ -28,7 +28,7 @@ public class Candidate {
 
         for (Item successorItem : item.successors(grammar)) {
             double successorScore = score + model.score(stateFeatures, successorItem);
-            boolean successorCorrect = correct && oracle.accept(generation, this, successorItem);
+            boolean successorCorrect = correct && oracle.accept(generation, successorItem);
             successors
                     .add(new Candidate(this, successorItem, successorScore, successorCorrect));
         }

@@ -1,13 +1,11 @@
 package epar.oracle;
 
-import epar.grammar.BinaryRule;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import epar.parser.Action;
-import epar.parser.Candidate;
 import epar.parser.Item;
 import java.io.FileNotFoundException;
 import java.util.Collections;
@@ -41,14 +39,14 @@ public class MultiActionSequenceOracle implements Oracle {
     }
 
     @Override
-    public boolean accept(int generation, Candidate candidate, Item successorItem) {
+    public boolean accept(int generation, Item item) {
         // Check action and its lineage against all possible sequences. That we
         // do this every time instead of somehow remembering which action
         // sequences each candidate might be part of is suboptimal, but I don't
         // think it slows things down much.
         
         for (Oracle oracle : oracles) {
-            if (oracle.accept(generation, candidate, successorItem)) {
+            if (oracle.accept(generation, item)) {
                 return true;
             }
         }

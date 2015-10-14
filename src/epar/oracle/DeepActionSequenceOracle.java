@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import epar.parser.Action;
-import epar.parser.Candidate;
 import epar.parser.Item;
 
 public class DeepActionSequenceOracle implements Oracle {
@@ -21,14 +20,13 @@ public class DeepActionSequenceOracle implements Oracle {
     }
 
     @Override
-    public boolean accept(int generation, Candidate candidate, Item item) {
-        while (candidate != null) {
-            if (!shallowOracle.accept(generation, candidate, item)) {
+    public boolean accept(int generation, Item item) {
+        while (item.parent != null) {
+            if (!shallowOracle.accept(generation, item)) {
                 return false;
             }
             
-            item = candidate.item;
-            candidate = candidate.parent;
+            item = item.parent;
             generation--;
         }
         
