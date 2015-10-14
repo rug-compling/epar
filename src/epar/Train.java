@@ -51,8 +51,7 @@ public class Train {
                 continue;
             }
 
-            model.update(highestScoringCorrect, 1.0);
-            model.update(highestScoring, -1.0);
+            model.update(highestScoringCorrect, highestScoring);
         }
     }
 

@@ -40,8 +40,17 @@ public class UpdatableModel extends Model {
         sumsForAverage[index] += missedStates * weights[index];
         stateCountsForAverage[index] = stateCount;
     }
+    
+    public void update(Candidate goodExample, Candidate badExample) {
+        if (goodExample != badExample) {
+            update(goodExample, 1.0);
+            update(badExample, -1.0);
+        }
+        
+        stateCount++;
+    }
 
-    public void update(Candidate candidate, double delta) {
+    private void update(Candidate candidate, double delta) {
         while (candidate.parent != null) { // Iterate over all steps leading up to the candidate
             StepFeatures stepFeatures = new StepFeatures(
                     candidate.parent.item.extractFeatures(), candidate.item);
@@ -58,8 +67,6 @@ public class UpdatableModel extends Model {
 
             candidate = candidate.parent;
         }
-        
-        stateCount++;
     }
     
     public void save(File file) throws IOException {
