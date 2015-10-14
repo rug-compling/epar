@@ -1,8 +1,6 @@
 package epar.data;
 
-import epar.util.StringUtil;
 import epar.util.SymbolPool;
-import java.util.Scanner;
 
 /**
  *

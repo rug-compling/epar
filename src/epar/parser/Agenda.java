@@ -14,7 +14,7 @@ import epar.oracle.Oracle;
 
 public class Agenda {
 
-    private final static Logger LOGGER = Logger.getLogger(Agenda.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(Agenda.class.getName());
 
     static {
         LOGGER.setLevel(Level.FINE);
