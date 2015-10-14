@@ -17,7 +17,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 public class UpdatableModel extends Model {
-    
+
     // Each weight is saved together with the average of its values after each
     // training example in each iteration so far, which will be used in decoding
     // instead of the final weight (averaged perceptron). For efficiency, we
@@ -28,11 +28,10 @@ public class UpdatableModel extends Model {
     // Before we update a weight and for each weight before we save the model,
     // we normalize the representation of the average so that the reference
     // state count is the same for each weight, namely the current state count.
-
     private final float[] sumsForAverage = new float[WEIGHT_VECTOR_SIZE];
 
     private final int[] stateCountsForAverage = new int[WEIGHT_VECTOR_SIZE];
-    
+
     private int stateCount = 0;
 
     private void normalizeAverageRepresentationForWeight(int index) {
@@ -40,13 +39,31 @@ public class UpdatableModel extends Model {
         sumsForAverage[index] += missedStates * weights[index];
         stateCountsForAverage[index] = stateCount;
     }
-    
+
+    /**
+     * Low-level method for updating a single weight without incrementing the
+     * state counter. Use for initialization.
+     * @param featureHash
+     * @param delta 
+     */
+    public void update(int featureHash, double delta) {
+        int index = index(featureHash);
+        normalizeAverageRepresentationForWeight(index);
+        weights[index] += delta;
+    }
+
+    /**
+     * High-level method for performing a perceptron update.
+     *
+     * @param goodExample
+     * @param badExample
+     */
     public void update(Candidate goodExample, Candidate badExample) {
         if (goodExample != badExample) {
             update(goodExample, 1.0);
             update(badExample, -1.0);
         }
-        
+
         stateCount++;
     }
 
@@ -59,20 +76,18 @@ public class UpdatableModel extends Model {
                 int hash = stepFeatures.hashes[templateID];
 
                 if (hash != 0) {
-                    int index = index(hash);
-                    normalizeAverageRepresentationForWeight(index);
-                    weights[index] += delta;
+                    update(hash, delta);
                 }
             }
 
             candidate = candidate.parent;
         }
     }
-    
+
     public void save(File file) throws IOException {
         try (ObjectOutput output = new ObjectOutputStream(new BufferedOutputStream(new GZIPOutputStream(new FileOutputStream(file))))) {
             output.writeInt(stateCount);
-            
+
             for (int i = 0; i < WEIGHT_VECTOR_SIZE; i++) {
                 normalizeAverageRepresentationForWeight(i);
                 output.writeFloat(weights[i]);
