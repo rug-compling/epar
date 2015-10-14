@@ -130,39 +130,6 @@ public class Action {
         return string;
     }
 
-    // FIXME to reliably check against oracle, shift actions need to be compared
-    // for length, too! The hash kernel, on the other hand, should probably not
-    // take the length into account! Argh.
-    @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 13 * hash + this.type;
-        hash = 13 * hash + this.category;
-        hash = 13 * hash + this.semantics;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Action other = (Action) obj;
-        if (this.type != other.type) {
-            return false;
-        }
-        if (this.category != other.category) {
-            return false;
-        }
-        if (this.semantics != other.semantics) {
-            return false;
-        }
-        return true;
-    }
-
     // STATIC METHODS
     public static Action fromString(String actionString) {
         String[] parts = actionString.split("-");
@@ -217,6 +184,40 @@ public class Action {
 
     public static String sequenceToString(List<Action> actionSequence) {
         return StringUtil.join(actionSequence, " ");
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + this.type;
+        hash = 89 * hash + this.length;
+        hash = 89 * hash + this.category;
+        hash = 89 * hash + this.semantics;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Action other = (Action) obj;
+        if (this.type != other.type) {
+            return false;
+        }
+        if (this.length != other.length) {
+            return false;
+        }
+        if (this.category != other.category) {
+            return false;
+        }
+        if (this.semantics != other.semantics) {
+            return false;
+        }
+        return true;
     }
 
 }
