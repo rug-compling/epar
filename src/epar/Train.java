@@ -17,6 +17,9 @@ public class Train {
 
     private final static Logger LOGGER = Logger.getLogger(Train.class.getName());
 
+    // TODO should be 1 normally
+    private final static int DWELL = 1;
+
     public static void train(List<Sentence> sentences, List<Oracle> oracles, Grammar grammar,
             UpdatableModel model) throws IOException {
         int trainingSetSize = sentences.size();
@@ -26,32 +29,37 @@ public class Train {
         }
 
         for (int e = 0; e < trainingSetSize; e++) {
+            LOGGER.info("Training example " + e);
             Sentence sentence = sentences.get(e);
             Oracle oracle = oracles.get(e);
-            Agenda agenda = Decode.decode(Agenda.initial(sentence), grammar, model, oracle);
-            Candidate highestScoring;
-            Candidate highestScoringCorrect;
 
-            try {
-                highestScoring = agenda.getHighestScoring();
-            } catch (IndexOutOfBoundsException y) {
-                LOGGER.warning("No candidates, can't update");
-                continue;
+            // Dwell on the same training example up to DWELL times.
+            for (int a = 0; a < DWELL; a++) {
+                Agenda agenda = Decode.decode(Agenda.initial(sentence), grammar, model, oracle);
+                Candidate highestScoring;
+                Candidate highestScoringCorrect;
+
+                try {
+                    highestScoring = agenda.getHighestScoring();
+                } catch (IndexOutOfBoundsException y) {
+                    LOGGER.warning("No candidates, can't update");
+                    break;
+                }
+
+                try {
+                    highestScoringCorrect = agenda.getHighestScoringCorrect();
+                } catch (IndexOutOfBoundsException y) {
+                    LOGGER.warning("No correct candidates, can't update");
+                    break;
+                }
+
+                if (highestScoring == highestScoringCorrect) {
+                    LOGGER.info("Highest-scoring candidate is correct, no update");
+                    break;
+                }
+
+                model.update(highestScoringCorrect, highestScoring);
             }
-
-            try {
-                highestScoringCorrect = agenda.getHighestScoringCorrect();
-            } catch (IndexOutOfBoundsException y) {
-                LOGGER.warning("No correct candidates, can't update");
-                continue;
-            }
-
-            if (highestScoring == highestScoringCorrect) {
-                LOGGER.info("Highest-scoring candidate is correct, no update");
-                continue;
-            }
-
-            model.update(highestScoringCorrect, highestScoring);
         }
     }
 
@@ -70,7 +78,7 @@ public class Train {
             // Process further command-line arguments:
             UpdatableModel model = UpdatableModel.load(new File(args[3]));
             File outputModelFile = new File(args[4]);
-            
+
             if (sentences.size() != oracles.size()) {
                 System.err.println("ERROR: Lengths of SENTENCES and ORACLES" + " don't match");
                 System.exit(1);
