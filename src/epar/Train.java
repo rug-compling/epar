@@ -12,6 +12,7 @@ import epar.oracle.MultiActionSequenceOracle;
 import epar.oracle.Oracle;
 import epar.parser.Agenda;
 import epar.parser.Candidate;
+import java.util.logging.Level;
 
 public class Train {
 
@@ -29,7 +30,7 @@ public class Train {
         }
 
         for (int e = 0; e < trainingSetSize; e++) {
-            LOGGER.info("Training example " + e);
+            LOGGER.log(Level.INFO, "Training example {0}", e);
             Sentence sentence = sentences.get(e);
             Oracle oracle = oracles.get(e);
 
@@ -42,22 +43,28 @@ public class Train {
                 try {
                     highestScoring = agenda.getHighestScoring();
                 } catch (IndexOutOfBoundsException y) {
-                    LOGGER.warning("No candidates, can't update");
+                    LOGGER.warning("No candidates, empty update");
+                    // TODO What is better in this case, empty update or no update?
+                    model.update(null, null);
                     break;
                 }
 
                 try {
                     highestScoringCorrect = agenda.getHighestScoringCorrect();
                 } catch (IndexOutOfBoundsException y) {
-                    LOGGER.warning("No correct candidates, can't update");
+                    LOGGER.warning("No correct candidates, empty update");
+                    // TODO What is better in this case, empty update or no update?
+                    model.update(null, null);
                     break;
                 }
 
                 if (highestScoring == highestScoringCorrect) {
-                    LOGGER.info("Highest-scoring candidate is correct, no update");
+                    LOGGER.info("Highest-scoring candidate is correct, empty update");
+                    model.update(null, null);
                     break;
                 }
 
+                LOGGER.info("Performing udpate");
                 model.update(highestScoringCorrect, highestScoring);
             }
         }

@@ -59,7 +59,8 @@ public class UpdatableModel extends Model {
      * @param badExample
      */
     public void update(Candidate goodExample, Candidate badExample) {
-        if (goodExample != badExample) {
+        if (goodExample != badExample && goodExample != null &&
+                badExample != null) {
             update(goodExample, 1.0);
             update(badExample, -1.0);
         }
