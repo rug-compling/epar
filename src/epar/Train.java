@@ -30,7 +30,6 @@ public class Train {
         }
 
         for (int e = 0; e < trainingSetSize; e++) {
-            LOGGER.log(Level.INFO, "Training example {0}", e);
             Sentence sentence = sentences.get(e);
             Oracle oracle = oracles.get(e);
 
@@ -43,7 +42,7 @@ public class Train {
                 try {
                     highestScoring = agenda.getHighestScoring();
                 } catch (IndexOutOfBoundsException y) {
-                    LOGGER.warning("No candidates, empty update");
+                    LOGGER.log(Level.WARNING, "Example {0}, attempt {1}: no candidates, empty update", new Object[]{e, a});
                     // TODO What is better in this case, empty update or no update?
                     model.update(null, null);
                     break;
@@ -52,19 +51,19 @@ public class Train {
                 try {
                     highestScoringCorrect = agenda.getHighestScoringCorrect();
                 } catch (IndexOutOfBoundsException y) {
-                    LOGGER.warning("No correct candidates, empty update");
+                    LOGGER.log(Level.WARNING, "Example {0}, attempt {1}: no correct candidates, empty update", new Object[]{e, a});
                     // TODO What is better in this case, empty update or no update?
                     model.update(null, null);
                     break;
                 }
 
                 if (highestScoring == highestScoringCorrect) {
-                    LOGGER.info("Highest-scoring candidate is correct, empty update");
+                    LOGGER.log(Level.INFO, "Example {0}, attempt {1}: highest-scoring candidate is correct, empty update", new Object[]{e, a});
                     model.update(null, null);
                     break;
                 }
 
-                LOGGER.info("Performing udpate");
+                LOGGER.log(Level.INFO, "Example {0}, attempt {1}: performing udpate", new Object[]{e, a});
                 model.update(highestScoringCorrect, highestScoring);
             }
         }
