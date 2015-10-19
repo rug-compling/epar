@@ -1,9 +1,9 @@
 package epar.parser;
 
-import epar.data.LexicalItem;
 import java.util.ArrayList;
 import java.util.List;
 
+import epar.data.LexicalItem;
 import epar.data.Sentence;
 import epar.data.SentencePosition;
 import epar.grammar.BinaryRule;
@@ -17,8 +17,11 @@ import epar.util.EStack;
 import epar.util.NEStack;
 import epar.util.Stack;
 import epar.util.SymbolPool;
+import java.util.logging.Logger;
 
 public class Item {
+
+    private final static Logger LOGGER = Logger.getLogger(Item.class.getName());
     
     public final Item parent;
 
@@ -74,8 +77,8 @@ public class Item {
         Node leftChild = rest.getFirst();
         Stack<Node> restRest = rest.getRest();
 
-        for (Node parent : grammar.binary(leftChild, rightChild)) {
-            Action newAction = Action.binary(parent.category);
+        for (BinaryNode parent : grammar.binary(leftChild, rightChild)) {
+            Action newAction = Action.binary(parent.category, parent.rule.headPosition);
             Stack<Node> newStack = restRest.push(parent);
             successors.add(new Item(this, newAction, newStack, queue, false));
         }
@@ -481,6 +484,27 @@ public class Item {
     @Override
     public String toString() {
         return "(" + action + ", " + stack.size() + ", " + queue.size() + ", " + finished + ")";
+    }
+
+    /**
+     * Returns the sequences of actions that lead up to this item, not
+     * including the INIT action that created the initial item or IDLE actions
+     * at the end.
+     * @return 
+     */
+    public List<Action> actionSequence() {
+        Item item = this;
+        List<Action> sequence = new ArrayList<>();
+        
+        while (item.parent != null) {
+            if (item.action.type != Action.TYPE_IDLE) {
+                sequence.add(0, item.action);
+            }
+            
+            item = item.parent;
+        }
+        
+        return sequence;
     }
 
 }

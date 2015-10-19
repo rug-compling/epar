@@ -1,10 +1,5 @@
 package epar.grammar;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
-import epar.util.RecUtil;
 import epar.util.SymbolPool;
 import java.util.Objects;
 
@@ -39,7 +34,7 @@ public class BinaryRule {
          * String representation as used in ZPar grammars
          * @return @code{@code "LEFT"} or {@code "RIGHT"}
          */
-        private String toActionString() {
+        public String toActionString() {
             if (this == LEFT) {
                 return "LEFT";
             } else {

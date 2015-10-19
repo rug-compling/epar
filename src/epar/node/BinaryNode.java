@@ -33,7 +33,7 @@ public class BinaryNode extends Node {
 
         List<Action> actions = leftChild.actionSequence(grammar);
         actions.addAll(rightChild.actionSequence(grammar));
-        actions.add(Action.binary(category));
+        actions.add(Action.binary(category, rule.headPosition));
         return actions;
     }
 

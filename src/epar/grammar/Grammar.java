@@ -118,7 +118,7 @@ public class Grammar {
         return possibleParents;
     }
 
-    public List<Node> binary(Node leftChild, Node rightChild) {
+    public List<BinaryNode> binary(Node leftChild, Node rightChild) {
         Map<Short, List<BinaryRule>> rulesByRightChildCategory = binaryRulesMap.get(leftChild.category);
 
         if (rulesByRightChildCategory == null) {
@@ -131,7 +131,7 @@ public class Grammar {
             return Collections.emptyList();
         }
 
-        List<Node> possibleParents = new ArrayList<>();
+        List<BinaryNode> possibleParents = new ArrayList<>();
 
         for (BinaryRule rule : rules) {
             LexicalItem lexicalHead

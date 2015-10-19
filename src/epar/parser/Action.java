@@ -1,11 +1,13 @@
 package epar.parser;
 
-import epar.data.LexicalItem;
+import epar.grammar.BinaryRule;
+import epar.grammar.BinaryRule.HeadPosition;
 import epar.util.StringUtil;
 import epar.util.SymbolPool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 // TODO split this class into a hierarchy of action-type specific subclasses
 public class Action {
@@ -45,6 +47,8 @@ public class Action {
      * for non-shift actions.
      */
     public final int length;
+    
+    public final BinaryRule.HeadPosition headPosition;
 
     /**
      * The category, or {@link SymbolPool.NONE} for action types that are not
@@ -56,28 +60,30 @@ public class Action {
 
     // CONSTRUCTORS
     private Action(short type, short category) {
-        this(type, 1, category, SymbolPool.NONE);
+        this(type, 1, category, null, SymbolPool.NONE);
     }
 
-    private Action(short type, int length, short category, short semantics) {
+    private Action(short type, int length, short category,
+            HeadPosition headPosition, short semantics) {
         this.type = type;
         this.length = length;
         this.category = category;
+        this.headPosition = headPosition;                
         this.semantics = semantics;
     }
 
     // FACTORY METHODS
     public static Action shift(int length, short category, short semantics) {
-        return new Action(TYPE_SHIFT, length, category,
+        return new Action(TYPE_SHIFT, length, category, null,
                 semantics);
     }
 
-    public static Action binary(short category) {
-        return new Action(TYPE_BINARY, category);
+    public static Action binary(short category, HeadPosition headPosition) {
+        return new Action(TYPE_BINARY, 1, category, headPosition, SymbolPool.NONE);
     }
 
     public static Action unary(short category) {
-        return new Action(TYPE_UNARY, category);
+        return new Action(TYPE_UNARY, 1, category, null, SymbolPool.NONE);
     }
 
     // INSTANCE METHODS
@@ -114,6 +120,10 @@ public class Action {
         if (type == TYPE_SHIFT) {
             string += "-" + length;
         }
+        
+        if (type == TYPE_BINARY) {
+            string += "-" + headPosition.toActionString();
+        }
 
         if (type == TYPE_SHIFT || type == TYPE_BINARY || type == TYPE_UNARY) {
             string += "-" + SymbolPool.getString(category);
@@ -143,8 +153,9 @@ public class Action {
                 return shift(Integer.parseInt(parts[1]),
                         SymbolPool.getID(parts[2]), SymbolPool.getID(parts[3]));
             case "BINARY":
-                checkArgs(actionString, parts, 1);
-                return binary(SymbolPool.getID(parts[1]));
+                checkArgs(actionString, parts, 2);
+                return binary(SymbolPool.getID(parts[2]),
+                        HeadPosition.fromActionString(parts[1]));
             case "UNARY":
                 checkArgs(actionString, parts, 1);
                 return unary(SymbolPool.getID(parts[1]));
@@ -189,10 +200,11 @@ public class Action {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 89 * hash + this.type;
-        hash = 89 * hash + this.length;
-        hash = 89 * hash + this.category;
-        hash = 89 * hash + this.semantics;
+        hash = 17 * hash + this.type;
+        hash = 17 * hash + this.length;
+        hash = 17 * hash + Objects.hashCode(this.headPosition);
+        hash = 17 * hash + this.category;
+        hash = 17 * hash + this.semantics;
         return hash;
     }
 
@@ -209,6 +221,9 @@ public class Action {
             return false;
         }
         if (this.length != other.length) {
+            return false;
+        }
+        if (this.headPosition != other.headPosition) {
             return false;
         }
         if (this.category != other.category) {
