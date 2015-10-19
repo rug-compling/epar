@@ -22,6 +22,7 @@ public class ShiftAction extends ActionWithCategory {
     public String toString() {
         return String.format("SHIFT-%s-%s-%s", length,
                 SymbolPool.getString(category),
+                semantics == SymbolPool.NONE ? "0" :
                 SymbolPool.getString(semantics));
     }
 
