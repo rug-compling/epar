@@ -31,8 +31,7 @@ public class Item {
 
     private final static Logger LOGGER = Logger.getLogger(Item.class.getName());
     
-    // TODO rename to predecessor
-    public final Item parent;
+    public final Item predecessor;
 
     public final Action action;
 
@@ -49,7 +48,7 @@ public class Item {
 
     private Item(Item parent, Action action, Stack<Node> stack,
             Stack<SentencePosition> queue, boolean finished) {
-        this.parent = parent;
+        this.predecessor = parent;
         this.action = action;
         this.stack = stack;
         this.queue = queue;
@@ -509,12 +508,12 @@ public class Item {
         Item item = this;
         List<Action> sequence = new ArrayList<>();
         
-        while (item.parent != null) {
+        while (item.predecessor != null) {
             if (item.action.getType() != Action.TYPE_IDLE) {
                 sequence.add(0, item.action);
             }
             
-            item = item.parent;
+            item = item.predecessor;
         }
         
         return sequence;

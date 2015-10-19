@@ -69,9 +69,9 @@ public class UpdatableModel extends Model {
     }
 
     private void update(Candidate candidate, double delta) {
-        while (candidate.parent != null) { // Iterate over all steps leading up to the candidate
+        while (candidate.predecessor != null) { // Iterate over all steps leading up to the candidate
             StepFeatures stepFeatures = new StepFeatures(
-                    candidate.parent.item.extractFeatures(), candidate.item);
+                    candidate.predecessor.item.extractFeatures(), candidate.item);
 
             for (int templateID = 0; templateID < StepFeatures.NUMBER_OF_TEMPLATES; templateID++) {
                 int hash = stepFeatures.hashes[templateID];
@@ -81,7 +81,7 @@ public class UpdatableModel extends Model {
                 }
             }
 
-            candidate = candidate.parent;
+            candidate = candidate.predecessor;
         }
     }
 

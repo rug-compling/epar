@@ -11,13 +11,13 @@ import epar.oracle.Oracle;
 public class Candidate {
 
     // TODO rename to predecessor
-    public final Candidate parent;
+    public final Candidate predecessor;
     public final Item item;
     public final double score;
     public final boolean correct;
 
     private Candidate(Candidate parent, Item item, double score, boolean correct) {
-        this.parent = parent;
+        this.predecessor = parent;
         this.item = item;
         this.score = score;
         this.correct = correct;

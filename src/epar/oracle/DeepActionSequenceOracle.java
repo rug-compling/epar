@@ -21,12 +21,12 @@ public class DeepActionSequenceOracle implements Oracle {
 
     @Override
     public boolean accept(int generation, Item item) {
-        while (item.parent != null) {
+        while (item.predecessor != null) {
             if (!shallowOracle.accept(generation, item)) {
                 return false;
             }
             
-            item = item.parent;
+            item = item.predecessor;
             generation--;
         }
         

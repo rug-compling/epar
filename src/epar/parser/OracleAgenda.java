@@ -79,7 +79,7 @@ public class OracleAgenda {
                     ecneuqes.add(item);
                 }
                 
-                item = item.parent;
+                item = item.predecessor;
             }
             
             List<Item> sequence = new ArrayList<>();
