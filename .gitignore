@@ -1,7 +1,6 @@
 /bin/
 /ext/
 /output/
-/scratch/
 /nohup.out
 /errors.log
 __pycache__
