@@ -5,7 +5,6 @@
  */
 package epar.model;
 
-import epar.parser.Action;
 import epar.parser.Item;
 import java.io.BufferedInputStream;
 import java.io.File;

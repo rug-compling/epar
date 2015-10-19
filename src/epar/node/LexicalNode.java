@@ -26,8 +26,8 @@ public class LexicalNode extends Node {
 
     @Override
     public String toString() {
-        // TODO the ZPar tree format doesn't handle semantics
         return "( " + SymbolPool.getString(category) + " c " +
+                //SymbolPool.getString(lexicalHead.semantics) + " " +
                 SymbolPool.getString(lexicalHead.pos) + " " +
                 SymbolPool.getString(lexicalHead.form) + " )";
     }

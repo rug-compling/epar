@@ -25,6 +25,7 @@ import epar.oracle.MultiActionSequenceOracle;
 import epar.oracle.Oracle;
 import epar.parser.Agenda;
 import epar.parser.Candidate;
+import epar.parser.Item;
 import epar.util.ListUtil;
 import epar.util.Stack;
 import epar.util.StringUtil;
@@ -52,16 +53,16 @@ public class Decode {
         return decode(nextAgenda, grammar, model, oracle);
     }
 
-    private static Stack<Node> selectParse(Agenda finalAgenda) {
+    private static Item selectParse(Agenda finalAgenda) {
         // Try to return the highest-scoring non-fragmentary analysis:
         for (Candidate candidate : finalAgenda.getBeam()) {
             if (candidate.item.stack.size() == 1) {
-                return candidate.item.stack;
+                return candidate.item;
             }
         }
 
         // If none exists, return the highest-scoring fragmentary analysis:
-        return finalAgenda.getHighestScoring().item.stack;
+        return finalAgenda.getHighestScoring().item;
     }
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
@@ -111,9 +112,8 @@ public class Decode {
                     @Override
                     protected String compute() {
                         Agenda finalAgenda = decode(Agenda.initial(sentence), grammar, model, oracle);
-                        List<Node> nodes = ListUtil.listFromIterable(selectParse(finalAgenda));
-                        Collections.reverse(nodes);
-                        return StringUtil.join(nodes, " ") + "\n";
+                        Item item = selectParse(finalAgenda);
+                        return StringUtil.join(item.actionSequence(), " ") + "\n";
                     }
 
                 };

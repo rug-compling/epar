@@ -53,6 +53,10 @@ public class OracleAgenda {
         return true;
     }
     
+    public List<Item> getItems() {
+        return Collections.unmodifiableList(items);
+    }
+    
     public static List<List<Item>> computeGoldItemSequences(Sentence sentence,
             Grammar grammar, Oracle oracle) {
         OracleAgenda agenda = OracleAgenda.initial(sentence);
