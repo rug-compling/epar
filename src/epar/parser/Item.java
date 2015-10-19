@@ -131,6 +131,10 @@ public class Item {
     }
 
     private void shift(List<Item> successors) {
+        if (stack.getFirst().category == Grammar.SKIP_CATEGORY) {
+            return;
+        }
+        
         if (queue.isEmpty()) {
             return;
         }
@@ -156,12 +160,16 @@ public class Item {
     }
 
     // Could perhaps conflate FINISH and IDLE.
-    private void finish(List<Item> successors) {
+    private void finish(List<Item> successors) {        
         if (finished) {
             return;
         }
 
         if (!queue.isEmpty()) {
+            return;
+        }
+        
+        if (stack.getFirst().category == Grammar.SKIP_CATEGORY) {
             return;
         }
 
