@@ -106,9 +106,10 @@ public class Item {
         Node child = stack.getFirst();
         Stack<Node> rest = stack.getRest();
 
-        for (UnaryNode parentNode : grammar.unary(child)) {
-            Action newAction = new UnaryAction(parentNode.rule.schemaName, parentNode.category);
-            Stack<Node> newStack = rest.push(parentNode);
+        for (UnaryNode parent : grammar.unary(child)) {
+            Action newAction = new UnaryAction(parent.rule.schemaName,
+                    parent.category);
+            Stack<Node> newStack = rest.push(parent);
             successors.add(new Item(this, newAction, newStack, queue, false));
         }
     }
