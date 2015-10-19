@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import epar.data.SentencePosition;
 import epar.grammar.Grammar;
-import epar.parser.Action;
+import epar.action.Action;
+import epar.action.ShiftAction;
 import epar.util.SymbolPool;
 
 public class LexicalNode extends Node {
@@ -19,7 +19,7 @@ public class LexicalNode extends Node {
     @Override
     public List<Action> actionSequence(Grammar grammar) {
         List<Action> actions = new ArrayList<>();
-        actions.add(Action.shift(lexicalHead.length, lexicalHead.category,
+        actions.add(new ShiftAction(lexicalHead.length, lexicalHead.category,
                 lexicalHead.semantics));
         return actions;
     }

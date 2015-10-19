@@ -7,7 +7,8 @@ import java.io.File;
 import epar.model.UpdatableModel;
 import epar.oracle.MultiActionSequenceOracle;
 import epar.oracle.Oracle;
-import epar.parser.Action;
+import epar.action.Action;
+import epar.action.ShiftAction;
 import epar.parser.Item;
 import epar.parser.OracleAgenda;
 import epar.util.Counter;
@@ -53,8 +54,8 @@ public class InitModelFromOracles {
                 
                 for (List<Item> sequence : goldSequences) {
                     for (Item item : sequence) {
-                        if (item.action.type == Action.TYPE_SHIFT) {
-                            counter.add(item.lexicalHash(), 1.0 * item.action.length);
+                        if (item.action.getType() == Action.TYPE_SHIFT) {
+                            counter.add(item.lexicalHash(), 1.0 * ((ShiftAction) item.action).length);
                         }
                     }
                 }

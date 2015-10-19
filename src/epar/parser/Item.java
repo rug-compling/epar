@@ -1,5 +1,13 @@
 package epar.parser;
 
+import epar.action.Action;
+import epar.action.BinaryAction;
+import epar.action.FinishAction;
+import epar.action.IdleAction;
+import epar.action.InitAction;
+import epar.action.ShiftAction;
+import epar.action.SkipAction;
+import epar.action.UnaryAction;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +31,7 @@ public class Item {
 
     private final static Logger LOGGER = Logger.getLogger(Item.class.getName());
     
+    // TODO rename to predecessor
     public final Item parent;
 
     public final Action action;
@@ -78,7 +87,8 @@ public class Item {
         Stack<Node> restRest = rest.getRest();
 
         for (BinaryNode parent : grammar.binary(leftChild, rightChild)) {
-            Action newAction = Action.binary(parent.category, parent.rule.headPosition);
+            Action newAction = new BinaryAction(parent.rule.schemaName,
+                    parent.rule.headPosition, parent.category);
             Stack<Node> newStack = restRest.push(parent);
             successors.add(new Item(this, newAction, newStack, queue, false));
         }
@@ -96,9 +106,9 @@ public class Item {
         Node child = stack.getFirst();
         Stack<Node> rest = stack.getRest();
 
-        for (Node parent : grammar.unary(child)) {
-            Action newAction = Action.unary(parent.category);
-            Stack<Node> newStack = rest.push(parent);
+        for (UnaryNode parentNode : grammar.unary(child)) {
+            Action newAction = new UnaryAction(parentNode.rule.schemaName, parentNode.category);
+            Stack<Node> newStack = rest.push(parentNode);
             successors.add(new Item(this, newAction, newStack, queue, false));
         }
     }
@@ -116,8 +126,8 @@ public class Item {
             return;
         }
 
-        successors.add(new Item(this, Action.SKIP, stack.getRest(), queue,
-                false));
+        successors.add(new Item(this, SkipAction.INSTANCE, stack.getRest(),
+                queue, false));
     }
 
     private void shift(List<Item> successors) {
@@ -128,7 +138,7 @@ public class Item {
         SentencePosition sentencePosition = queue.getFirst();
 
         for (LexicalItem item : sentencePosition.lexicalItems) {
-            Action newAction = Action.shift(item.length, item.category,
+            Action newAction = new ShiftAction(item.length, item.category,
                     item.semantics);
             Node newNode = new LexicalNode(item);
             Stack<Node> newStack = stack.push(newNode);
@@ -155,7 +165,8 @@ public class Item {
             return;
         }
 
-        successors.add(new Item(this, Action.FINISH, stack, queue, true));
+        successors.add(new Item(this, FinishAction.INSTANCE, stack, queue,
+                true));
     }
 
     private void idle(List<Item> successors) {
@@ -163,7 +174,7 @@ public class Item {
             return;
         }
 
-        successors.add(new Item(this, Action.IDLE, stack, queue, true));
+        successors.add(new Item(this, IdleAction.INSTANCE, stack, queue, true));
     }
 
     public static Item initial(Sentence sentence) {
@@ -173,7 +184,8 @@ public class Item {
             queue = new NEStack<>(sentence.positions.get(i), queue);
         }
 
-        return new Item(null, Action.INIT, new EStack<Node>(), queue, false);
+        return new Item(null, InitAction.INSTANCE, new EStack<Node>(), queue,
+                false);
     }
 
     public StateFeatures extractFeatures() {
@@ -386,7 +398,7 @@ public class Item {
     }
     
     public int lexicalHash() {
-        if (action.type != Action.TYPE_SHIFT) {
+        if (action.getType() != Action.TYPE_SHIFT) {
             return 0;
         }
         
@@ -497,7 +509,7 @@ public class Item {
         List<Action> sequence = new ArrayList<>();
         
         while (item.parent != null) {
-            if (item.action.type != Action.TYPE_IDLE) {
+            if (item.action.getType() != Action.TYPE_IDLE) {
                 sequence.add(0, item.action);
             }
             

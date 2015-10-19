@@ -8,7 +8,8 @@ import java.util.List;
 import epar.grammar.Grammar;
 import epar.node.Node;
 import epar.oracle.Oracle;
-import epar.parser.Action;
+import epar.action.Action;
+import epar.action.FinishAction;
 
 public class TreesToActionSequences {
 
@@ -26,7 +27,7 @@ public class TreesToActionSequences {
             
             for (Node tree : goldTrees) {
                 List<Action> actionSequence = tree.actionSequence(grammar);
-                actionSequence.add(Action.FINISH);
+                actionSequence.add(FinishAction.INSTANCE);
                 System.out.println(Action.sequenceToString(actionSequence));
             }
         } catch (IOException e) {

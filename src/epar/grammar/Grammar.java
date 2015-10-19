@@ -97,14 +97,14 @@ public class Grammar {
         return rules;
     }
 
-    public List<Node> unary(Node child) {
+    public List<UnaryNode> unary(Node child) {
         List<UnaryRule> rules = unaryRulesMap.get(child.category);
 
         if (rules == null) {
             return Collections.emptyList();
         }
 
-        List<Node> possibleParents = new ArrayList<>();
+        List<UnaryNode> possibleParents = new ArrayList<>();
 
         for (UnaryRule rule : rules) {
             // Disallow identity productions

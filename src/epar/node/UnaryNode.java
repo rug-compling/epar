@@ -6,7 +6,8 @@ import java.util.List;
 
 import epar.grammar.Grammar;
 import epar.grammar.UnaryRule;
-import epar.parser.Action;
+import epar.action.Action;
+import epar.action.UnaryAction;
 import epar.util.SymbolPool;
 
 public class UnaryNode extends Node {
@@ -29,7 +30,7 @@ public class UnaryNode extends Node {
         }
 
         List<Action> actions = child.actionSequence(grammar);
-        actions.add(Action.unary(category));
+        actions.add(new UnaryAction(rule.schemaName, category));
         return actions;
     }
 

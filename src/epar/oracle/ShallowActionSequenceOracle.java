@@ -3,7 +3,8 @@ package epar.oracle;
 import java.util.List;
 import java.util.logging.Logger;
 
-import epar.parser.Action;
+import epar.action.Action;
+import epar.action.IdleAction;
 import epar.parser.Item;
 
 public class ShallowActionSequenceOracle implements Oracle {
@@ -19,7 +20,7 @@ public class ShallowActionSequenceOracle implements Oracle {
     @Override
     public boolean accept(int generation, Item item) {
         if (generation >= goldSequence.size()) {
-            return item.action.equals(Action.IDLE);
+            return item.action.equals(IdleAction.INSTANCE);
         }
 
         return goldSequence.get(generation).equals(item.action);

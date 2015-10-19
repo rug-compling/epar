@@ -31,8 +31,8 @@ public class StepFeatures {
             featureHash = 29 * featureHash + templateID; // include feature template ID in hash
             // We do *not* use the action's hashCode but are specifically
             // interested only in the type, category and semantics.
-            featureHash = 29 * featureHash + successor.action.type; // include action
-            featureHash = 29 * featureHash + successor.action.category;
+            featureHash = 29 * featureHash + successor.action.getType(); // include action
+            featureHash = 29 * featureHash + successor.action.getCategory();
             hashes[templateID] = featureHash;
         }
         

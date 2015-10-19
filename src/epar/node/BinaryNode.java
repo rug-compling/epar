@@ -6,7 +6,8 @@ import java.util.List;
 
 import epar.grammar.BinaryRule;
 import epar.grammar.Grammar;
-import epar.parser.Action;
+import epar.action.Action;
+import epar.action.BinaryAction;
 import epar.util.SymbolPool;
 
 public class BinaryNode extends Node {
@@ -33,7 +34,7 @@ public class BinaryNode extends Node {
 
         List<Action> actions = leftChild.actionSequence(grammar);
         actions.addAll(rightChild.actionSequence(grammar));
-        actions.add(Action.binary(category, rule.headPosition));
+        actions.add(new BinaryAction(rule.schemaName, rule.headPosition, category));
         return actions;
     }
 

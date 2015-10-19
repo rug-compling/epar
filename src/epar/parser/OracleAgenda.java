@@ -1,5 +1,6 @@
 package epar.parser;
 
+import epar.action.Action;
 import epar.data.Sentence;
 import epar.grammar.Grammar;
 import epar.oracle.Oracle;
@@ -74,7 +75,7 @@ public class OracleAgenda {
             
             // Follow the backpointers and put items in list
             while (item != null) {
-                if (!(item.action.type == Action.TYPE_IDLE)) {
+                if (!(item.action.getType() == Action.TYPE_IDLE)) {
                     ecneuqes.add(item);
                 }
                 

@@ -10,6 +10,7 @@ import epar.oracle.Oracle;
 
 public class Candidate {
 
+    // TODO rename to predecessor
     public final Candidate parent;
     public final Item item;
     public final double score;
