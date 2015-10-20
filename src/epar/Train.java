@@ -42,18 +42,14 @@ public class Train {
                 try {
                     highestScoring = agenda.getHighestScoring();
                 } catch (IndexOutOfBoundsException y) {
-                    LOGGER.log(Level.WARNING, "Example {0}, attempt {1}: no candidates, empty update", new Object[]{e, a});
-                    // TODO What is better in this case, empty update or no update?
-                    model.update(null, null);
+                    LOGGER.log(Level.WARNING, "Example {0}, attempt {1}: no candidates, no update", new Object[]{e, a});
                     break;
                 }
 
                 try {
                     highestScoringCorrect = agenda.getHighestScoringCorrect();
                 } catch (IndexOutOfBoundsException y) {
-                    LOGGER.log(Level.WARNING, "Example {0}, attempt {1}: no correct candidates, empty update", new Object[]{e, a});
-                    // TODO What is better in this case, empty update or no update?
-                    model.update(null, null);
+                    LOGGER.log(Level.WARNING, "Example {0}, attempt {1}: no correct candidates, no update", new Object[]{e, a});
                     break;
                 }
 
