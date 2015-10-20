@@ -45,6 +45,13 @@ public class Item {
             new SentencePosition(SymbolPool.NONE, SymbolPool.NONE, null);
 
     private static final Node NONE_NODE = new LexicalNode(LexicalItem.NONE);
+    
+    // HACK
+    private static final short EMPTY_SEM = SymbolPool.getID("lam(A,A)");
+    
+    private static final short FA = SymbolPool.getID("fa");
+    
+    private static final short BA = SymbolPool.getID("ba");
 
     private Item(Item parent, Action action, Stack<Node> stack,
             Stack<SentencePosition> queue, boolean finished) {
@@ -86,6 +93,23 @@ public class Item {
         Stack<Node> restRest = rest.getRest();
 
         for (BinaryNode parent : grammar.binary(leftChild, rightChild)) {
+            // HACK: Make sure semantically empty words are not taken as
+            // arguments because we can't interpret that.
+            
+            if (parent.rule.schemaName == FA && rightChild instanceof
+                    LexicalNode && ((LexicalNode)
+                    rightChild).lexicalHead.semantics == EMPTY_SEM) {
+                continue;
+            }
+            
+            if (parent.rule.schemaName == BA && leftChild instanceof
+                    LexicalNode && ((LexicalNode)
+                    leftChild).lexicalHead.semantics == EMPTY_SEM) {
+                continue;
+            }
+            
+            // Create new item
+            
             Action newAction = new BinaryAction(parent.rule.schemaName,
                     parent.rule.headPosition, parent.category);
             Stack<Node> newStack = restRest.push(parent);
