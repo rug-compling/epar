@@ -131,7 +131,8 @@ public class Item {
     }
 
     private void shift(List<Item> successors) {
-        if (stack.getFirst().category == Grammar.SKIP_CATEGORY) {
+        if (!stack.isEmpty() &&
+                stack.getFirst().category == Grammar.SKIP_CATEGORY) {
             return;
         }
         
@@ -169,7 +170,8 @@ public class Item {
             return;
         }
         
-        if (stack.getFirst().category == Grammar.SKIP_CATEGORY) {
+        if (!stack.isEmpty() &&
+                stack.getFirst().category == Grammar.SKIP_CATEGORY) {
             return;
         }
 
