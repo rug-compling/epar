@@ -41,12 +41,13 @@ public abstract class Action {
                         SymbolPool.getID(parts[2]), SymbolPool.getID(parts[3]));
             case "BINARY":
                 checkArgs(actionString, parts, 3);
-                return new BinaryAction(parts[1],
+                return new BinaryAction(SymbolPool.getID(parts[1]),
                         HeadPosition.fromActionString(parts[2]),
                         SymbolPool.getID(parts[3]));
             case "UNARY":
                 checkArgs(actionString, parts, 2);
-                return new UnaryAction(parts[1], SymbolPool.getID(parts[2]));
+                return new UnaryAction(SymbolPool.getID(parts[1]),
+                        SymbolPool.getID(parts[2]));
             case "FINISH":
                 checkArgs(actionString, parts, 0);
                 return FinishAction.INSTANCE;

@@ -63,7 +63,7 @@ public abstract class Node {
                     leftChild.lexicalHead, leftChild,
                     rightChild, new BinaryRule(leftChild.category,
                     rightChild.category, category,
-                    BinaryRule.HeadPosition.LEFT, "dummy"));
+                    BinaryRule.HeadPosition.LEFT, SymbolPool.getID("dummy")));
         } else if ("r".equals(head)) {
             Node leftChild = readTree(scanner);
             Node rightChild = readTree(scanner);
@@ -71,12 +71,12 @@ public abstract class Node {
                     rightChild.lexicalHead, leftChild,
                     rightChild, new BinaryRule(leftChild.category,
                     rightChild.category, category,
-                    BinaryRule.HeadPosition.RIGHT, "dummy"));
+                    BinaryRule.HeadPosition.RIGHT, SymbolPool.getID("dummy")));
         } else if ("s".equals(head)) {
             Node child = readTree(scanner);
             node = new UnaryNode(category, child.lexicalHead,
                     child, new UnaryRule(child.category,
-                    category, "dummy"));
+                    category, SymbolPool.getID("dummy")));
         } else if ("c".equals(head)) {
             // TODO the ZPar tree format doesn't handle semantics or multiwords
             short pos = SymbolPool.getID(scanner.next());

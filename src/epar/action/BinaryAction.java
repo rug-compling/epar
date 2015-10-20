@@ -13,9 +13,9 @@ public class BinaryAction extends ActionWithCategory {
     
     public final BinaryRule.HeadPosition headPosition;
     
-    public final String schemaName;
+    public final short schemaName;
     
-    public BinaryAction(String schemaName, HeadPosition headPosition,
+    public BinaryAction(short schemaName, HeadPosition headPosition,
             short category) {
         super(category);
         this.schemaName = schemaName;
@@ -24,7 +24,8 @@ public class BinaryAction extends ActionWithCategory {
     
     @Override
     public String toString() {
-        return String.format("BINARY-%s-%s-%s", schemaName,
+        return String.format("BINARY-%s-%s-%s",
+                SymbolPool.getString(schemaName),
                 headPosition.toActionString(), SymbolPool.getString(category));
     }
 
@@ -52,7 +53,7 @@ public class BinaryAction extends ActionWithCategory {
         if (this.headPosition != other.headPosition) {
             return false;
         }
-        if (!Objects.equals(this.schemaName, other.schemaName)) {
+        if (this.schemaName != other.schemaName) {
             return false;
         }
         return true;

@@ -62,11 +62,11 @@ public class BinaryRule {
 
     public final BinaryRule.HeadPosition headPosition;
     
-    public final String schemaName;
+    public final short schemaName;
 
     public BinaryRule(short leftChildCategory, short rightChildCategory,
             short parentCategory, BinaryRule.HeadPosition headPosition,
-            String schemaName) {
+            short schemaName) {
         this.leftChildCategory = leftChildCategory;
         this.rightChildCategory = rightChildCategory;
         this.parentCategory = parentCategory;

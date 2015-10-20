@@ -180,7 +180,7 @@ public class Grammar {
                 if (parts.length == 3) {
                     short daughterCat = SymbolPool.getID(parts[0]);
                     short motherCat = SymbolPool.getID(parts[1]);
-                    String schemaName = parts[2];
+                    short schemaName = SymbolPool.getID(parts[2]);
                     grammar.add(new UnaryRule(daughterCat, motherCat,
                             schemaName));
                 } else if (parts.length == 5) {
@@ -189,7 +189,7 @@ public class Grammar {
                     short motherCat = SymbolPool.getID(parts[2]);
                     BinaryRule.HeadPosition headPosition =
                             BinaryRule.HeadPosition.fromActionString(parts[3]);
-                    String schemaName = parts[4];
+                    short schemaName = SymbolPool.getID(parts[4]);
                     grammar.add(new BinaryRule(leftCat, rightCat, motherCat,
                             headPosition, schemaName));
                 } else {

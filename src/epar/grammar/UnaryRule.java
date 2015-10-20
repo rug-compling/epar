@@ -8,10 +8,10 @@ public class UnaryRule {
 
     public final short parentCategory;
     
-    public final String schemaName;
+    public final short schemaName;
 
     public UnaryRule(short childCategory, short parentCategory,
-            String schemaName) {
+            short schemaName) {
         this.childCategory = childCategory;
         this.parentCategory = parentCategory;
         this.schemaName = schemaName;

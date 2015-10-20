@@ -9,16 +9,16 @@ import java.util.Objects;
  */
 public class UnaryAction extends ActionWithCategory {
     
-    public final String schemaName;
+    public final short schemaName;
     
-    public UnaryAction(String schemaName, short category) {
+    public UnaryAction(short schemaName, short category) {
         super(category);
         this.schemaName = schemaName;
     }
     
     @Override
     public String toString() {
-        return String.format("UNARY-%s-%s", schemaName,
+        return String.format("UNARY-%s-%s", SymbolPool.getString(schemaName),
                 SymbolPool.getString(category));
     }
 
@@ -42,7 +42,7 @@ public class UnaryAction extends ActionWithCategory {
         if (category != other.category) {
             return false;
         }
-        if (!Objects.equals(this.schemaName, other.schemaName)) {
+        if (this.schemaName != other.schemaName) {
             return false;
         }
         return true;
