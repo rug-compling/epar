@@ -1,6 +1,6 @@
 package epar.parser;
 
-import epar.action.Action;
+import epar.parser.action.Action;
 import epar.data.Sentence;
 import epar.grammar.Grammar;
 import epar.oracle.Oracle;

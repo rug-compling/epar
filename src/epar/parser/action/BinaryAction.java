@@ -1,4 +1,4 @@
-package epar.action;
+package epar.parser.action;
 
 import epar.grammar.BinaryRule;
 import epar.grammar.BinaryRule.HeadPosition;

@@ -3,7 +3,7 @@ package epar.oracle;
 import java.util.List;
 import java.util.logging.Logger;
 
-import epar.action.Action;
+import epar.parser.action.Action;
 import epar.parser.Item;
 
 public class DeepActionSequenceOracle implements Oracle {

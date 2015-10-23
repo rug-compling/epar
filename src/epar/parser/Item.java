@@ -1,13 +1,13 @@
 package epar.parser;
 
-import epar.action.Action;
-import epar.action.BinaryAction;
-import epar.action.FinishAction;
-import epar.action.IdleAction;
-import epar.action.InitAction;
-import epar.action.ShiftAction;
-import epar.action.SkipAction;
-import epar.action.UnaryAction;
+import epar.parser.action.Action;
+import epar.parser.action.BinaryAction;
+import epar.parser.action.FinishAction;
+import epar.parser.action.IdleAction;
+import epar.parser.action.InitAction;
+import epar.parser.action.ShiftAction;
+import epar.parser.action.SkipAction;
+import epar.parser.action.UnaryAction;
 import java.util.ArrayList;
 import java.util.List;
 

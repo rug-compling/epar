@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import epar.action.Action;
+import epar.parser.action.Action;
 import epar.parser.Item;
 import java.io.FileNotFoundException;
 import java.util.Collections;

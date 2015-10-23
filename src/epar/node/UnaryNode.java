@@ -6,8 +6,8 @@ import java.util.List;
 
 import epar.grammar.Grammar;
 import epar.grammar.UnaryRule;
-import epar.action.Action;
-import epar.action.UnaryAction;
+import epar.parser.action.Action;
+import epar.parser.action.UnaryAction;
 import epar.util.SymbolPool;
 
 public class UnaryNode extends Node {

@@ -11,7 +11,7 @@ import epar.data.SentencePosition;
 import epar.grammar.BinaryRule;
 import epar.grammar.Grammar;
 import epar.grammar.UnaryRule;
-import epar.action.Action;
+import epar.parser.action.Action;
 import epar.util.RecUtil;
 import epar.util.SymbolPool;
 

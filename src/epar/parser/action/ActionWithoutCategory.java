@@ -1,4 +1,4 @@
-package epar.action;
+package epar.parser.action;
 
 import epar.util.SymbolPool;
 

@@ -6,8 +6,8 @@ import java.util.List;
 
 import epar.grammar.BinaryRule;
 import epar.grammar.Grammar;
-import epar.action.Action;
-import epar.action.BinaryAction;
+import epar.parser.action.Action;
+import epar.parser.action.BinaryAction;
 import epar.util.SymbolPool;
 
 public class BinaryNode extends Node {

@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 import epar.grammar.Grammar;
-import epar.action.Action;
-import epar.action.ShiftAction;
+import epar.parser.action.Action;
+import epar.parser.action.ShiftAction;
 import epar.util.SymbolPool;
 
 public class LexicalNode extends Node {

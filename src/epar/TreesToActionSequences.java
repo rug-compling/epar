@@ -8,8 +8,8 @@ import java.util.List;
 import epar.grammar.Grammar;
 import epar.node.Node;
 import epar.oracle.Oracle;
-import epar.action.Action;
-import epar.action.FinishAction;
+import epar.parser.action.Action;
+import epar.parser.action.FinishAction;
 
 public class TreesToActionSequences {
 
