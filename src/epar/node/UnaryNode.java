@@ -16,7 +16,7 @@ public class UnaryNode extends Node {
 
     public final UnaryRule rule;
 
-    public UnaryNode(short category, LexicalItem lexicalHead, Node child,
+    public UnaryNode(int category, LexicalItem lexicalHead, Node child,
             UnaryRule rule) {
         super(category, lexicalHead);
         this.child = child;
@@ -41,7 +41,7 @@ public class UnaryNode extends Node {
 
     @Override
     public List<Node> descendants() {
-        List<Node> descendants = new ArrayList<Node>();
+        List<Node> descendants = new ArrayList<>();
         descendants.add(this);
         descendants.addAll(child.descendants());
         return descendants;

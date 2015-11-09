@@ -10,9 +10,9 @@ public class ShiftAction extends ActionWithCategory {
     
     public final int length;
     
-    public final short semantics;
+    public final int semantics;
     
-    public ShiftAction(int length, short category, short semantics) {
+    public ShiftAction(int length, int category, int semantics) {
         super(category);
         this.length = length;
         this.semantics = semantics;
@@ -57,7 +57,7 @@ public class ShiftAction extends ActionWithCategory {
     }
 
     @Override
-    public short getType() {
+    public int getType() {
         return Action.TYPE_SHIFT;
     }
     

@@ -13,10 +13,10 @@ public class BinaryAction extends ActionWithCategory {
     
     public final BinaryRule.HeadPosition headPosition;
     
-    public final short schemaName;
+    public final int schemaName;
     
-    public BinaryAction(short schemaName, HeadPosition headPosition,
-            short category) {
+    public BinaryAction(int schemaName, HeadPosition headPosition,
+            int category) {
         super(category);
         this.schemaName = schemaName;
         this.headPosition = headPosition;
@@ -60,7 +60,7 @@ public class BinaryAction extends ActionWithCategory {
     }
 
     @Override
-    public short getType() {
+    public int getType() {
         return Action.TYPE_BINARY;
     }
     

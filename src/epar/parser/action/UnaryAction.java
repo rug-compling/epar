@@ -9,9 +9,9 @@ import java.util.Objects;
  */
 public class UnaryAction extends ActionWithCategory {
     
-    public final short schemaName;
+    public final int schemaName;
     
-    public UnaryAction(short schemaName, short category) {
+    public UnaryAction(int schemaName, int category) {
         super(category);
         this.schemaName = schemaName;
     }
@@ -49,7 +49,7 @@ public class UnaryAction extends ActionWithCategory {
     }
 
     @Override
-    public short getType() {
+    public int getType() {
         return Action.TYPE_UNARY;
     }
     

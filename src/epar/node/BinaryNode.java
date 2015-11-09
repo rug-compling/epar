@@ -18,7 +18,7 @@ public class BinaryNode extends Node {
 
     public final BinaryRule rule;
 
-    public BinaryNode(short category, LexicalItem lexicalHead, Node leftChild,
+    public BinaryNode(int category, LexicalItem lexicalHead, Node leftChild,
             Node rightChild, BinaryRule rule) {
         super(category, lexicalHead);
         this.leftChild = leftChild;
@@ -46,7 +46,7 @@ public class BinaryNode extends Node {
 
     @Override
     public List<Node> descendants() {
-        List<Node> descendants = new ArrayList<Node>();
+        List<Node> descendants = new ArrayList<>();
         descendants.add(this);
         descendants.addAll(leftChild.descendants());
         descendants.addAll(rightChild.descendants());

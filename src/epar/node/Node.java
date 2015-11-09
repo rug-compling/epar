@@ -17,11 +17,11 @@ import epar.util.SymbolPool;
 
 public abstract class Node {
 
-    public final short category;
+    public final int category;
 
     public final LexicalItem lexicalHead;
 
-    public Node(short category, LexicalItem lexicalHead) {
+    public Node(int category, LexicalItem lexicalHead) {
         this.category = category;
         this.lexicalHead = lexicalHead;
     }
@@ -52,7 +52,7 @@ public abstract class Node {
     private static Node readTree(Scanner scanner) {
         // TODO the ZPar tree format doesn't handle schema names
         RecUtil.expect("(", scanner);
-        short category = SymbolPool.getID(scanner.next());
+        int category = SymbolPool.getID(scanner.next());
         String head = scanner.next();
         Node node;
 
@@ -79,8 +79,8 @@ public abstract class Node {
                     category, SymbolPool.getID("dummy")));
         } else if ("c".equals(head)) {
             // TODO the ZPar tree format doesn't handle semantics or multiwords
-            short pos = SymbolPool.getID(scanner.next());
-            short form = SymbolPool.getID(scanner.next());
+            int pos = SymbolPool.getID(scanner.next());
+            int form = SymbolPool.getID(scanner.next());
             LexicalItem item = new LexicalItem(1, form, pos, category,
                     SymbolPool.NONE);
             SentencePosition word = new SentencePosition(form, pos, null); // TODO ugh.

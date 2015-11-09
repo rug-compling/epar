@@ -47,11 +47,11 @@ public class Item {
     private static final Node NONE_NODE = new LexicalNode(LexicalItem.NONE);
     
     // HACK
-    private static final short EMPTY_SEM = SymbolPool.getID("lam(A,A)");
+    private static final int EMPTY_SEM = SymbolPool.getID("lam(A,A)");
     
-    private static final short FA = SymbolPool.getID("fa");
+    private static final int FA = SymbolPool.getID("fa");
     
-    private static final short BA = SymbolPool.getID("ba");
+    private static final int BA = SymbolPool.getID("ba");
 
     private Item(Item parent, Action action, Stack<Node> stack,
             Stack<SentencePosition> queue, boolean finished) {
@@ -440,24 +440,25 @@ public class Item {
         return hash(lex.category, lex.semantics, lex.form, lex.pos);
     }
 
-    private static int hash(short a) {
-        return hash(a, (short) 0, (short) 0, (short) 0);
+    private static int hash(int a) {
+        return hash(a, 0, 0, 0);
     }
 
-    private static int hash(short a, short b) {
-        return hash(a, b, (short) 0, (short) 0);
+    private static int hash(int a, int b) {
+        return hash(a, b, 0, 0);
     }
 
-    private static int hash(short a, short b, short c) {
-        return hash(a, b, c, (short) 0);
+    private static int hash(int a, int b, int c) {
+        return hash(a, b, c, 0);
     }
 
-    private static int hash(short a, short b, short c, short d) {
-        // Pack four shorts into two ints, then aggregate these in the standard
-        // way.
-        int firstInt = (a << 16) | b;
-        int secondInt = (c << 16) | d;
-        return 29 * firstInt + secondInt;
+    private static int hash(int a, int b, int c, int d) {
+        int hash = 7;
+        hash = 11 * a + hash;
+        hash = 11 * b + hash;
+        hash = 11 * c + hash;
+        hash = 11 * d + hash;
+        return hash;
     }
 
     private static Node getLeftNonHeadChild(Node node) {

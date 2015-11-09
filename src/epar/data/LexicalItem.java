@@ -12,15 +12,15 @@ public class LexicalItem {
     
     public final int length;
     
-    public final short form;
+    public final int form;
     
-    public final short pos;
+    public final int pos;
     
-    public final short category;
+    public final int category;
     
-    public final short semantics;
+    public final int semantics;
     
-    public LexicalItem(int length, short form, short pos, short category, short semantics) {
+    public LexicalItem(int length, int form, int pos, int category, int semantics) {
         this.length = length;
         this.form = form;
         this.pos = pos;

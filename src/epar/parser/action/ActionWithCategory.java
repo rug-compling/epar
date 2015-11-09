@@ -6,14 +6,14 @@ package epar.parser.action;
  */
 public abstract class ActionWithCategory extends Action {
     
-    public final short category;
+    public final int category;
     
-    public ActionWithCategory(short category) {
+    public ActionWithCategory(int category) {
         this.category = category;
     }
     
     @Override
-    public short getCategory() {
+    public int getCategory() {
         return category;
     }
     

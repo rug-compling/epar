@@ -2,27 +2,26 @@ package epar.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import epar.util.SymbolPool;
 
 public class SentencePosition {
 
-    public final short form;
+    public final int form;
 
-    public final short pos;
+    public final int pos;
 
     public final List<LexicalItem> lexicalItems;
 
-    public SentencePosition(short form, short pos, List<LexicalItem> lexicalEntries) {
+    public SentencePosition(int form, int pos, List<LexicalItem> lexicalEntries) {
         this.form = form;
         this.pos = pos;
         this.lexicalItems = lexicalEntries;
     }
 
     public static SentencePosition read(String line) {
-        short form;
-        short pos;
+        int form;
+        int pos;
         List<LexicalItem> lexicalEntries;
 
         String[] parts = line.split("\t");

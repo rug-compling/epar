@@ -17,7 +17,7 @@ public class InitAction extends ActionWithoutCategory {
     }
 
     @Override
-    public short getType() {
+    public int getType() {
         return Action.TYPE_INIT;
     }
     

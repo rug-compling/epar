@@ -9,7 +9,7 @@ import epar.util.SymbolPool;
 public abstract class ActionWithoutCategory extends Action {
     
     @Override
-    public short getCategory() {
+    public int getCategory() {
         return SymbolPool.NONE;
     }
     

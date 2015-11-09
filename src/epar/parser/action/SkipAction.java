@@ -17,7 +17,7 @@ public class SkipAction extends ActionWithoutCategory {
     }
 
     @Override
-    public short getType() {
+    public int getType() {
         return Action.TYPE_SKIP;
     }
     

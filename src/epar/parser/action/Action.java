@@ -24,9 +24,9 @@ public abstract class Action {
 
     public static final short TYPE_SKIP = 7;
     
-    public abstract short getType();
+    public abstract int getType();
 
-    public abstract short getCategory();
+    public abstract int getCategory();
 
     public static Action fromString(String actionString) {
         String[] parts = actionString.split("-");

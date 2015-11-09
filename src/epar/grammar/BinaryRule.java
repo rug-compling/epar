@@ -54,19 +54,19 @@ public class BinaryRule {
         }
     }
 
-    public final short leftChildCategory;
+    public final int leftChildCategory;
 
-    public final short rightChildCategory;
+    public final int rightChildCategory;
 
-    public final short parentCategory;
+    public final int parentCategory;
 
     public final BinaryRule.HeadPosition headPosition;
     
-    public final short schemaName;
+    public final int schemaName;
 
-    public BinaryRule(short leftChildCategory, short rightChildCategory,
-            short parentCategory, BinaryRule.HeadPosition headPosition,
-            short schemaName) {
+    public BinaryRule(int leftChildCategory, int rightChildCategory,
+            int parentCategory, BinaryRule.HeadPosition headPosition,
+            int schemaName) {
         this.leftChildCategory = leftChildCategory;
         this.rightChildCategory = rightChildCategory;
         this.parentCategory = parentCategory;

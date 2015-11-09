@@ -23,13 +23,13 @@ import epar.util.SymbolPool;
 
 public class Grammar {
 
-    public static final short SKIP_CATEGORY = SymbolPool.getID("SKIP");
+    public static final int SKIP_CATEGORY = SymbolPool.getID("SKIP");
 
-    private final Map<Short, List<UnaryRule>> unaryRulesMap;
+    private final Map<Integer, List<UnaryRule>> unaryRulesMap;
 
-    private final Map<Short, Map<Short, List<BinaryRule>>> binaryRulesMap;
+    private final Map<Integer, Map<Integer, List<BinaryRule>>> binaryRulesMap;
 
-    private List<UnaryRule> getUnaryRules(short childCategory) {
+    private List<UnaryRule> getUnaryRules(int childCategory) {
         if (!unaryRulesMap.containsKey(childCategory)) {
             unaryRulesMap.put(childCategory, new ArrayList<UnaryRule>());
         }
@@ -37,9 +37,9 @@ public class Grammar {
         return unaryRulesMap.get(childCategory);
     }
 
-    private List<BinaryRule> getBinaryRules(short leftChildCategory, short rightChildCategory) {
+    private List<BinaryRule> getBinaryRules(int leftChildCategory, int rightChildCategory) {
         if (!binaryRulesMap.containsKey(leftChildCategory)) {
-            binaryRulesMap.put(leftChildCategory, new HashMap<Short, List<BinaryRule>>());
+            binaryRulesMap.put(leftChildCategory, new HashMap<Integer, List<BinaryRule>>());
         }
 
         if (!binaryRulesMap.get(leftChildCategory).containsKey(rightChildCategory)) {
@@ -76,7 +76,7 @@ public class Grammar {
     public List<UnaryRule> getUnaryRules() {
         List<UnaryRule> rules = new ArrayList<>();
 
-        for (short childCategory : unaryRulesMap.keySet()) {
+        for (int childCategory : unaryRulesMap.keySet()) {
             rules.addAll(unaryRulesMap.get(childCategory));
         }
 
@@ -86,10 +86,10 @@ public class Grammar {
     public List<BinaryRule> getBinaryRules() {
         List<BinaryRule> rules = new ArrayList<>();
 
-        for (short leftChildCategory : binaryRulesMap.keySet()) {
-            Map<Short, List<BinaryRule>> map = binaryRulesMap.get(leftChildCategory);
+        for (int leftChildCategory : binaryRulesMap.keySet()) {
+            Map<Integer, List<BinaryRule>> map = binaryRulesMap.get(leftChildCategory);
 
-            for (short rightChildCategory : map.keySet()) {
+            for (int rightChildCategory : map.keySet()) {
                 rules.addAll(map.get(rightChildCategory));
             }
         }
@@ -119,7 +119,7 @@ public class Grammar {
     }
 
     public List<BinaryNode> binary(Node leftChild, Node rightChild) {
-        Map<Short, List<BinaryRule>> rulesByRightChildCategory = binaryRulesMap.get(leftChild.category);
+        Map<Integer, List<BinaryRule>> rulesByRightChildCategory = binaryRulesMap.get(leftChild.category);
 
         if (rulesByRightChildCategory == null) {
             return Collections.emptyList();
@@ -178,18 +178,18 @@ public class Grammar {
                 String[] parts = line.split("\t");
                 
                 if (parts.length == 3) {
-                    short daughterCat = SymbolPool.getID(parts[0]);
-                    short motherCat = SymbolPool.getID(parts[1]);
-                    short schemaName = SymbolPool.getID(parts[2]);
+                    int daughterCat = SymbolPool.getID(parts[0]);
+                    int motherCat = SymbolPool.getID(parts[1]);
+                    int schemaName = SymbolPool.getID(parts[2]);
                     grammar.add(new UnaryRule(daughterCat, motherCat,
                             schemaName));
                 } else if (parts.length == 5) {
-                    short leftCat = SymbolPool.getID(parts[0]);
-                    short rightCat = SymbolPool.getID(parts[1]);
-                    short motherCat = SymbolPool.getID(parts[2]);
+                    int leftCat = SymbolPool.getID(parts[0]);
+                    int rightCat = SymbolPool.getID(parts[1]);
+                    int motherCat = SymbolPool.getID(parts[2]);
                     BinaryRule.HeadPosition headPosition =
                             BinaryRule.HeadPosition.fromActionString(parts[3]);
-                    short schemaName = SymbolPool.getID(parts[4]);
+                    int schemaName = SymbolPool.getID(parts[4]);
                     grammar.add(new BinaryRule(leftCat, rightCat, motherCat,
                             headPosition, schemaName));
                 } else {

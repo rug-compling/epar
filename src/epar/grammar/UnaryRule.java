@@ -4,14 +4,14 @@ import epar.util.SymbolPool;
 
 public class UnaryRule {
 
-    public final short childCategory;
+    public final int childCategory;
 
-    public final short parentCategory;
+    public final int parentCategory;
     
-    public final short schemaName;
+    public final int schemaName;
 
-    public UnaryRule(short childCategory, short parentCategory,
-            short schemaName) {
+    public UnaryRule(int childCategory, int parentCategory,
+            int schemaName) {
         this.childCategory = childCategory;
         this.parentCategory = parentCategory;
         this.schemaName = schemaName;
