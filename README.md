@@ -4,10 +4,13 @@ epar
 epar is a Java implementation by [Kilian Evang](http://kilian.evang.name/) of
 Zhang and Clark (2011)'s shift-reduce CCG parser.
 
+It differs in some details, such as using a hash kernel (Bohnet 2010) for
+weight lookup, but gives very similar evaluation results.
+
 External dependencies
 ---------------------
 
-Before you run the experiments described below, you will need to get some
+Before you run the experiment described below, you will need to get some
 external dependencies. Create a directory called `ext` and make sure it
 contains the following repositories as subdirectories (you may also symlink
 them):
@@ -19,7 +22,14 @@ them):
 * [zpar](https://github.com/frcchang/zpar/), Yue Zhangs ZPar, for evaluation
   scripts
 
-The C&C tools need to be compiled, you can 
+Follow the instructions in the `supertagging` README file for producing the
+needed POS-tagged and supertagged data.
+
+The C&C tools need to be compiled, this can be done by running
+
+    make all bin/generate
+
+from the `candc` directory.
 
 To follow the steps below, you will also need:
 
@@ -39,19 +49,43 @@ To compile epar, run:
 Training the parser model
 -------------------------
 
-Preparation
------------
+To train the parser on the CCGbank sections 02-21 for 10 iterations, run:
 
-Create a directory called `ext` and put the following required external
-resources into it (you can use symlinks):
+    produce output/wsj/train.model10
 
-* `CCGbank1.2`
-* [`candc`](http://svn.ask.it.usyd.edu.au/trac/candc/) (SVN version)
-* [`zpar`](https://github.com/frcchang/zpar/)
+Parsing the development test corpus
+-----------------------------------
 
-...
+To parse the development test corpus with the above model, run:
+
+    produce output/wsj/dev.trees10
 
 Evaluation
 ----------
 
-This part is held together with flimsy strings and chewing gum.
+For dependency evaluation:
+
+    produce output/wsj/dev.depeval10
+
+For PARSEVAL evaluation:
+
+    produce output/wsj/dev.eval10
+
+Bug reports
+-----------
+
+Bug reports are very welcome, preferably as GitHub issues.
+
+Literature
+----------
+
+Bernd Bohnet (2010): Very High Accuracy and Fast Dependency Parsing Is Not a
+Contradiction. In _Proceedings of the 23rd International Conference on
+Computational Linguistics_, pages 89–97. Association for Computational
+Linguistics.
+ 
+Yue Zhang and Stephen Clark (2011):
+[Shift-reduce CCG Parsing](https://dl.acm.org/citation.cfm?id=2002559). In
+_Proceedings of the 49th Annual Meeting of the Association for Computational
+Linguistics: Human Language Technologies – Volume 1_, pages 683–692.
+Association for Computational Linguistics.
