@@ -12,6 +12,11 @@ import epar.grammar.Grammar;
 import epar.model.Model;
 import epar.oracle.Oracle;
 
+/**
+ * An agenda represents one generation of parse items. This implementation
+ * uses beam search.
+ * @author p264360
+ */
 public class Agenda {
 
     private static final Logger LOGGER = Logger.getLogger(Agenda.class.getName());
@@ -63,7 +68,7 @@ public class Agenda {
             candidate.findSuccessors(generation, beamSuccessors, grammar, model, oracle);
         }
 
-        LOGGER.log(Level.FINE, "Successors: {0}", beamSuccessors);
+        LOGGER.log(Level.INFO, "Successors: {0}", beamSuccessors);
 
         // Sort by score, descending
         Collections.sort(beamSuccessors, new Comparator<Candidate>() {

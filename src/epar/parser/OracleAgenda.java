@@ -9,7 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
+ * An agenda represents one generation of parse items. This implementation
+ * drops all items not accepted by some given oracle.
  * @author p264360
  */
 public class OracleAgenda {

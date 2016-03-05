@@ -157,16 +157,19 @@ public class Item {
     private void shift(List<Item> successors) {
         if (!stack.isEmpty() &&
                 stack.getFirst().category == Grammar.SKIP_CATEGORY) {
+            LOGGER.info("no shift coz skip");
             return;
         }
         
         if (queue.isEmpty()) {
+            LOGGER.info("no shift coz q empty");
             return;
         }
 
         SentencePosition sentencePosition = queue.getFirst();
 
         for (LexicalItem item : sentencePosition.lexicalItems) {
+            LOGGER.info("found lexical item");
             Action newAction = new ShiftAction(item.length, item.category,
                     item.semantics);
             Node newNode = new LexicalNode(item);
@@ -187,15 +190,18 @@ public class Item {
     // Could perhaps conflate FINISH and IDLE.
     private void finish(List<Item> successors) {        
         if (finished) {
+            LOGGER.info("no finish coz already finished");
             return;
         }
 
         if (!queue.isEmpty()) {
+            LOGGER.info("no finish coz q not empty");
             return;
         }
         
         if (!stack.isEmpty() &&
                 stack.getFirst().category == Grammar.SKIP_CATEGORY) {
+            LOGGER.info("no finish coz skip");
             return;
         }
 

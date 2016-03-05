@@ -1,5 +1,6 @@
 package epar.grammar;
 
+import epar.sem.Interpretation;
 import epar.util.SymbolPool;
 import java.util.Objects;
 
@@ -77,6 +78,11 @@ public class BinaryRule {
     public BinaryRule flip() {
         return new BinaryRule(rightChildCategory, leftChildCategory,
                 parentCategory, headPosition.flip(), schemaName);
+    }
+    
+    public Interpretation interpret(Interpretation leftChildInterpretation,
+            Interpretation rightChildInterpretation) {
+        throw new UnsupportedOperationException("Not implemented yet");
     }
 
     @Override

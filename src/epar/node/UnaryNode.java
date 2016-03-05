@@ -18,7 +18,7 @@ public class UnaryNode extends Node {
 
     public UnaryNode(int category, LexicalItem lexicalHead, Node child,
             UnaryRule rule) {
-        super(category, lexicalHead);
+        super(category, rule.interpret(child.interpretation), lexicalHead);
         this.child = child;
         this.rule = rule;
     }

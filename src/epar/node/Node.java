@@ -12,17 +12,22 @@ import epar.grammar.BinaryRule;
 import epar.grammar.Grammar;
 import epar.grammar.UnaryRule;
 import epar.parser.action.Action;
+import epar.sem.Interpretation;
 import epar.util.RecUtil;
 import epar.util.SymbolPool;
 
 public abstract class Node {
 
     public final int category;
+    
+    public final Interpretation interpretation;
 
     public final LexicalItem lexicalHead;
 
-    public Node(int category, LexicalItem lexicalHead) {
+    public Node(int category, Interpretation interpretation,
+            LexicalItem lexicalHead) {
         this.category = category;
+        this.interpretation = interpretation;
         this.lexicalHead = lexicalHead;
     }
 

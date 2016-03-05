@@ -20,7 +20,8 @@ public class BinaryNode extends Node {
 
     public BinaryNode(int category, LexicalItem lexicalHead, Node leftChild,
             Node rightChild, BinaryRule rule) {
-        super(category, lexicalHead);
+        super(category, rule.interpret(leftChild.interpretation,
+                rightChild.interpretation), lexicalHead);
         this.leftChild = leftChild;
         this.rightChild = rightChild;
         this.rule = rule;
