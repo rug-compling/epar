@@ -4,13 +4,13 @@ package epar.sem;
  *
  * @author p264360
  */
-public class ApplicationInterpretation implements Interpretation {
+public class ApplicationInterpretation extends Interpretation {
 
     public final Interpretation functor;
 
     public final Interpretation argument;
 
-    public ApplicationInterpretation(Interpretation functor,
+    ApplicationInterpretation(Interpretation functor,
             Interpretation argument) {
         this.functor = functor;
         this.argument = argument;
@@ -19,8 +19,12 @@ public class ApplicationInterpretation implements Interpretation {
     @Override
     public Interpretation substitute(VariableInterpretation variable,
             Interpretation term) {
-        return new ApplicationInterpretation(functor.substitute(variable, term),
-                argument.substitute(variable, term));
+       if (((Object) functor) == variable) {
+           return term.applyTo(argument);
+       }
+       
+       return new ApplicationInterpretation(functor.substitute(variable, term),
+               argument.substitute(variable, term));
     }
 
     @Override
@@ -46,6 +50,11 @@ public class ApplicationInterpretation implements Interpretation {
         
         return functor.subsumes(subsumedApplication.functor) &&
                 argument.subsumes(subsumedApplication.argument);
+    }
+
+    @Override
+    public Interpretation applyTo(Interpretation argument) {
+        return new ApplicationInterpretation(this, argument);
     }
 
 }

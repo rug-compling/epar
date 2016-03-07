@@ -4,8 +4,8 @@ package epar.sem;
  *
  * @author p264360
  */
-public class VariableInterpretation implements Interpretation {
-
+public class VariableInterpretation extends Interpretation {
+    
     @Override
     public boolean canLeadTo(Interpretation targetInterpretation) {
         return true;
@@ -29,6 +29,11 @@ public class VariableInterpretation implements Interpretation {
     @Override
     public boolean subsumes(Interpretation subsumee) {
         return true;
+    }
+
+    @Override
+    public Interpretation applyTo(Interpretation argument) {
+        return new ApplicationInterpretation(this, argument);
     }
     
 }

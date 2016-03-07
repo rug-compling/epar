@@ -22,7 +22,7 @@ public class Agenda {
     private static final Logger LOGGER = Logger.getLogger(Agenda.class.getName());
 
     static {
-        LOGGER.setLevel(Level.FINE);
+        //LOGGER.setLevel(Level.FINE);
     }
 
     private static final int BEAM_WIDTH = 16; // TODO make configurable
@@ -68,7 +68,7 @@ public class Agenda {
             candidate.findSuccessors(generation, beamSuccessors, grammar, model, oracle);
         }
 
-        LOGGER.log(Level.INFO, "Successors: {0}", beamSuccessors);
+        LOGGER.log(Level.FINE, "Successors: {0}", beamSuccessors);
 
         // Sort by score, descending
         Collections.sort(beamSuccessors, new Comparator<Candidate>() {

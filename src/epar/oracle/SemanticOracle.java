@@ -23,7 +23,8 @@ public class SemanticOracle implements Oracle {
         Interpretation interpretation = item.stack.getFirst().interpretation;
         
         if (item.finished) {
-            return targetInterpretation.subsumes(interpretation) &&
+            return item.stack.size() == 1 &&
+                    targetInterpretation.subsumes(interpretation) &&
                     interpretation.subsumes(targetInterpretation);
         } else {
             return interpretation.canLeadTo(targetInterpretation);

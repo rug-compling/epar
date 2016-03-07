@@ -4,7 +4,7 @@ package epar.sem;
  *
  * @author p264360
  */
-public class LambdaAbstractionInterpretation implements Interpretation {
+public class LambdaAbstractionInterpretation extends Interpretation {
     
     public final VariableInterpretation variable;
     
@@ -53,6 +53,11 @@ public class LambdaAbstractionInterpretation implements Interpretation {
                 subsumedAbstraction.variable, body.substitute(variable,
                         subsumedAbstraction.variable));
         return converted.subsumes(subsumee);
+    }
+
+    @Override
+    public Interpretation applyTo(Interpretation argument) {
+        return body.substitute(variable, argument);
     }
     
 }

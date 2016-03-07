@@ -4,11 +4,11 @@ package epar.sem;
  *
  * @author p264360
  */
-public class AtomicInterpretation implements Interpretation {
+public class AtomicInterpretation extends Interpretation {
     
-    public final long symbol;
+    public final int symbol;
     
-    public AtomicInterpretation(long symbol) {
+    public AtomicInterpretation(int symbol) {
         this.symbol = symbol;
     }
 
@@ -32,6 +32,11 @@ public class AtomicInterpretation implements Interpretation {
     public boolean subsumes(Interpretation subsumee) {
         return subsumee instanceof AtomicInterpretation &&
                 ((AtomicInterpretation) subsumee).symbol == symbol;
+    }
+
+    @Override
+    public Interpretation applyTo(Interpretation argument) {
+        return new ApplicationInterpretation(this, argument);
     }
     
 }

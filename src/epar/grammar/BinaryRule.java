@@ -1,10 +1,50 @@
 package epar.grammar;
 
 import epar.sem.Interpretation;
+import epar.sem.LambdaAbstractionInterpretation;
+import epar.sem.VariableInterpretation;
 import epar.util.SymbolPool;
 import java.util.Objects;
 
 public class BinaryRule {
+
+    private static final int FA = SymbolPool.getID("fa");
+
+    private static final int BA = SymbolPool.getID("ba");
+
+    private static final int FC = SymbolPool.getID("fc");
+
+    private static final int BC = SymbolPool.getID("bc");
+
+    private static final int FXC = SymbolPool.getID("fxc");
+
+    private static final int BXC = SymbolPool.getID("bxc");
+
+    private static final int GFC2 = SymbolPool.getID("gfc(2)");
+
+    private static final int GBC2 = SymbolPool.getID("gbc(2)");
+
+    private static final int GFXC2 = SymbolPool.getID("gfxc(2)");
+
+    private static final int GBXC2 = SymbolPool.getID("gbxc(2)");
+
+    private static final int GFC3 = SymbolPool.getID("gfc(3)");
+
+    private static final int GBC3 = SymbolPool.getID("gbc(3)");
+
+    private static final int GFXC3 = SymbolPool.getID("gfxc(3)");
+
+    private static final int GBXC3 = SymbolPool.getID("gbxc(3)");
+
+    private static final int GFC4 = SymbolPool.getID("gfc(4)");
+
+    private static final int GBC4 = SymbolPool.getID("gbc(4)");
+
+    private static final int GFXC4 = SymbolPool.getID("gfxc(4)");
+
+    private static final int GBXC4 = SymbolPool.getID("gbxc(4)");
+
+    private static final int DUMMY = SymbolPool.getID("dummy");
 
     public static enum HeadPosition {
 
@@ -12,6 +52,7 @@ public class BinaryRule {
 
         /**
          * String representation as used in ZPar trees
+         *
          * @return @code{@code "l"} or {@code "r"}
          */
         @Override
@@ -33,6 +74,7 @@ public class BinaryRule {
 
         /**
          * String representation as used in ZPar grammars
+         *
          * @return @code{@code "LEFT"} or {@code "RIGHT"}
          */
         public String toActionString() {
@@ -42,7 +84,7 @@ public class BinaryRule {
                 return "RIGHT";
             }
         }
-        
+
         public static HeadPosition fromActionString(String actionString) {
             if ("LEFT".equals(actionString)) {
                 return LEFT;
@@ -62,7 +104,7 @@ public class BinaryRule {
     public final int parentCategory;
 
     public final BinaryRule.HeadPosition headPosition;
-    
+
     public final int schemaName;
 
     public BinaryRule(int leftChildCategory, int rightChildCategory,
@@ -79,10 +121,90 @@ public class BinaryRule {
         return new BinaryRule(rightChildCategory, leftChildCategory,
                 parentCategory, headPosition.flip(), schemaName);
     }
-    
+
     public Interpretation interpret(Interpretation leftChildInterpretation,
             Interpretation rightChildInterpretation) {
-        throw new UnsupportedOperationException("Not implemented yet");
+        if (schemaName == DUMMY) {
+            return Interpretation.DUMMY;
+        }
+
+        if (schemaName == FA) {
+            return compose(0, leftChildInterpretation,
+                    rightChildInterpretation);
+        }
+
+        if (schemaName == BA) {
+            return compose(0, rightChildInterpretation,
+                    leftChildInterpretation);
+        }
+        
+        if (schemaName == FC || schemaName == FXC) {
+            return compose(1, leftChildInterpretation,
+                    rightChildInterpretation);
+        }
+        
+        if (schemaName == BC || schemaName == BXC) {
+            return compose(1, rightChildInterpretation,
+                    leftChildInterpretation);
+        }
+        
+        if (schemaName == GFC2 || schemaName == GFXC2) {
+            return compose(2, leftChildInterpretation,
+                    rightChildInterpretation);
+        }
+        
+        if (schemaName == GBC2 || schemaName == GBXC2) {
+            return compose(2, rightChildInterpretation,
+                    leftChildInterpretation);
+        }
+        
+        if (schemaName == GFC3 || schemaName == GFXC3) {
+            return compose(3, leftChildInterpretation,
+                    rightChildInterpretation);
+        }
+        
+        if (schemaName == GBC3 || schemaName == GBXC3) {
+            return compose(3, rightChildInterpretation,
+                    leftChildInterpretation);
+        }
+        
+        if (schemaName == GFC4 || schemaName == GFXC4) {
+            return compose(4, leftChildInterpretation,
+                    rightChildInterpretation);
+        }
+        
+        if (schemaName == GBC4 || schemaName == GBXC4) {
+            return compose(4, rightChildInterpretation,
+                    leftChildInterpretation);
+        }
+
+        throw new IllegalArgumentException(
+                "Don't know how to interpret binary rule: "
+                + SymbolPool.getString(schemaName));
+    }
+
+    private static Interpretation compose(int degree, Interpretation functor,
+            Interpretation argument) {
+        VariableInterpretation[] variables = new VariableInterpretation[degree];
+
+        // Create variables for lambda abstractions
+        for (int i = 0; i < degree; i++) {
+            variables[i] = new VariableInterpretation();
+        }
+
+        // Create delayed applications
+        for (int i = 0; i < degree; i++) {
+            argument = argument.applyTo(variables[i]);
+        }
+
+        Interpretation result = functor.applyTo(argument);
+
+        // Create lambda abstractions
+        for (int i = degree - 1; i >= 0; i--) {
+            result = new LambdaAbstractionInterpretation(variables[i], result);
+        }
+
+        return result;
     }
 
     @Override
@@ -121,10 +243,10 @@ public class BinaryRule {
 
     @Override
     public String toString() {
-        return SymbolPool.getString(leftChildCategory) + "\t" +
-                SymbolPool.getString(rightChildCategory) + "\t" +
-                SymbolPool.getString(parentCategory) + "\t"+ 
-                headPosition.toActionString() + "\t" + schemaName;
+        return SymbolPool.getString(leftChildCategory) + "\t"
+                + SymbolPool.getString(rightChildCategory) + "\t"
+                + SymbolPool.getString(parentCategory) + "\t"
+                + headPosition.toActionString() + "\t" + schemaName;
     }
 
 }

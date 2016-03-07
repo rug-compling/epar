@@ -13,14 +13,14 @@ import epar.util.SymbolPool;
 public class LexicalNode extends Node {
 
     public LexicalNode(LexicalItem item) {
-        super(item.category, item);
+        super(item.category, item.interpretation, item);
     }
 
     @Override
     public List<Action> actionSequence(Grammar grammar) {
         List<Action> actions = new ArrayList<>();
         actions.add(new ShiftAction(lexicalHead.length, lexicalHead.category,
-                lexicalHead.semantics));
+                lexicalHead.lexicalSemantics));
         return actions;
     }
 

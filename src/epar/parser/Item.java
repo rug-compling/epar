@@ -98,13 +98,13 @@ public class Item {
             
             if (parent.rule.schemaName == FA && rightChild instanceof
                     LexicalNode && ((LexicalNode)
-                    rightChild).lexicalHead.semantics == EMPTY_SEM) {
+                    rightChild).lexicalHead.lexicalSemantics == EMPTY_SEM) {
                 continue;
             }
             
             if (parent.rule.schemaName == BA && leftChild instanceof
                     LexicalNode && ((LexicalNode)
-                    leftChild).lexicalHead.semantics == EMPTY_SEM) {
+                    leftChild).lexicalHead.lexicalSemantics == EMPTY_SEM) {
                 continue;
             }
             
@@ -168,7 +168,7 @@ public class Item {
 
         for (LexicalItem item : sentencePosition.lexicalItems) {
             Action newAction = new ShiftAction(item.length, item.category,
-                    item.semantics);
+                    item.lexicalSemantics);
             Node newNode = new LexicalNode(item);
             Stack<Node> newStack = stack.push(newNode);
             Stack<SentencePosition> newQueue = queue;
@@ -437,7 +437,7 @@ public class Item {
         }
         
         LexicalItem lex = stack.getFirst().lexicalHead;
-        return hash(lex.category, lex.semantics, lex.form, lex.pos);
+        return hash(lex.category, lex.lexicalSemantics, lex.form, lex.pos);
     }
 
     private static int hash(int a) {

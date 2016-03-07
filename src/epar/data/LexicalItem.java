@@ -1,5 +1,6 @@
 package epar.data;
 
+import epar.sem.Interpretation;
 import epar.util.SymbolPool;
 
 /**
@@ -8,7 +9,7 @@ import epar.util.SymbolPool;
  */
 public class LexicalItem {
     
-    public static final LexicalItem NONE = new LexicalItem(1, SymbolPool.NONE, SymbolPool.NONE, SymbolPool.NONE, SymbolPool.NONE);
+    public static final LexicalItem NONE = new LexicalItem(1, SymbolPool.NONE, SymbolPool.NONE, SymbolPool.NONE, Interpretation.DUMMY, SymbolPool.NONE);
     
     public final int length;
     
@@ -18,14 +19,17 @@ public class LexicalItem {
     
     public final int category;
     
-    public final int semantics;
+    public final Interpretation interpretation;
     
-    public LexicalItem(int length, int form, int pos, int category, int semantics) {
+    public final int lexicalSemantics;
+    
+    public LexicalItem(int length, int form, int pos, int category, Interpretation interpretation, int lexicalSemantics) {
         this.length = length;
         this.form = form;
         this.pos = pos;
         this.category = category;
-        this.semantics = semantics;
+        this.interpretation = interpretation;
+        this.lexicalSemantics = lexicalSemantics;
     }
     
 }

@@ -8,19 +8,21 @@ import epar.sem.VariableInterpretation;
 import epar.util.SymbolPool;
 
 public class UnaryRule {
-    
-    public static final long FTR = SymbolPool.getID("ftr");
-    
-    public static final long BTR = SymbolPool.getID("btr");
-    
-    public static final long TC = SymbolPool.getID("tc");
+
+    private static final int FTR = SymbolPool.getID("ftr");
+
+    private static final int BTR = SymbolPool.getID("btr");
+
+    private static final int TC = SymbolPool.getID("tc");
+
+    private static final int DUMMY = SymbolPool.getID("dummy");
 
     public final int childCategory;
 
     public final int parentCategory;
-    
+
     public final int schemaName;
-    
+
     private AtomicInterpretation typeChangingInterpretation;
 
     public UnaryRule(int childCategory, int parentCategory,
@@ -28,29 +30,33 @@ public class UnaryRule {
         this.childCategory = childCategory;
         this.parentCategory = parentCategory;
         this.schemaName = schemaName;
-        
+
         if (schemaName == TC) {
             this.typeChangingInterpretation = new AtomicInterpretation(
-                    SymbolPool.getID("tc-" +
-                    SymbolPool.getString(childCategory) + "-" +
-                    SymbolPool.getString(parentCategory)));
+                    SymbolPool.getID("tc-"
+                            + SymbolPool.getString(childCategory) + "-"
+                            + SymbolPool.getString(parentCategory)));
         }
     }
-    
+
     public Interpretation interpret(Interpretation childInterpretation) {
+        if (schemaName == DUMMY) {
+            return Interpretation.DUMMY;
+        }
+        
         if (schemaName == FTR || schemaName == BTR) {
             VariableInterpretation variable = new VariableInterpretation();
             return new LambdaAbstractionInterpretation(variable,
-                    new ApplicationInterpretation(variable, childInterpretation)
-            );
-        } else if (schemaName == TC) {
-            return new ApplicationInterpretation(typeChangingInterpretation,
-                    childInterpretation);
-        } else {
-            throw new IllegalArgumentException(
-                    "Don't know how to interpret unary rule: " +
-                            SymbolPool.getString(schemaName));
+                    variable.applyTo(childInterpretation));
         }
+
+        if (schemaName == TC) {
+            return typeChangingInterpretation.applyTo(childInterpretation);
+        }
+
+        throw new IllegalArgumentException(
+                "Don't know how to interpret unary rule: "
+                + SymbolPool.getString(schemaName));
     }
 
     @Override
@@ -81,8 +87,8 @@ public class UnaryRule {
 
     @Override
     public String toString() {
-        return SymbolPool.getString(childCategory) + "\t" +
-                SymbolPool.getString(parentCategory) + "\t" + schemaName;
+        return SymbolPool.getString(childCategory) + "\t"
+                + SymbolPool.getString(parentCategory) + "\t" + schemaName;
     }
 
 }

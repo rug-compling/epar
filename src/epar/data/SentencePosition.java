@@ -1,5 +1,6 @@
 package epar.data;
 
+import epar.sem.Interpretation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class SentencePosition {
                     SymbolPool.getID(parts[i + 1]),
                     SymbolPool.getID(parts[i + 2]),
                     SymbolPool.getID(parts[i + 3]),
+                    Interpretation.fromString(parts[i + 4]),
                     SymbolPool.getID(parts[i + 4])));
         }
 
