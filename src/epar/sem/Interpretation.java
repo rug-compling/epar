@@ -21,6 +21,13 @@ public abstract class Interpretation {
     public static final Interpretation DUMMY =
             new AtomicInterpretation(SymbolPool.NONE);
     
+    
+    /**
+     * Split string left and right of parens and commas
+     */
+    private static final Pattern DELIM =
+            Pattern.compile("(?<=[(),])|(?=[(),])");
+    
     private static final Pattern APP = Pattern.compile("app");
     
     private static final Pattern LAM = Pattern.compile("lam");
@@ -30,6 +37,10 @@ public abstract class Interpretation {
      * serialization.
      */
     private static final Pattern ATOM = Pattern.compile("[0-9]+");
+    
+    private static final Pattern TCNAME = Pattern.compile("tc_[A-Z]+_[A-Z]+");
+    
+    private static final Pattern TCNAME_START = Pattern.compile("'tc_.*");
     
     /**
      * Variables are sequences of capital letters in our Prolog-based
@@ -49,9 +60,12 @@ public abstract class Interpretation {
     public abstract Interpretation applyTo(Interpretation argument);
     
     public static Interpretation fromString(String string) {
+        if ("nil".equals(string)) {
+            return DUMMY;
+        }
+        
         Scanner scanner = new Scanner(string);
-        // Split string left and right of parens and commas
-        scanner.useDelimiter("(?<=[(),])\\|(?=[(),])");
+        scanner.useDelimiter(DELIM);
         Map<String, VariableInterpretation> varMap = new HashMap<>();
         Interpretation result = parse(scanner, varMap);
         RecUtil.expectEnd(scanner);
@@ -61,6 +75,23 @@ public abstract class Interpretation {
     private static Interpretation parse(Scanner scanner, Map<String, VariableInterpretation> varMap) {
         if (scanner.hasNext(ATOM)) {
             return new AtomicInterpretation(SymbolPool.getID(scanner.next()));
+        }
+        
+        // Hacky parsing of possibly quoted Prolog atoms representing
+        // the semantics of type-changing rules
+        
+        if (scanner.hasNext(TCNAME)) {
+            return new AtomicInterpretation(SymbolPool.getID(scanner.next()));
+        }
+        
+        if (scanner.hasNext(TCNAME_START)) {
+            String tcName = scanner.next();
+            
+            while (!tcName.endsWith("'")) {
+                tcName += scanner.next();
+            }
+            
+            return new AtomicInterpretation(SymbolPool.getID(tcName));
         }
         
         if (scanner.hasNext(VAR)) {

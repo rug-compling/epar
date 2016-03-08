@@ -9,6 +9,9 @@ public class AtomicInterpretation extends Interpretation {
     public final int symbol;
     
     public AtomicInterpretation(int symbol) {
+        // TODO could make this constructor private and manage a pool of
+        // atomic interpretations to avoid having many semantically equivalent
+        // objects.
         this.symbol = symbol;
     }
 
