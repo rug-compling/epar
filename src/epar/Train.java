@@ -35,7 +35,7 @@ public class Train {
 
             // Dwell on the same training example up to DWELL times.
             for (int a = 0; a < DWELL; a++) {
-                Agenda agenda = Decode.decode(Agenda.initial(sentence, 16, Integer.MAX_VALUE), grammar, model, oracle);
+                Agenda agenda = Decode.decode(Agenda.initial(sentence), grammar, model, oracle);
                 Candidate highestScoring;
                 Candidate highestScoringCorrect;
 

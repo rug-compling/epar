@@ -25,30 +25,20 @@ public class Agenda {
         //LOGGER.setLevel(Level.FINE);
     }
 
+    private static final int BEAM_WIDTH = 16; // TODO make configurable
+
     public final int generation;
 
     private final List<Candidate> candidates;
 
     private final List<Candidate> beam;
-    
-    private final int beamWidth;
-    
-    private final int spaceout;
 
-    private Agenda(int generation, List<Candidate> candidates, int beamWidth,
-            int spaceout) {
+    private Agenda(int generation, List<Candidate> candidates) {
         this.generation = generation;
         this.candidates = candidates;
-        this.beamWidth = beamWidth;
-        this.spaceout = spaceout;
-        
-        if (candidates.size() > spaceout) {
-            throw new SpaceoutException();
-        }
 
         // Keep the best candidates in beam
-        beam = new ArrayList<>(candidates.subList(0, Math.min(beamWidth,
-                candidates.size())));
+        beam = new ArrayList<>(candidates.subList(0, Math.min(BEAM_WIDTH, candidates.size())));
 
         // Also keep the best finished candidate, if any
         boolean gotFinishedCandidate = false;
@@ -60,9 +50,8 @@ public class Agenda {
             }
         }
 
-        if (!gotFinishedCandidate && candidates.size() > beamWidth) {
-            for (Candidate successor : candidates.subList(beamWidth,
-                    candidates.size())) {
+        if (!gotFinishedCandidate && candidates.size() > BEAM_WIDTH) {
+            for (Candidate successor : candidates.subList(BEAM_WIDTH, candidates.size())) {
                 if (successor.item.finished) {
                     beam.add(successor);
                     break;
@@ -97,7 +86,7 @@ public class Agenda {
 
         });
 
-        return new Agenda(generation + 1, beamSuccessors, beamWidth, spaceout);
+        return new Agenda(generation + 1, beamSuccessors);
     }
 
     public boolean noneCorrectWithinBeam() {
@@ -134,10 +123,8 @@ public class Agenda {
         throw new IndexOutOfBoundsException("No correct candidate");
     }
 
-    public static Agenda initial(Sentence sentence, int beamWidth,
-            int spaceout) {
-        return new Agenda(0, Collections.singletonList(Candidate.initial(
-                sentence)), beamWidth, spaceout);
+    public static Agenda initial(Sentence sentence) {
+        return new Agenda(0, Collections.singletonList(Candidate.initial(sentence)));
     }
 
     /**
@@ -148,12 +135,6 @@ public class Agenda {
      */
     public List<Candidate> getBeam() {
         return Collections.unmodifiableList(beam);
-    }
-
-    public static class SpaceoutException extends RuntimeException {
-
-        public SpaceoutException() {
-        }
     }
 
 }
