@@ -11,6 +11,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.Future;
+import java.util.concurrent.RecursiveTask;
 
 /**
  *
@@ -18,33 +23,59 @@ import java.util.List;
  */
 public class ProjectDerivations {
 
-    public static void main(String[] args) {
-        if (args.length != 2) {
-            System.err.println("Usage: java epar.ProjectDerivations INPUT.TRG GRAMMAR.TRG TARGET_INTERPRETATIONS");
+    public static void main(String[] args) throws InterruptedException, ExecutionException {
+        if (args.length != 4) {
+            System.err.println("Usage: java epar.ProjectDerivations INPUT.TRG GRAMMAR.TRG TARGET_INTERPRETATIONS NUM_CPUS");
             System.exit(1);
         }
 
         try {
-            List<Sentence> sentences = Sentence.readSentences(new File(args[0]));
-            Grammar grammar = Grammar.load(new File(args[1]));
-            List<Interpretation> targetInterpretations = Interpretation.read(new File(args[2]));
-            
+            final List<Sentence> sentences = Sentence.readSentences(new File(args[0]));
+            final Grammar grammar = Grammar.load(new File(args[1]));
+            final List<Interpretation> targetInterpretations = Interpretation.read(new File(args[2]));
+            int numCPUs = Integer.parseInt(args[3]);
+
             if (sentences.size() != targetInterpretations.size()) {
                 throw new IllegalArgumentException("Numbers of sentences and target interpretations don't match.");
             }
+            
+            List<Future<List<List<Action>>>> parses = new ArrayList<>(sentences.size());
+            ForkJoinPool pool;
+
+            if (numCPUs <= 0) {
+                pool = new ForkJoinPool();
+            } else {
+                pool = new ForkJoinPool(numCPUs);
+            }
 
             for (int i = 0; i < sentences.size(); i++) {
-                List<List<Action>> actionSequences = ForceAgenda.forceDecode(
-                        sentences.get(i), grammar, new SemanticOracle(
-                                targetInterpretations.get(i)), 256);
-                List<String> actionSequenceStrings = new ArrayList<>(
-                        actionSequences.size());
+                final Sentence sentence = sentences.get(i);
+                final Interpretation targetInterpretation = targetInterpretations.get(i);
                 
+                ForkJoinTask<List<List<Action>>> parse = new RecursiveTask<List<List<Action>>>() {
+
+                    @Override
+                    protected List<List<Action>> compute() {
+                        return ForceAgenda.forceDecode(sentence, grammar,
+                                new SemanticOracle(targetInterpretation), 256);
+                    }
+
+                };
+                
+                pool.execute(parse);
+                parses.add(parse);
+            }
+            
+            for(Future<List<List<Action>>> parse : parses) {
+                List<List<Action>> actionSequences = parse.get();
+                List<String> actionSequenceStrings = new ArrayList<>(
+                                actionSequences.size());
+
                 for (List<Action> actionSequence : actionSequences) {
                     actionSequenceStrings.add(Action.sequenceToString(
                             actionSequence));
                 }
-                
+
                 System.out.println(StringUtil.join(actionSequenceStrings, " || "));
             }
         } catch (FileNotFoundException ex) {
