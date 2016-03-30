@@ -10,6 +10,7 @@ import epar.parser.ForceAgenda;
 import epar.parser.Item;
 import epar.projection.MultiAlignment;
 import epar.projection.TranslationUnit;
+import epar.sem.Interpretation;
 import epar.util.ListUtil;
 import epar.util.SymbolPool;
 import java.io.File;
@@ -17,6 +18,9 @@ import java.io.IOException;
 import java.util.List;
 
 /**
+ * Takes source and target sentence pairs, together with word alignments, as
+ * input. Produces as output a parser queue for each target sentence, with
+ * possible lexical items based on the aligned source words.
  *
  * @author p264360
  */
@@ -59,18 +63,21 @@ public class ProjectCategories {
 
                 // For every position in the target sentence
                 for (int j = 0; j < targetSentence.positions.size(); j++) {
+                    // Translation units with aligned source words
                     for (TranslationUnit tu : multiAlignment.translationUnits) {
-                        if (tu.targetPositions.get(0) == j
+                        if (!tu.targetPositions.isEmpty()
+                                && tu.sourcePositions.isEmpty()
+                                && tu.targetPositions.get(0) == j
                                 && ListUtil.isContiguous(tu.targetPositions)
                                 && ListUtil.isContiguous(tu.sourcePositions)) {
                             // Extract target multiword
                             int length = tu.targetPositions.size();
                             int form = SymbolPool.join(targetSentence.formsAt(tu.targetPositions), " ");
                             int pos = SymbolPool.join(targetSentence.posAt(tu.targetPositions), " ");
-                            
+
                             // Parse the source multiword
                             Sentence multiword = new Sentence(sourceSentence.positionsAt(
-                                            tu.sourcePositions));
+                                    tu.sourcePositions));
                             ForceAgenda parseResult = ForceAgenda.findAllParses(
                                     multiword, sourceGrammar, oracle);
 
@@ -81,6 +88,24 @@ public class ProjectCategories {
                                         new LexicalItem(length, form, pos, straightenSlashes(node.category),
                                                 node.interpretation));
                             }
+                        }
+                    }
+
+                    // Translation without aligned source words
+                    for (TranslationUnit tu : multiAlignment.translationUnits) {
+                        if (!tu.targetPositions.isEmpty()
+                                && tu.sourcePositions.isEmpty()
+                                && tu.targetPositions.get(0) == j) {
+                            // Extract target multiword
+                            int length = tu.targetPositions.size();
+                            int form = SymbolPool.join(targetSentence.formsAt(tu.targetPositions), " ");
+                            int pos = SymbolPool.join(targetSentence.posAt(tu.targetPositions), " ");
+
+                            // Add SKIP item
+                            targetSentence.positions.get(j).lexicalItems.add(
+                                    new LexicalItem(length, form, pos,
+                                            SymbolPool.getID("SKIP"),
+                                            Interpretation.DUMMY));
                         }
                     }
                 }
