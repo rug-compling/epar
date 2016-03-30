@@ -9,7 +9,7 @@ import epar.util.SymbolPool;
  */
 public class LexicalItem {
     
-    public static final LexicalItem NONE = new LexicalItem(1, SymbolPool.NONE, SymbolPool.NONE, SymbolPool.NONE, Interpretation.DUMMY, SymbolPool.NONE);
+    public static final LexicalItem NONE = new LexicalItem(1, SymbolPool.NONE, SymbolPool.NONE, SymbolPool.NONE, Interpretation.DUMMY);
     
     public final int length;
     
@@ -23,13 +23,13 @@ public class LexicalItem {
     
     public final int lexicalSemantics;
     
-    public LexicalItem(int length, int form, int pos, int category, Interpretation interpretation, int lexicalSemantics) {
+    public LexicalItem(int length, int form, int pos, int category, Interpretation interpretation) {
         this.length = length;
         this.form = form;
         this.pos = pos;
         this.category = category;
         this.interpretation = interpretation;
-        this.lexicalSemantics = lexicalSemantics;
+        this.lexicalSemantics = SymbolPool.getID(interpretation.toProlog());
     }
     
 }

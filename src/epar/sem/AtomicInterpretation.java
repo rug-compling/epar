@@ -1,5 +1,8 @@
 package epar.sem;
 
+import epar.util.SymbolPool;
+import java.util.Map;
+
 /**
  *
  * @author p264360
@@ -40,6 +43,11 @@ public class AtomicInterpretation extends Interpretation {
     @Override
     public Interpretation applyTo(Interpretation argument) {
         return new ApplicationInterpretation(this, argument);
+    }
+
+    @Override
+    String toProlog(Map<VariableInterpretation, String> variableNames) {
+        return SymbolPool.getString(symbol);
     }
     
 }

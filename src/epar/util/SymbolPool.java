@@ -1,6 +1,8 @@
 package epar.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SymbolPool {
@@ -29,6 +31,11 @@ public class SymbolPool {
 
     public static String getString(int id) {
         return idToString.get(id);
+    }
+    
+    public static int join(List<Integer> ids, String glue) {
+        List<String> symbols = new ArrayList<>();
+        return getID(StringUtil.join(symbols, glue));
     }
 
 }

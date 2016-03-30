@@ -17,7 +17,7 @@ import java.util.Scanner;
  */
 public class MultiAlignment {
 
-    private final LinkedHashSet<TranslationUnit> translationUnits;
+    public final LinkedHashSet<TranslationUnit> translationUnits;
 
     public MultiAlignment(LinkedHashSet<TranslationUnit> translationUnits) {
         this.translationUnits = translationUnits;
@@ -35,30 +35,36 @@ public class MultiAlignment {
      * @return
      * @throws java.io.FileNotFoundException
      */
-    public static MultiAlignment read(File sourceTargetFile,
+    public static List<MultiAlignment> read(File sourceTargetFile,
             File targetSourceFile, int nBestInput, int nBestOutput)
             throws FileNotFoundException {
-        LinkedHashSet<TranslationUnit> translationUnits = new LinkedHashSet<>();
+        List<MultiAlignment> result = new ArrayList<>();
 
         try (Scanner sourceTargetScanner = new Scanner(sourceTargetFile);
                 Scanner targetSourceScanner = new Scanner(targetSourceFile)) {
-            for (int i = 0; i < nBestOutput; i++) {
-                read(sourceTargetScanner, translationUnits, false);
-                read(targetSourceScanner, translationUnits, true);
-            }
+            while (sourceTargetScanner.hasNextLine()) {
+                LinkedHashSet<TranslationUnit> translationUnits = new LinkedHashSet<>();
 
-            for (int i = nBestOutput; i < nBestInput; i++) {
-                // Skip further alignments
-                sourceTargetScanner.nextLine();
-                sourceTargetScanner.nextLine();
-                sourceTargetScanner.nextLine();
-                targetSourceScanner.nextLine();
-                targetSourceScanner.nextLine();
-                targetSourceScanner.nextLine();
+                for (int i = 0; i < nBestOutput; i++) {
+                    read(sourceTargetScanner, translationUnits, false);
+                    read(targetSourceScanner, translationUnits, true);
+                }
+
+                for (int i = nBestOutput; i < nBestInput; i++) {
+                    // Skip further alignments
+                    sourceTargetScanner.nextLine();
+                    sourceTargetScanner.nextLine();
+                    sourceTargetScanner.nextLine();
+                    targetSourceScanner.nextLine();
+                    targetSourceScanner.nextLine();
+                    targetSourceScanner.nextLine();
+                }
+
+                result.add(new MultiAlignment(translationUnits));
             }
         }
-        
-        return new MultiAlignment(translationUnits);
+
+        return result;
     }
 
     private static void read(Scanner sourceTargetScanner,

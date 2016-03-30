@@ -1,5 +1,7 @@
 package epar.sem;
 
+import java.util.Map;
+
 /**
  *
  * @author p264360
@@ -58,6 +60,12 @@ public class LambdaAbstractionInterpretation extends Interpretation {
     @Override
     public Interpretation applyTo(Interpretation argument) {
         return body.substitute(variable, argument);
+    }
+
+    @Override
+    String toProlog(Map<VariableInterpretation, String> variableNames) {
+        return "lam(" + variable.toProlog(variableNames) + "," +
+                body.toProlog(variableNames) + ")";
     }
     
 }

@@ -18,16 +18,16 @@ public class ForceAgenda {
 
     private final static Logger LOGGER = Logger.getLogger(
             ForceAgenda.class.getName());
-    
+
     public final int generation;
-    
+
     private final List<Item> items;
-    
+
     private ForceAgenda(int generation, List<Item> items) {
         this.generation = generation;
         this.items = items;
     }
-    
+
     public List<Item> getItems() {
         return Collections.unmodifiableList(items);
     }
@@ -45,40 +45,41 @@ public class ForceAgenda {
     public boolean isEmpty() {
         return items.isEmpty();
     }
-    
+
     public ForceAgenda nextAgenda(Grammar grammar, Oracle oracle) {
         List<Item> successors = new ArrayList<>();
-        
+
         for (Item item : items) {
-            for (Item successor  : item.successors(grammar)) {
+            for (Item successor : item.successors(grammar)) {
                 if (oracle.accept(generation, item)) {
                     successors.add(successor);
                 }
             }
         }
-        
+
         return new ForceAgenda(generation + 1, successors);
     }
-    
+
     public static ForceAgenda initial(Sentence sentence) {
         return new ForceAgenda(0,
                 Collections.singletonList(Item.initial(sentence)));
     }
     
+    // TODO the following two methods have overlap, refactor.
+
     /**
-     * 
+     *
      * @param sentence
      * @param grammar
      * @param oracle
      * @param spaceout
      * @return All action sequences leading to a finished item for this sentence
-     * such that all items are accepted by the oracle - except if some agenda
-     * on the way is larger than spaceout, in this case returns an empty list.
+     * such that all items are accepted by the oracle - except if some agenda on
+     * the way is larger than spaceout, in this case returns an empty list.
      */
-    public static List<List<Action>> forceDecode(Sentence sentence, Grammar
-            grammar, Oracle oracle, int spaceout) {
+    public static List<List<Action>> forceDecode(Sentence sentence, Grammar grammar, Oracle oracle, int spaceout) {
         ForceAgenda agenda = ForceAgenda.initial(sentence);
-        
+
         while (!agenda.isEmpty()) {
             if (agenda.getItems().size() > spaceout) {
                 LOGGER.log(Level.WARNING,
@@ -86,22 +87,32 @@ public class ForceAgenda {
                         agenda.generation);
                 return Collections.EMPTY_LIST;
             }
-            
+
             if (agenda.allFinished()) {
                 List<List<Action>> result = new ArrayList<>(
                         agenda.getItems().size());
-                
+
                 for (Item item : agenda.getItems()) {
                     result.add(item.actionSequence());
                 }
-                
+
                 return result;
             }
-            
+
+            agenda = agenda.nextAgenda(grammar, oracle);
+        }
+
+        return Collections.EMPTY_LIST;
+    }
+
+    public static ForceAgenda findAllParses(Sentence sentence, Grammar grammar, Oracle oracle) {
+        ForceAgenda agenda = ForceAgenda.initial(sentence);
+
+        while (!agenda.isEmpty() && !agenda.allFinished()) {
             agenda = agenda.nextAgenda(grammar, oracle);
         }
         
-        return Collections.EMPTY_LIST;
+        return agenda;
     }
-    
+
 }

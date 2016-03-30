@@ -1,5 +1,7 @@
 package epar.sem;
 
+import java.util.Map;
+
 /**
  *
  * @author p264360
@@ -55,6 +57,12 @@ public class ApplicationInterpretation extends Interpretation {
     @Override
     public Interpretation applyTo(Interpretation argument) {
         return new ApplicationInterpretation(this, argument);
+    }
+
+    @Override
+    String toProlog(Map<VariableInterpretation, String> variableNames) {
+        return "app(" + functor.toProlog(variableNames) + "," +
+                argument.toProlog(variableNames) + ")";
     }
 
 }
