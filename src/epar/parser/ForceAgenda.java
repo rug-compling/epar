@@ -77,7 +77,8 @@ public class ForceAgenda {
      * such that all items are accepted by the oracle - except if some agenda on
      * the way is larger than spaceout, in this case returns an empty list.
      */
-    public static List<List<Action>> forceDecode(Sentence sentence, Grammar grammar, Oracle oracle, int spaceout) {
+    public static List<List<Action>> forceDecode(Sentence sentence,
+            Grammar grammar, Oracle oracle, int spaceout) {
         ForceAgenda agenda = ForceAgenda.initial(sentence);
 
         while (!agenda.isEmpty()) {
