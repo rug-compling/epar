@@ -7,30 +7,30 @@ import java.util.Map;
 
 public class SymbolPool {
 
-    private static final Map<String, Integer> stringToID = new HashMap<>();
+    private static final Map<String, Integer> STRING_TO_ID = new HashMap<>();
 
-    private static final Map<Integer, String> idToString = new HashMap<>();
+    private static final Map<Integer, String> ID_TO_STRING = new HashMap<>();
     
-    public static final short NONE = 0;
+    public static final int NONE = 0;
 
     private static int nextID = 1;
 
     public static int getID(String string) {
-        if (!stringToID.containsKey(string)) {
+        if (!STRING_TO_ID.containsKey(string)) {
             if (nextID == 0) {
                 throw new RuntimeException("Symbol pool overflow!");
             }
             
-            stringToID.put(string, nextID);
-            idToString.put(nextID, string);
+            STRING_TO_ID.put(string, nextID);
+            ID_TO_STRING.put(nextID, string);
             return nextID++;
         }
 
-        return stringToID.get(string);
+        return STRING_TO_ID.get(string);
     }
 
     public static String getString(int id) {
-        return idToString.get(id);
+        return ID_TO_STRING.get(id);
     }
     
     public static int join(List<Integer> ids, String glue) {
