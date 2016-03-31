@@ -118,7 +118,7 @@ public class Decode {
                 parses.add(parse);
             }
 
-            // Retrieve parses and write them to STDOUT
+            // Retrieve parses and write them to output file
             try (Writer writer = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(outputFile), "utf-8"))) {
                 int i = 0;
