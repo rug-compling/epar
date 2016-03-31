@@ -77,7 +77,7 @@ public class ProjectCategories {
                     // Translation units with aligned source words
                     for (TranslationUnit tu : multiAlignment.translationUnits) {
                         if (!tu.targetPositions.isEmpty()
-                                && tu.sourcePositions.isEmpty()
+                                && !tu.sourcePositions.isEmpty()
                                 && tu.targetPositions.get(0) == j
                                 && ListUtil.isContiguous(tu.targetPositions)
                                 && ListUtil.isContiguous(tu.sourcePositions)) {
