@@ -1,6 +1,5 @@
 package epar.grammar;
 
-import epar.sem.ApplicationInterpretation;
 import epar.sem.AtomicInterpretation;
 import epar.sem.Interpretation;
 import epar.sem.LambdaAbstractionInterpretation;
