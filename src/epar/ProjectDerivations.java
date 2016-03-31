@@ -7,8 +7,12 @@ import epar.parser.ForceAgenda;
 import epar.parser.action.Action;
 import epar.sem.Interpretation;
 import epar.util.StringUtil;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -25,7 +29,7 @@ public class ProjectDerivations {
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
         if (args.length != 4) {
-            System.err.println("Usage: java epar.ProjectDerivations INPUT.TRG GRAMMAR.TRG TARGET_INTERPRETATIONS NUM_CPUS");
+            System.err.println("Usage: java epar.ProjectDerivations INPUT.TRG GRAMMAR.TRG INTERPRETATIONS NUM_CPUS ORACLES.TRG");
             System.exit(1);
         }
 
@@ -38,7 +42,7 @@ public class ProjectDerivations {
             if (sentences.size() != targetInterpretations.size()) {
                 throw new IllegalArgumentException("Numbers of sentences and target interpretations don't match.");
             }
-            
+
             List<Future<List<List<Action>>>> parses = new ArrayList<>(sentences.size());
             ForkJoinPool pool;
 
@@ -51,7 +55,7 @@ public class ProjectDerivations {
             for (int i = 0; i < sentences.size(); i++) {
                 final Sentence sentence = sentences.get(i);
                 final Interpretation targetInterpretation = targetInterpretations.get(i);
-                
+
                 ForkJoinTask<List<List<Action>>> parse = new RecursiveTask<List<List<Action>>>() {
 
                     @Override
@@ -61,24 +65,28 @@ public class ProjectDerivations {
                     }
 
                 };
-                
+
                 pool.execute(parse);
                 parses.add(parse);
             }
-            
-            for(Future<List<List<Action>>> parse : parses) {
-                List<List<Action>> actionSequences = parse.get();
-                List<String> actionSequenceStrings = new ArrayList<>(
-                                actionSequences.size());
 
-                for (List<Action> actionSequence : actionSequences) {
-                    actionSequenceStrings.add(Action.sequenceToString(
-                            actionSequence));
+            try (Writer writer = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(new File(args[4])), "utf-8"))) {
+                for (Future<List<List<Action>>> parse : parses) {
+                    List<List<Action>> actionSequences = parse.get();
+                    List<String> actionSequenceStrings = new ArrayList<>(
+                            actionSequences.size());
+
+                    for (List<Action> actionSequence : actionSequences) {
+                        actionSequenceStrings.add(Action.sequenceToString(
+                                actionSequence));
+                    }
+
+                    writer.write(StringUtil.join(actionSequenceStrings, " || "));
+                    writer.write("\n");
                 }
-
-                System.out.println(StringUtil.join(actionSequenceStrings, " || "));
             }
-        } catch (FileNotFoundException ex) {
+        } catch (IOException ex) {
             System.err.println("ERROR: " + ex.getLocalizedMessage());
             System.exit(1);
         }
