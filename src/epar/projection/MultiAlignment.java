@@ -18,102 +18,93 @@ import java.util.Scanner;
 public class MultiAlignment {
 
     public final LinkedHashSet<TranslationUnit> translationUnits;
+    
+    public MultiAlignment() {
+        this(new LinkedHashSet<TranslationUnit>());
+    }
 
     public MultiAlignment(LinkedHashSet<TranslationUnit> translationUnits) {
         this.translationUnits = translationUnits;
     }
-
+    
+    public static MultiAlignment union(Iterable<MultiAlignment> alignments) {
+        LinkedHashSet<TranslationUnit> translationUnits = new LinkedHashSet<>();
+        
+        for (MultiAlignment alignment : alignments) {
+            translationUnits.addAll(alignment.translationUnits);
+        }
+        
+        return new MultiAlignment(translationUnits);
+    }
+    
+    public MultiAlignment invert() {
+        LinkedHashSet<TranslationUnit> invertedTranslationUnits = new LinkedHashSet<>();
+        
+        for (TranslationUnit tu : translationUnits) {
+            invertedTranslationUnits.add(new TranslationUnit(tu.targetPositions, tu.sourcePositions));
+        }
+        
+        return new MultiAlignment(invertedTranslationUnits);
+    }
+    
     /**
-     * Reads the multi alignment from two GIZA++ n-best alignment output files,
-     * one for each alignment direction.
-     *
-     * @param sourceTargetFile
-     * @param targetSourceFile
-     * @param nBestInput How many n-best alignments there are for each sentence
-     * pair in the input
-     * @param nBestOutput How many n-best alignments should be used
-     * @return
+     * Reads a GIZA++ n-best alignment output file.
+     * @param file
+     * @return A list with one element for each sentence pair, each element a
+     * list of alignments.
      * @throws java.io.FileNotFoundException
      */
-    public static List<MultiAlignment> read(File sourceTargetFile,
-            File targetSourceFile, int nBestInput, int nBestOutput)
-            throws FileNotFoundException {
-        List<MultiAlignment> result = new ArrayList<>();
-
-        try (Scanner sourceTargetScanner = new Scanner(sourceTargetFile);
-                Scanner targetSourceScanner = new Scanner(targetSourceFile)) {
-            while (sourceTargetScanner.hasNextLine()) {
+    public static List<List<MultiAlignment>> read(File file) throws FileNotFoundException {
+        List<List<MultiAlignment>> result = new ArrayList<>();
+        
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                String commentLine = scanner.nextLine();
+                assert commentLine.startsWith("# Sentence pair (");
+                int pairNumber = Integer.parseInt(commentLine.substring(17, commentLine.indexOf(")")));
+                
+                if (pairNumber == result.size()) {
+                    // OK
+                } else if (pairNumber == result.size() + 1) {
+                    result.add(new ArrayList<MultiAlignment>());
+                } else {
+                    throw new IllegalArgumentException("Invalid sentence pair number sequence: " + pairNumber + " follows " + result.size());
+                }
+                
+                scanner.nextLine(); // skip source language sentence
+                Scanner alignmentScanner = new Scanner(scanner.nextLine());
                 LinkedHashSet<TranslationUnit> translationUnits = new LinkedHashSet<>();
-
-                for (int i = 0; i < nBestOutput; i++) {
-                    read(sourceTargetScanner, translationUnits, false);
-                    read(targetSourceScanner, translationUnits, true);
+                RecUtil.expect("NULL", alignmentScanner);
+                RecUtil.expect("({", alignmentScanner);
+                
+                // Add "translation units" for unaligned target-language tokens
+                while (alignmentScanner.hasNextInt()) {
+                    translationUnits.add(new TranslationUnit(Collections.EMPTY_LIST, Collections.singletonList(alignmentScanner.nextInt())));
                 }
-
-                for (int i = nBestOutput; i < nBestInput; i++) {
-                    // Skip further alignments
-                    sourceTargetScanner.nextLine();
-                    sourceTargetScanner.nextLine();
-                    sourceTargetScanner.nextLine();
-                    targetSourceScanner.nextLine();
-                    targetSourceScanner.nextLine();
-                    targetSourceScanner.nextLine();
+                
+                RecUtil.expect("})", alignmentScanner);
+                int sourcePosition = 0;
+                
+                // Add regular translation units
+                while (alignmentScanner.hasNext()) {
+                    alignmentScanner.next(); // skip source-language token
+                    RecUtil.expect("({", alignmentScanner);
+                    List<Integer> targetPositions = new ArrayList<>();
+                    
+                    while (alignmentScanner.hasNextInt()) {
+                        targetPositions.add(alignmentScanner.nextInt() - 1);
+                    }
+                    
+                    translationUnits.add(new TranslationUnit(Collections.singletonList(sourcePosition), targetPositions));                    
+                    RecUtil.expect("})", alignmentScanner);
+                    sourcePosition++;
                 }
-
-                result.add(new MultiAlignment(translationUnits));
+                
+                result.get(pairNumber - 1).add(new MultiAlignment(translationUnits));
             }
         }
-
+        
         return result;
-    }
-
-    private static void read(Scanner sourceTargetScanner,
-            LinkedHashSet<TranslationUnit> translationUnits, boolean invert) {
-        sourceTargetScanner.nextLine(); // skip comment
-        sourceTargetScanner.nextLine(); // skip target-language sentence
-        Scanner lineScanner = new Scanner(sourceTargetScanner.nextLine());
-        RecUtil.expect("NULL", lineScanner);
-        RecUtil.expect("({", lineScanner);
-
-        // Add "unaligned" translation units
-        while (lineScanner.hasNextInt()) {
-            if (invert) {
-                translationUnits.add(new TranslationUnit(
-                        Collections.singletonList(lineScanner.nextInt() - 1),
-                        Collections.EMPTY_LIST));
-
-            } else {
-                translationUnits.add(new TranslationUnit(Collections.EMPTY_LIST,
-                        Collections.singletonList(lineScanner.nextInt() - 1)));
-            }
-        }
-
-        RecUtil.expect("})", lineScanner);
-        int sourcePosition = 0;
-
-        while (lineScanner.hasNext()) {
-            lineScanner.next(); // skip source-language token
-            RecUtil.expect("({", lineScanner);
-            List<Integer> sourcePositions
-                    = Collections.singletonList(sourcePosition);
-            List<Integer> targetPositions = new ArrayList<>();
-
-            while (lineScanner.hasNextInt()) {
-                targetPositions.add(lineScanner.nextInt() - 1);
-            }
-
-            RecUtil.expect("})", lineScanner);
-
-            if (invert) {
-                translationUnits.add(new TranslationUnit(targetPositions,
-                        sourcePositions));
-            } else {
-                translationUnits.add(new TranslationUnit(sourcePositions,
-                        targetPositions));
-            }
-
-            sourcePosition++;
-        }
     }
 
 }

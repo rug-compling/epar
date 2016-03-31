@@ -15,6 +15,7 @@ import epar.util.ListUtil;
 import epar.util.SymbolPool;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,40 +28,50 @@ import java.util.List;
 public class ProjectCategories {
 
     public static void main(String[] args) {
-        if (args.length != 8) {
+        if (args.length != 7) {
             System.err.println(
-                    "USAGE: java epar.ProjectCategories SRCTRG.ALIGN TRGSRC.ALIGN NBEST.INPUT NBEST.OUTPUT SENTENCES.SRC GRAMMAR.SRC SENTENCES.TRG LOCLEXINPUT.TRG");
+                    "USAGE: java epar.ProjectCategories SRCTRG.ALIGN TRGSRC.ALIGN NBEST SENTENCES.SRC GRAMMAR.SRC SENTENCES.TRG LOCLEXINPUT.TRG");
             // where SENTENCES.SRC contains categories and interpretations, SENTENCES.TRG does not
             System.exit(1);
         }
 
         try {
-            List<MultiAlignment> multiAlignments = MultiAlignment.read(
-                    new File(args[0]), new File(args[1]),
-                    Integer.parseInt(args[2]), Integer.parseInt(args[3]));
+            List<List<MultiAlignment>> sourceTargetAlignments = MultiAlignment.read(new File(args[0]));
+            List<List<MultiAlignment>> targetSourceAlignments = MultiAlignment.read(new File(args[1]));
+            int nBest = Integer.parseInt(args[2]);
 
-            List<Sentence> sourceSentences = Sentence.readSentences(new File(args[4]));
+            List<Sentence> sourceSentences = Sentence.readSentences(new File(args[3]));
 
-            if (multiAlignments.size() != sourceSentences.size()) {
-                throw new IllegalArgumentException("Numbers of multialignments and source sentences don't match.");
+            if (sourceTargetAlignments.size() != sourceSentences.size()) {
+                throw new IllegalArgumentException("Numbers of source-target alignments and source sentences don't match.");
             }
 
-            Grammar sourceGrammar = Grammar.load(new File(args[5]));
+            if (targetSourceAlignments.size() != sourceSentences.size()) {
+                throw new IllegalArgumentException("Numbers of target-source alignments and source sentences don't match.");
+            }
 
-            List<Sentence> targetSentences = Sentence.readSentences(new File(args[6]));
+            Grammar sourceGrammar = Grammar.load(new File(args[4]));
 
-            if (multiAlignments.size() != targetSentences.size()) {
-                throw new IllegalArgumentException("Numbers of multialignments and target sentences don't match.");
+            List<Sentence> targetSentences = Sentence.readSentences(new File(args[5]));
+
+            if (sourceSentences.size() != targetSentences.size()) {
+                throw new IllegalArgumentException("Numbers of source and target sentences don't match.");
             }
 
             Oracle oracle = new NoFragmentsOracle();
 
             // For every sentence pair
-            for (int i = 0; i < multiAlignments.size(); i++) {
-                MultiAlignment multiAlignment = multiAlignments.get(i);
+            for (int i = 0; i < sourceSentences.size(); i++) {
                 Sentence sourceSentence = sourceSentences.get(i);
                 Sentence targetSentence = targetSentences.get(i);
-
+                List<MultiAlignment> sourceTargetAlignment = sourceTargetAlignments.get(i);
+                List<MultiAlignment> targetSourceAlignment = targetSourceAlignments.get(i);
+                
+                // Aggregate the translation units we want to use:
+                MultiAlignment sourceTargetMultiAlignment = MultiAlignment.union(sourceTargetAlignment.subList(0, Math.min(sourceTargetAlignment.size(), nBest)));
+                MultiAlignment targetSourceMultiAlignment = MultiAlignment.union(targetSourceAlignment.subList(0, Math.min(targetSourceAlignment.size(), nBest))).invert();
+                MultiAlignment multiAlignment = MultiAlignment.union(Arrays.asList(sourceTargetMultiAlignment, targetSourceMultiAlignment));
+                
                 // For every position in the target sentence
                 for (int j = 0; j < targetSentence.positions.size(); j++) {
                     // Translation units with aligned source words
