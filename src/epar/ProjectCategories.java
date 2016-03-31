@@ -27,7 +27,7 @@ import java.util.List;
 public class ProjectCategories {
 
     public static void main(String[] args) {
-        if (args.length != 7) {
+        if (args.length != 8) {
             System.err.println(
                     "USAGE: java epar.ProjectCategories SRCTRG.ALIGN TRGSRC.ALIGN NBEST.INPUT NBEST.OUTPUT SENTENCES.SRC GRAMMAR.SRC SENTENCES.TRG LOCLEXINPUT.TRG");
             // where SENTENCES.SRC contains categories and interpretations, SENTENCES.TRG does not
