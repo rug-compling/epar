@@ -45,6 +45,8 @@ public class BinaryRule {
     private static final int GBXC4 = SymbolPool.getID("gbxc(4)");
 
     private static final int DUMMY = SymbolPool.getID("dummy");
+    
+    private static final int CONJ = SymbolPool.getID("conj");
 
     public static enum HeadPosition {
 
@@ -176,6 +178,14 @@ public class BinaryRule {
         if (schemaName == GBC4 || schemaName == GBXC4) {
             return compose(4, rightChildInterpretation,
                     leftChildInterpretation);
+        }
+        
+        if (schemaName == CONJ) {
+            return leftChildInterpretation.applyTo(rightChildInterpretation);
+            // TODO This interpretation is always appropriate in the C&C/Boxer
+            // grammar, it seems. If we ever encountered "coordination à la
+            // Hockenmaier" or some exotic flavor of coordination, we would
+            // interpret it wrongly and be doooooooooooooooooooooooooooooooomed.
         }
 
         throw new IllegalArgumentException(
