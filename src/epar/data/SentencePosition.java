@@ -50,7 +50,7 @@ public class SentencePosition {
         
         for (LexicalItem lexicalItem : lexicalItems) {
             writer.write("\t");
-            writer.write(lexicalItem.length);
+            writer.write(String.valueOf(lexicalItem.length));
             writer.write("\t");
             writer.write(SymbolPool.getString(lexicalItem.form));
             writer.write("\t");
