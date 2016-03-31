@@ -19,11 +19,10 @@ public abstract class Interpretation {
 
     /**
      * This is the dummy interpretation we associate with nodes when we are
-     * doing purely syntactic parsing without semantics. Conventionally
-     * represented by the string "0".
+     * doing purely syntactic parsing without semantics.
      */
     public static final Interpretation DUMMY
-            = new AtomicInterpretation(SymbolPool.NONE);
+            = new AtomicInterpretation(SymbolPool.getID("dummy"));
 
     /**
      * Split string left and right of parens and commas
