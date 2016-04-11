@@ -28,7 +28,7 @@ import java.util.concurrent.RecursiveTask;
 public class ProjectDerivations {
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        if (args.length != 4) {
+        if (args.length != 5) {
             System.err.println("Usage: java epar.ProjectDerivations INPUT.TRG GRAMMAR.TRG INTERPRETATIONS NUM_CPUS ORACLES.TRG");
             System.exit(1);
         }
