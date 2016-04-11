@@ -51,7 +51,7 @@ public class ForceAgenda {
 
         for (Item item : items) {
             for (Item successor : item.successors(grammar)) {
-                if (oracle.accept(generation, item)) {
+                if (oracle.accept(generation, successor)) {
                     successors.add(successor);
                 }
             }
