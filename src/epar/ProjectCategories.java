@@ -98,6 +98,7 @@ public class ProjectCategories {
                                 targetSentence.positions.get(j).lexicalItems.add(
                                         new LexicalItem(length, form, pos, straightenSlashes(node.category),
                                                 node.interpretation));
+                                break; // only add the first
                             }
                         }
                     }
