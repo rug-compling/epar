@@ -179,8 +179,9 @@ public class Item {
                 newQueue = newQueue.getRest();
             }
             
-            successors.add(new Item(this, newAction, newStack, newQueue,
-                    false));
+            Item successor = new Item(this, newAction, newStack, newQueue,
+                    false);
+            successors.add(successor);
         }
     }
 
