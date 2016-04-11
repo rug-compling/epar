@@ -32,8 +32,18 @@ public class UnaryRule {
 
         if (schemaName == TC) {
             this.typeChangingInterpretation = new AtomicInterpretation(
-                    SymbolPool.getID("tc-"
-                            + SymbolPool.getString(childCategory) + "-"
+                    SymbolPool.getID("tc_"
+                            + SymbolPool.getString(childCategory) + "_"
+                            + SymbolPool.getString(parentCategory)));
+        } else if (schemaName == FTR) {
+            this.typeChangingInterpretation = new AtomicInterpretation(
+                    SymbolPool.getID("ftr_"
+                            + SymbolPool.getString(childCategory) + "_"
+                            + SymbolPool.getString(parentCategory)));
+        } else if (schemaName == BTR) {
+            this.typeChangingInterpretation = new AtomicInterpretation(
+                    SymbolPool.getID("btr_"
+                            + SymbolPool.getString(childCategory) + "_"
                             + SymbolPool.getString(parentCategory)));
         }
     }
@@ -42,15 +52,16 @@ public class UnaryRule {
         if (schemaName == DUMMY) {
             return Interpretation.DUMMY;
         }
+
+        // TODO Don't do this for type raising.
+        if (schemaName == TC || schemaName == FTR || schemaName == BTR) {
+            return typeChangingInterpretation.applyTo(childInterpretation);
+        }
         
         if (schemaName == FTR || schemaName == BTR) {
             VariableInterpretation variable = new VariableInterpretation();
             return new LambdaAbstractionInterpretation(variable,
                     variable.applyTo(childInterpretation));
-        }
-
-        if (schemaName == TC) {
-            return typeChangingInterpretation.applyTo(childInterpretation);
         }
 
         throw new IllegalArgumentException(

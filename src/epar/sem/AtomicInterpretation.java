@@ -47,7 +47,15 @@ public class AtomicInterpretation extends Interpretation {
 
     @Override
     String toProlog(Map<VariableInterpretation, String> variableNames) {
-        return SymbolPool.getString(symbol);
+        String string = SymbolPool.getString(symbol);
+        
+        // cruuude HACK
+        if (Interpretation.ATOM.matcher(string).matches() ||
+                Interpretation.TCNAME.matcher(string).matches()) {
+            return string;
+        } else {
+            return "'" + string.replace("\\", "\\\\") + "'";
+        }
     }
     
 }

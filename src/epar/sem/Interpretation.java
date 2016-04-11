@@ -27,22 +27,22 @@ public abstract class Interpretation {
     /**
      * Split string left and right of parens and commas
      */
-    private static final Pattern DELIM
+    static final Pattern DELIM
             = Pattern.compile("(?<=[(),])|(?=[(),])");
 
-    private static final Pattern APP = Pattern.compile("app");
+    static final Pattern APP = Pattern.compile("app");
 
-    private static final Pattern LAM = Pattern.compile("lam");
+    static final Pattern LAM = Pattern.compile("lam");
 
     /**
      * Semantic atoms are represented by integers in our Prolog-based
      * serialization.
      */
-    private static final Pattern ATOM = Pattern.compile("[0-9]+");
+    static final Pattern ATOM = Pattern.compile("[0-9]+|dummy");
 
-    private static final Pattern TCNAME = Pattern.compile("tc_[A-Z]+_[A-Z]+");
+    static final Pattern TCNAME = Pattern.compile("(tc|ftr|btr)_[A-Z]+_[A-Z]+");
 
-    private static final Pattern TCNAME_START = Pattern.compile("'tc_.*");
+    static final Pattern TCNAME_START = Pattern.compile("'(tc|ftr|btr)_.*");
 
     /**
      * Variables are sequences of capital letters in our Prolog-based
@@ -99,13 +99,14 @@ public abstract class Interpretation {
         }
 
         if (scanner.hasNext(TCNAME_START)) {
-            String tcName = scanner.next();
+            String tcName = scanner.next().substring(1);
 
             while (!tcName.endsWith("'")) {
                 tcName += scanner.next();
             }
 
-            return new AtomicInterpretation(SymbolPool.getID(tcName));
+            return new AtomicInterpretation(SymbolPool.getID(tcName.replace(
+                    "\\\\", "\\")));
         }
 
         if (scanner.hasNext(VAR)) {
