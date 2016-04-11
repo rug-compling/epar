@@ -51,10 +51,9 @@ public class LambdaAbstractionInterpretation extends Interpretation {
         
         LambdaAbstractionInterpretation subsumedAbstraction =
                 (LambdaAbstractionInterpretation) subsumee;
-        Interpretation converted = new LambdaAbstractionInterpretation(
-                subsumedAbstraction.variable, body.substitute(variable,
-                        subsumedAbstraction.variable));
-        return converted.subsumes(subsumee);
+        Interpretation convertedBody = body.substitute(variable,
+                subsumedAbstraction.variable);
+        return convertedBody.subsumes(subsumedAbstraction.body);
     }
 
     @Override
