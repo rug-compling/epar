@@ -35,6 +35,11 @@ public class SymbolPool {
     
     public static int join(List<Integer> ids, String glue) {
         List<String> symbols = new ArrayList<>();
+        
+        for (int id : ids) {
+            symbols.add(getString(id));
+        }
+        
         return getID(StringUtil.join(symbols, glue));
     }
 
