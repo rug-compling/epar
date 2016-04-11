@@ -64,11 +64,11 @@ public class Item {
 
     public List<Item> successors(Grammar grammar) {
         List<Item> successors = new ArrayList<>();
+        idle(successors);
+        finish(successors);
         shift(successors);
         binary(successors, grammar);
         unary(successors, grammar);
-        finish(successors);
-        idle(successors);
         skip(successors);
         return successors;
     }
