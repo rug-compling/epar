@@ -1,5 +1,6 @@
 package epar.oracle;
 
+import epar.grammar.Grammar;
 import epar.parser.Item;
 import epar.sem.Interpretation;
 
@@ -20,6 +21,11 @@ public class SemanticOracle implements Oracle {
         // Only need to check the semantics of the topmost stack node.
         // Others are guaranteed to already have been checked in previous
         // generations.
+        
+        if (item.stack.getFirst().category == Grammar.SKIP_CATEGORY) {
+            return true;
+        }
+        
         Interpretation interpretation = item.stack.getFirst().interpretation;
         
         if (item.finished) {
