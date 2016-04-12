@@ -117,7 +117,7 @@ public class ProjectCategories {
                             targetSentence.positions.get(j).lexicalItems.add(
                                     new LexicalItem(length, form, pos,
                                             SymbolPool.getID("SKIP"),
-                                            Interpretation.DUMMY));
+                                            Interpretation.IDENTITY));
                         }
                     }
                 }

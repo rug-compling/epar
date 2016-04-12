@@ -127,7 +127,7 @@ public class BinaryRule {
     public Interpretation interpret(Interpretation leftChildInterpretation,
             Interpretation rightChildInterpretation) {
         if (schemaName == DUMMY) {
-            return Interpretation.DUMMY;
+            return Interpretation.IDENTITY;
         }
 
         if (schemaName == FA) {

@@ -9,7 +9,7 @@ import epar.util.SymbolPool;
  */
 public class LexicalItem {
     
-    public static final LexicalItem NONE = new LexicalItem(1, SymbolPool.NONE, SymbolPool.NONE, SymbolPool.NONE, Interpretation.DUMMY);
+    public static final LexicalItem NONE = new LexicalItem(1, SymbolPool.NONE, SymbolPool.NONE, SymbolPool.NONE, Interpretation.IDENTITY);
     
     public final int length;
     

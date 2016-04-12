@@ -17,12 +17,11 @@ import java.util.regex.Pattern;
  */
 public abstract class Interpretation {
 
-    /**
-     * This is the dummy interpretation we associate with nodes when we are
-     * doing purely syntactic parsing without semantics.
-     */
-    public static final Interpretation DUMMY
-            = new AtomicInterpretation(SymbolPool.getID("dummy"));
+    private static final VariableInterpretation VARIABLE
+            = new VariableInterpretation();
+    
+    public static final Interpretation IDENTITY
+            = new LambdaAbstractionInterpretation(VARIABLE, VARIABLE);
 
     /**
      * Split string left and right of parens and commas
@@ -63,7 +62,7 @@ public abstract class Interpretation {
 
     public static Interpretation fromString(String string) {
         if ("nil".equals(string)) {
-            return DUMMY;
+            return IDENTITY;
         }
 
         Scanner scanner = new Scanner(string);

@@ -87,7 +87,7 @@ public abstract class Node {
             int pos = SymbolPool.getID(scanner.next());
             int form = SymbolPool.getID(scanner.next());
             LexicalItem item = new LexicalItem(1, form, pos, category,
-                    Interpretation.DUMMY);
+                    Interpretation.IDENTITY);
             SentencePosition word = new SentencePosition(form, pos, null); // TODO ugh.
             node = new LexicalNode(item);
         } else {

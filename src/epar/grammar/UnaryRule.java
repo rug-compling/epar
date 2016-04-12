@@ -50,7 +50,7 @@ public class UnaryRule {
 
     public Interpretation interpret(Interpretation childInterpretation) {
         if (schemaName == DUMMY) {
-            return Interpretation.DUMMY;
+            return Interpretation.IDENTITY;
         }
 
         // TODO Don't do this for type raising.
