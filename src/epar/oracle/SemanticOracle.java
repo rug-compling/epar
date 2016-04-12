@@ -18,6 +18,10 @@ public class SemanticOracle implements Oracle {
 
     @Override
     public boolean accept(int generation, Item item) {
+        if (item.stack.isEmpty()) {
+            return true;
+        }
+        
         // Only need to check the semantics of the topmost stack node.
         // Others are guaranteed to already have been checked in previous
         // generations.
