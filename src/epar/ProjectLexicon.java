@@ -8,24 +8,28 @@ import epar.oracle.Oracle;
 import epar.projection.Alignment;
 import epar.projection.TranslationUnit;
 import epar.util.ListUtil;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 
 /**
  * Takes source and target sentence pairs, together with word alignments, as
- * input. Produces as output a parser queue for each target sentence, with
- * possible lexical items based on the aligned source words.
+ * input. Produces a lexicon for the target language, based on categories
+ * projected via the alignments.
  *
  * @author p264360
  */
-public class ProjectCategories {
+public class ProjectLexicon {
 
     public static void main(String[] args) {
         if (args.length != 7) {
             System.err.println(
-                    "USAGE: java epar.ProjectCategories SRCTRG.ALIGN TRGSRC.ALIGN NBEST SENTENCES.SRC GRAMMAR.SRC SENTENCES.TRG LOCLEXINPUT.TRG");
+                    "USAGE: java epar.ProjectCategories SRCTRG.ALIGN TRGSRC.ALIGN NBEST SENTENCES.SRC GRAMMAR.SRC SENTENCES.TRG LEXICON.TRG");
             // where SENTENCES.SRC contains categories and interpretations, SENTENCES.TRG does not
             System.exit(1);
         }
@@ -53,53 +57,39 @@ public class ProjectCategories {
                 throw new IllegalArgumentException("Numbers of source and target sentences don't match.");
             }
 
-            Oracle oracle = new NoFragmentsOracle();
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(args[6])), "utf-8"))) {
+                // For every sentence pair
+                for (int i = 0; i < sourceSentences.size(); i++) {
+                    Sentence sourceSentence = sourceSentences.get(i);
+                    Sentence targetSentence = targetSentences.get(i);
+                    List<Alignment> sentenceSourceTargetAlignments = sourceTargetAlignments.get(i);
+                    List<Alignment> sentenceTargetSourceAlignments = targetSourceAlignments.get(i);
+                    sentenceSourceTargetAlignments = sentenceSourceTargetAlignments.subList(0, Math.min(sentenceSourceTargetAlignments.size(), nBest));
+                    sentenceTargetSourceAlignments = sentenceTargetSourceAlignments.subList(0, Math.min(sentenceTargetSourceAlignments.size(), nBest));
 
-            // For every sentence pair
-            for (int i = 0; i < sourceSentences.size(); i++) {
-                Sentence sourceSentence = sourceSentences.get(i);
-                Sentence targetSentence = targetSentences.get(i);
-                List<Alignment> sourceTargetAlignment = sourceTargetAlignments.get(i);
-                List<Alignment> targetSourceAlignment = targetSourceAlignments.get(i);
+                    for (Alignment alignment : sentenceSourceTargetAlignments) {
+                        for (TranslationUnit tu : alignment.translationUnits) {
+                            LexicalItem item = tu.project(sourceSentence, targetSentence, sourceGrammar);
 
-                // Aggregate the translation units we want to use:
-                Alignment sourceTargetMultiAlignment = Alignment.union(sourceTargetAlignment.subList(0, Math.min(sourceTargetAlignment.size(), nBest)));
-                Alignment targetSourceMultiAlignment = Alignment.union(targetSourceAlignment.subList(0, Math.min(targetSourceAlignment.size(), nBest))).invert();
-                Alignment multiAlignment = Alignment.union(Arrays.asList(sourceTargetMultiAlignment, targetSourceMultiAlignment));
-
-                // For every position in the target sentence
-                for (int j = 0; j < targetSentence.positions.size(); j++) {
-                    // Translation units with aligned source words
-                    for (TranslationUnit tu : multiAlignment.translationUnits) {
-                        if (!tu.targetPositions.isEmpty()
-                                && !tu.sourcePositions.isEmpty()
-                                && tu.targetPositions.get(0) == j
-                                && ListUtil.isContiguous(tu.targetPositions)
-                                && ListUtil.isContiguous(tu.sourcePositions)) {
-                            LexicalItem lexicalItem = tu.project(sourceSentence, targetSentence, sourceGrammar);
-                            
-                            if (lexicalItem != null) {
-                                targetSentence.positions.get(j).lexicalItems.add(lexicalItem);
+                            if (item != null) {
+                                item.write(writer);
                             }
                         }
                     }
 
-                    // Translation without aligned source words
-                    for (TranslationUnit tu : multiAlignment.translationUnits) {
-                        if (!tu.targetPositions.isEmpty()
-                                && tu.sourcePositions.isEmpty()
-                                && tu.targetPositions.get(0) == j) {
-                            LexicalItem lexicalItem = tu.project(sourceSentence, targetSentence, sourceGrammar);
-                            
-                            if (lexicalItem != null) {
-                                targetSentence.positions.get(j).lexicalItems.add(lexicalItem);
+                    for (Alignment alignment : sentenceTargetSourceAlignments) {
+                        alignment = alignment.invert();
+
+                        for (TranslationUnit tu : alignment.translationUnits) {
+                            LexicalItem item = tu.project(sourceSentence, targetSentence, sourceGrammar);
+
+                            if (item != null) {
+                                item.write(writer);
                             }
                         }
                     }
                 }
             }
-
-            Sentence.writeSentences(targetSentences, new File(args[6]));
         } catch (IOException ex) {
             System.err.println("ERROR: " + ex.getLocalizedMessage());
             System.exit(1);

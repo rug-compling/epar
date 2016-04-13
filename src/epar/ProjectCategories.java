@@ -53,8 +53,6 @@ public class ProjectCategories {
                 throw new IllegalArgumentException("Numbers of source and target sentences don't match.");
             }
 
-            Oracle oracle = new NoFragmentsOracle();
-
             // For every sentence pair
             for (int i = 0; i < sourceSentences.size(); i++) {
                 Sentence sourceSentence = sourceSentences.get(i);
