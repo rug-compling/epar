@@ -66,12 +66,12 @@ public class ProjectCategories {
                 Sentence targetSentence = targetSentences.get(i);
                 List<Alignment> sourceTargetAlignment = sourceTargetAlignments.get(i);
                 List<Alignment> targetSourceAlignment = targetSourceAlignments.get(i);
-                
+
                 // Aggregate the translation units we want to use:
                 Alignment sourceTargetMultiAlignment = Alignment.union(sourceTargetAlignment.subList(0, Math.min(sourceTargetAlignment.size(), nBest)));
                 Alignment targetSourceMultiAlignment = Alignment.union(targetSourceAlignment.subList(0, Math.min(targetSourceAlignment.size(), nBest))).invert();
                 Alignment multiAlignment = Alignment.union(Arrays.asList(sourceTargetMultiAlignment, targetSourceMultiAlignment));
-                
+
                 // For every position in the target sentence
                 for (int j = 0; j < targetSentence.positions.size(); j++) {
                     // Translation units with aligned source words
@@ -81,24 +81,10 @@ public class ProjectCategories {
                                 && tu.targetPositions.get(0) == j
                                 && ListUtil.isContiguous(tu.targetPositions)
                                 && ListUtil.isContiguous(tu.sourcePositions)) {
-                            // Extract target multiword
-                            int length = tu.targetPositions.size();
-                            int form = SymbolPool.join(targetSentence.formsAt(tu.targetPositions), " ");
-                            int pos = SymbolPool.join(targetSentence.posAt(tu.targetPositions), " ");
-
-                            // Parse the source multiword
-                            Sentence multiword = new Sentence(sourceSentence.positionsAt(
-                                    tu.sourcePositions));
-                            ForceAgenda parseResult = ForceAgenda.findAllParses(
-                                    multiword, sourceGrammar, oracle);
-
-                            // Add lexical items
-                            for (Item item : parseResult.getItems()) {
-                                Node node = item.stack.getFirst();
-                                targetSentence.positions.get(j).lexicalItems.add(
-                                        new LexicalItem(length, form, pos, straightenSlashes(node.category),
-                                                node.interpretation));
-                                break; // only add the first
+                            LexicalItem lexicalItem = tu.project(sourceSentence, targetSentence, sourceGrammar);
+                            
+                            if (lexicalItem != null) {
+                                targetSentence.positions.get(j).lexicalItems.add(lexicalItem);
                             }
                         }
                     }
@@ -108,16 +94,11 @@ public class ProjectCategories {
                         if (!tu.targetPositions.isEmpty()
                                 && tu.sourcePositions.isEmpty()
                                 && tu.targetPositions.get(0) == j) {
-                            // Extract target multiword
-                            int length = tu.targetPositions.size();
-                            int form = SymbolPool.join(targetSentence.formsAt(tu.targetPositions), " ");
-                            int pos = SymbolPool.join(targetSentence.posAt(tu.targetPositions), " ");
-
-                            // Add SKIP item
-                            targetSentence.positions.get(j).lexicalItems.add(
-                                    new LexicalItem(length, form, pos,
-                                            SymbolPool.getID("SKIP"),
-                                            Interpretation.IDENTITY));
+                            LexicalItem lexicalItem = tu.project(sourceSentence, targetSentence, sourceGrammar);
+                            
+                            if (lexicalItem != null) {
+                                targetSentence.positions.get(j).lexicalItems.add(lexicalItem);
+                            }
                         }
                     }
                 }
@@ -128,10 +109,6 @@ public class ProjectCategories {
             System.err.println("ERROR: " + ex.getLocalizedMessage());
             System.exit(1);
         }
-    }
-
-    private static int straightenSlashes(int category) {
-        return SymbolPool.getID(SymbolPool.getString(category).replace("\\", "/"));
     }
 
 }
