@@ -79,7 +79,7 @@ public class Alignment {
                 
                 // Add "translation units" for unaligned target-language tokens
                 while (alignmentScanner.hasNextInt()) {
-                    translationUnits.add(new TranslationUnit(Collections.EMPTY_LIST, Collections.singletonList(alignmentScanner.nextInt())));
+                    translationUnits.add(new TranslationUnit(Collections.EMPTY_LIST, Collections.singletonList(alignmentScanner.nextInt() - 1)));
                 }
                 
                 RecUtil.expect("})", alignmentScanner);
@@ -95,7 +95,7 @@ public class Alignment {
                         targetPositions.add(alignmentScanner.nextInt() - 1);
                     }
                     
-                    translationUnits.add(new TranslationUnit(Collections.singletonList(sourcePosition), targetPositions));                    
+                    translationUnits.add(new TranslationUnit(Collections.singletonList(sourcePosition), targetPositions));
                     RecUtil.expect("})", alignmentScanner);
                     sourcePosition++;
                 }
