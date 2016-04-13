@@ -61,7 +61,7 @@ public class ProjectDerivations {
                     @Override
                     protected List<List<Action>> compute() {
                         return ForceAgenda.forceDecode(sentence, grammar,
-                                new SemanticOracle(targetInterpretation), 256);
+                                new SemanticOracle(targetInterpretation), 65536);
                     }
 
                 };
