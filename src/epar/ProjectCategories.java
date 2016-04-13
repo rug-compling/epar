@@ -8,7 +8,7 @@ import epar.oracle.NoFragmentsOracle;
 import epar.oracle.Oracle;
 import epar.parser.ForceAgenda;
 import epar.parser.Item;
-import epar.projection.MultiAlignment;
+import epar.projection.Alignment;
 import epar.projection.TranslationUnit;
 import epar.sem.Interpretation;
 import epar.util.ListUtil;
@@ -36,8 +36,8 @@ public class ProjectCategories {
         }
 
         try {
-            List<List<MultiAlignment>> sourceTargetAlignments = MultiAlignment.read(new File(args[0]));
-            List<List<MultiAlignment>> targetSourceAlignments = MultiAlignment.read(new File(args[1]));
+            List<List<Alignment>> sourceTargetAlignments = Alignment.read(new File(args[0]));
+            List<List<Alignment>> targetSourceAlignments = Alignment.read(new File(args[1]));
             int nBest = Integer.parseInt(args[2]);
 
             List<Sentence> sourceSentences = Sentence.readSentences(new File(args[3]));
@@ -64,13 +64,13 @@ public class ProjectCategories {
             for (int i = 0; i < sourceSentences.size(); i++) {
                 Sentence sourceSentence = sourceSentences.get(i);
                 Sentence targetSentence = targetSentences.get(i);
-                List<MultiAlignment> sourceTargetAlignment = sourceTargetAlignments.get(i);
-                List<MultiAlignment> targetSourceAlignment = targetSourceAlignments.get(i);
+                List<Alignment> sourceTargetAlignment = sourceTargetAlignments.get(i);
+                List<Alignment> targetSourceAlignment = targetSourceAlignments.get(i);
                 
                 // Aggregate the translation units we want to use:
-                MultiAlignment sourceTargetMultiAlignment = MultiAlignment.union(sourceTargetAlignment.subList(0, Math.min(sourceTargetAlignment.size(), nBest)));
-                MultiAlignment targetSourceMultiAlignment = MultiAlignment.union(targetSourceAlignment.subList(0, Math.min(targetSourceAlignment.size(), nBest))).invert();
-                MultiAlignment multiAlignment = MultiAlignment.union(Arrays.asList(sourceTargetMultiAlignment, targetSourceMultiAlignment));
+                Alignment sourceTargetMultiAlignment = Alignment.union(sourceTargetAlignment.subList(0, Math.min(sourceTargetAlignment.size(), nBest)));
+                Alignment targetSourceMultiAlignment = Alignment.union(targetSourceAlignment.subList(0, Math.min(targetSourceAlignment.size(), nBest))).invert();
+                Alignment multiAlignment = Alignment.union(Arrays.asList(sourceTargetMultiAlignment, targetSourceMultiAlignment));
                 
                 // For every position in the target sentence
                 for (int j = 0; j < targetSentence.positions.size(); j++) {

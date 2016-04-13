@@ -15,36 +15,36 @@ import java.util.Scanner;
  *
  * @author p264360
  */
-public class MultiAlignment {
+public class Alignment {
 
     public final LinkedHashSet<TranslationUnit> translationUnits;
     
-    public MultiAlignment() {
+    public Alignment() {
         this(new LinkedHashSet<TranslationUnit>());
     }
 
-    public MultiAlignment(LinkedHashSet<TranslationUnit> translationUnits) {
+    public Alignment(LinkedHashSet<TranslationUnit> translationUnits) {
         this.translationUnits = translationUnits;
     }
     
-    public static MultiAlignment union(Iterable<MultiAlignment> alignments) {
+    public static Alignment union(Iterable<Alignment> alignments) {
         LinkedHashSet<TranslationUnit> translationUnits = new LinkedHashSet<>();
         
-        for (MultiAlignment alignment : alignments) {
+        for (Alignment alignment : alignments) {
             translationUnits.addAll(alignment.translationUnits);
         }
         
-        return new MultiAlignment(translationUnits);
+        return new Alignment(translationUnits);
     }
     
-    public MultiAlignment invert() {
+    public Alignment invert() {
         LinkedHashSet<TranslationUnit> invertedTranslationUnits = new LinkedHashSet<>();
         
         for (TranslationUnit tu : translationUnits) {
             invertedTranslationUnits.add(new TranslationUnit(tu.targetPositions, tu.sourcePositions));
         }
         
-        return new MultiAlignment(invertedTranslationUnits);
+        return new Alignment(invertedTranslationUnits);
     }
     
     /**
@@ -54,8 +54,8 @@ public class MultiAlignment {
      * list of alignments.
      * @throws java.io.FileNotFoundException
      */
-    public static List<List<MultiAlignment>> read(File file) throws FileNotFoundException {
-        List<List<MultiAlignment>> result = new ArrayList<>();
+    public static List<List<Alignment>> read(File file) throws FileNotFoundException {
+        List<List<Alignment>> result = new ArrayList<>();
         
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNextLine()) {
@@ -66,7 +66,7 @@ public class MultiAlignment {
                 if (pairNumber == result.size()) {
                     // OK
                 } else if (pairNumber == result.size() + 1) {
-                    result.add(new ArrayList<MultiAlignment>());
+                    result.add(new ArrayList<Alignment>());
                 } else {
                     throw new IllegalArgumentException("Invalid sentence pair number sequence: " + pairNumber + " follows " + result.size());
                 }
@@ -100,7 +100,7 @@ public class MultiAlignment {
                     sourcePosition++;
                 }
                 
-                result.get(pairNumber - 1).add(new MultiAlignment(translationUnits));
+                result.get(pairNumber - 1).add(new Alignment(translationUnits));
             }
         }
         
