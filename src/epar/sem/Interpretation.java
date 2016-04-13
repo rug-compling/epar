@@ -98,14 +98,19 @@ public abstract class Interpretation {
         }
 
         if (scanner.hasNext(TCNAME_START)) {
-            String tcName = scanner.next().substring(1);
+            String tcName = scanner.next();
 
             while (!tcName.endsWith("'")) {
                 tcName += scanner.next();
             }
+            
+            // Remove quotes
+            tcName = tcName.substring(1, tcName.length() - 1);
+            
+            // Unescape
+            tcName = tcName.replace("\\\\", "\\");
 
-            return new AtomicInterpretation(SymbolPool.getID(tcName.replace(
-                    "\\\\", "\\")));
+            return new AtomicInterpretation(SymbolPool.getID(tcName));
         }
 
         if (scanner.hasNext(VAR)) {
