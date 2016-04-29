@@ -9,5 +9,5 @@ for line in sys.stdin:
         pos = fields[1]
         print('{}\t{}'.format(word, pos), end='')
         for cat in fields[3::2]:
-            print('\t1\t{}\t{}\t{}\t0'.format(word, pos, cat), end='')
+            print('\t1\t{}\t{}\t{}\tlam(A,A)'.format(word, pos, cat), end='')
     print()
