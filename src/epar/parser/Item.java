@@ -81,6 +81,10 @@ public class Item {
         if (stack.isEmpty()) {
             return;
         }
+        
+        if (action.getType() == Action.TYPE_SKIP) {
+            return;
+        }
 
         Node rightChild = stack.getFirst();
         Stack<Node> rest = stack.getRest();
@@ -123,6 +127,10 @@ public class Item {
         }
 
         if (stack.isEmpty()) {
+            return;
+        }
+        
+        if (action.getType() == Action.TYPE_SKIP) {
             return;
         }
 
