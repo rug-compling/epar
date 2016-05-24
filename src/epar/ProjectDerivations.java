@@ -28,16 +28,17 @@ import java.util.concurrent.RecursiveTask;
 public class ProjectDerivations {
 
     public static void main(String[] args) throws InterruptedException, ExecutionException {
-        if (args.length != 5) {
-            System.err.println("Usage: java epar.ProjectDerivations INPUT.TRG GRAMMAR.TRG INTERPRETATIONS NUM_CPUS ORACLES.TRG");
+        if (args.length != 6) {
+            System.err.println("Usage: java epar.ProjectDerivations INPUT.TRG GRAMMAR.TRG AGENDA_LIMIT INTERPRETATIONS NUM_CPUS ORACLES.TRG");
             System.exit(1);
         }
 
         try {
             final List<Sentence> sentences = Sentence.readSentences(new File(args[0]));
             final Grammar grammar = Grammar.load(new File(args[1]));
-            final List<Interpretation> targetInterpretations = Interpretation.read(new File(args[2]));
-            int numCPUs = Integer.parseInt(args[3]);
+            final int agendaLimit = Integer.parseInt(args[2]);
+            final List<Interpretation> targetInterpretations = Interpretation.read(new File(args[3]));
+            int numCPUs = Integer.parseInt(args[4]);
 
             if (sentences.size() != targetInterpretations.size()) {
                 throw new IllegalArgumentException("Numbers of sentences and target interpretations don't match.");
@@ -61,7 +62,7 @@ public class ProjectDerivations {
                     @Override
                     protected List<List<Action>> compute() {
                         return ForceAgenda.forceDecode(sentence, grammar,
-                                new SemanticOracle(targetInterpretation), 65536);
+                                new SemanticOracle(targetInterpretation), agendaLimit);
                     }
 
                 };
@@ -71,7 +72,7 @@ public class ProjectDerivations {
             }
 
             try (Writer writer = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(new File(args[4])), "utf-8"))) {
+                    new OutputStreamWriter(new FileOutputStream(new File(args[5])), "utf-8"))) {
                 for (Future<List<List<Action>>> parse : parses) {
                     List<List<Action>> actionSequences = parse.get();
                     List<String> actionSequenceStrings = new ArrayList<>(
