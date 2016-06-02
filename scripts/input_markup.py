@@ -16,5 +16,5 @@ for line in sys.stdin:
     if line:
         line = line.split()
         line = line[:2] + [markup(cat) for cat in line[2:]]
-        line = ' '.join(line)
+        line = '\t'.join(line)
     print(line)

@@ -20,14 +20,26 @@ with open('ext/candc/src/data/ccg/cats/markedup') as f:
         mapping[cat].add(markedup)
         mapping_straight[cat_straight].add(markedup_straight)
 
-print('Dependency-ambiguous original categories:')
+print('# dependency-ambiguous original categories')
+print()
 
 for cat, markedups in mapping.items():
     if len(markedups) > 1:
         print(cat)
+        for markedup in markedups:
+            print(' ' + markedup)
+        print()
 
-print('Dependency-ambiguous straight categories:')
+print()
+
+print('# dependency-ambiguous straight categories')
+print()
 
 for cat, markedups in mapping_straight.items():
     if len(markedups) > 1:
         print(cat)
+        for markedup in markedups:
+            print(' ' + markedup)
+        print()
+
+print()
