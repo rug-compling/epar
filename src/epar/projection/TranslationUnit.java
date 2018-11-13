@@ -104,5 +104,11 @@ public class TranslationUnit {
     private static int straightenSlashes(int category) {
         return SymbolPool.getID(SymbolPool.getString(category).replace("\\", "/"));
     }
+    
+    @Override
+    public String toString() {
+        return "<" + sourcePositions.toString() + ", " +
+                targetPositions.toString() + ">";
+    }
 
 }

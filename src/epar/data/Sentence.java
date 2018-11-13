@@ -88,5 +88,10 @@ public class Sentence {
             }
         }
     }
+    
+    @Override
+    public String toString() {
+        return positions.toString();
+    }
 
 }

@@ -106,5 +106,10 @@ public class Alignment {
         
         return result;
     }
+    
+    @Override
+    public String toString() {
+        return translationUnits.toString();
+    }
 
 }

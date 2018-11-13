@@ -64,4 +64,9 @@ public class SentencePosition {
         writer.write("\n");
     }
 
+    @Override
+    public String toString() {
+        return "<" + form + ", " + pos + ", " + lexicalItems + ">";
+    }
+    
 }
