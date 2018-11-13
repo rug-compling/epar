@@ -3,18 +3,14 @@ package epar;
 import epar.data.LexicalItem;
 import epar.data.Sentence;
 import epar.grammar.Grammar;
-import epar.oracle.NoFragmentsOracle;
-import epar.oracle.Oracle;
 import epar.projection.Alignment;
 import epar.projection.TranslationUnit;
-import epar.util.ListUtil;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Arrays;
 import java.util.List;
 
 /**
