@@ -38,11 +38,13 @@ public class ProjectLexicon {
             List<Sentence> sourceSentences = Sentence.readSentences(new File(args[3]));
 
             if (sourceTargetAlignments.size() != sourceSentences.size()) {
-                throw new IllegalArgumentException("Numbers of source-target alignments and source sentences don't match.");
+                throw new IllegalArgumentException(String.format("Numbers of source-target alignments (%s) and source sentences (%s) don't match.",
+                        sourceTargetAlignments.size(), sourceSentences.size()));
             }
 
             if (targetSourceAlignments.size() != sourceSentences.size()) {
-                throw new IllegalArgumentException("Numbers of target-source alignments and source sentences don't match.");
+                throw new IllegalArgumentException(String.format("Numbers of target-source alignments (%s) and source sentences (%s) don't match.",
+                        targetSourceAlignments.size(), sourceSentences.size()));
             }
 
             Grammar sourceGrammar = Grammar.load(new File(args[4]));
@@ -50,7 +52,8 @@ public class ProjectLexicon {
             List<Sentence> targetSentences = Sentence.readSentences(new File(args[5]));
 
             if (sourceSentences.size() != targetSentences.size()) {
-                throw new IllegalArgumentException("Numbers of source and target sentences don't match.");
+                throw new IllegalArgumentException(String.format("Numbers of source (%s) and target sentences (%s) don't match.",
+                        targetSourceAlignments.size(), sourceSentences.size()));
             }
 
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(args[6])), "utf-8"))) {
