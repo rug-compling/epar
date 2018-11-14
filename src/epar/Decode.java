@@ -108,6 +108,9 @@ public class Decode {
                     @Override
                     protected String compute() {
                         Agenda finalAgenda = decode(Agenda.initial(sentence), grammar, model, oracle);
+                        if (finalAgenda.getBeam().isEmpty()) {
+                            return "\n";
+                        }
                         Item item = selectParse(finalAgenda);
                         return StringUtil.join(item.actionSequence(), " ") + "\n";
                     }
